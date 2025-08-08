@@ -57,6 +57,22 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        brand: {
+          purple: "hsl(var(--brand-purple))",
+          blue: "hsl(var(--brand-blue))",
+          green: "hsl(var(--brand-green))",
+          orange: "hsl(var(--brand-orange))",
+          red: "hsl(var(--brand-red))",
+          gray: "hsl(var(--brand-gray))",
+        },
+        canvas: {
+          background: "hsl(var(--canvas-background))",
+          grid: "hsl(var(--canvas-grid))",
+        },
+        editor: {
+          sidebar: "hsl(var(--editor-sidebar))",
+          toolbar: "hsl(var(--editor-toolbar))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
