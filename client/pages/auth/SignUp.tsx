@@ -1,9 +1,23 @@
-import { Link } from "react-router-dom";
-import { SignUp } from "@stackframe/stack";
+import { Link, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Layers } from "lucide-react";
+import { useState } from "react";
 
 export default function AuthSignUp() {
+  const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSignUp = (e: React.FormEvent) => {
+    e.preventDefault();
+    // For demo purposes, just redirect to dashboard
+    navigate("/dashboard");
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -27,7 +41,44 @@ export default function AuthSignUp() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <SignUp />
+            <form onSubmit={handleSignUp} className="space-y-4">
+              <div>
+                <Label htmlFor="name">Full Name</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Enter your full name"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Create a password"
+                  required
+                />
+              </div>
+              <Button type="submit" className="w-full">
+                Create Account
+              </Button>
+            </form>
           </CardContent>
         </Card>
 
