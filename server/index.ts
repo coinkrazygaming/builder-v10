@@ -1,11 +1,11 @@
 import express from "express";
 import { handleDemo } from "./routes/demo";
-import { 
-  getProjects, 
-  getProject, 
-  createProject, 
-  updateProject, 
-  deleteProject 
+import {
+  getProjects,
+  getProject,
+  createProject,
+  updateProject,
+  deleteProject,
 } from "./routes/projects";
 import {
   getPages,
@@ -13,21 +13,21 @@ import {
   createPage,
   updatePage,
   deletePage,
-  getPageVersions
+  getPageVersions,
 } from "./routes/pages";
 
 export function createServer() {
   const app = express();
-  
+
   // Middleware
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
   // Mock auth middleware - TODO: Replace with real Stack Auth middleware
-  app.use('/api', (req, res, next) => {
+  app.use("/api", (req, res, next) => {
     // For now, we'll mock the user ID
     // In production, this would be extracted from the Stack Auth token
-    req.headers['x-user-id'] = 'mock-user-id';
+    req.headers["x-user-id"] = "mock-user-id";
     next();
   });
 

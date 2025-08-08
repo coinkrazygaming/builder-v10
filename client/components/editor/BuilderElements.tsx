@@ -1,4 +1,11 @@
-import { Type, Image, Layout, Square, Circle, Link as LinkIcon } from "lucide-react";
+import {
+  Type,
+  Image,
+  Layout,
+  Square,
+  Circle,
+  Link as LinkIcon,
+} from "lucide-react";
 
 export interface BuilderElement {
   id: string;
@@ -20,7 +27,12 @@ export const TextTemplate = ({ children, style, ...props }: any) => (
   </div>
 );
 
-export const HeadingTemplate = ({ children, style, level = 1, ...props }: any) => {
+export const HeadingTemplate = ({
+  children,
+  style,
+  level = 1,
+  ...props
+}: any) => {
   const Tag = `h${level}` as keyof JSX.IntrinsicElements;
   return (
     <Tag style={style} {...props}>
@@ -38,7 +50,12 @@ export const ImageTemplate = ({ src, alt, style, ...props }: any) => (
   />
 );
 
-export const ButtonTemplate = ({ children, style, variant = "primary", ...props }: any) => (
+export const ButtonTemplate = ({
+  children,
+  style,
+  variant = "primary",
+  ...props
+}: any) => (
   <button
     style={{
       padding: "12px 24px",
@@ -85,7 +102,12 @@ export const LinkTemplate = ({ children, href, style, ...props }: any) => (
   </a>
 );
 
-export const FlexTemplate = ({ children, style, direction = "row", ...props }: any) => (
+export const FlexTemplate = ({
+  children,
+  style,
+  direction = "row",
+  ...props
+}: any) => (
   <div
     style={{
       display: "flex",
@@ -103,7 +125,12 @@ export const FlexTemplate = ({ children, style, direction = "row", ...props }: a
   </div>
 );
 
-export const GridTemplate = ({ children, style, columns = 2, ...props }: any) => (
+export const GridTemplate = ({
+  children,
+  style,
+  columns = 2,
+  ...props
+}: any) => (
   <div
     style={{
       display: "grid",
@@ -284,5 +311,7 @@ export const getElementsByCategory = (category: string): BuilderElement[] => {
 };
 
 export const getAllCategories = (): string[] => {
-  return Array.from(new Set(builderElements.map((element) => element.category)));
+  return Array.from(
+    new Set(builderElements.map((element) => element.category)),
+  );
 };

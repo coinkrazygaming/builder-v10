@@ -1,5 +1,11 @@
 import { Link } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Construction, ArrowLeft } from "lucide-react";
 
@@ -8,7 +14,10 @@ interface PlaceholderPageProps {
   description: string;
 }
 
-export default function PlaceholderPage({ title, description }: PlaceholderPageProps) {
+export default function PlaceholderPage({
+  title,
+  description,
+}: PlaceholderPageProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
       <Card className="w-full max-w-md bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-xl">
@@ -17,13 +26,12 @@ export default function PlaceholderPage({ title, description }: PlaceholderPageP
             <Construction className="w-8 h-8 text-white" />
           </div>
           <CardTitle className="text-2xl">{title}</CardTitle>
-          <CardDescription>
-            {description}
-          </CardDescription>
+          <CardDescription>{description}</CardDescription>
         </CardHeader>
         <CardContent className="text-center space-y-4">
           <p className="text-gray-600 dark:text-gray-300">
-            This feature is coming soon! We're working hard to bring you the best experience.
+            This feature is coming soon! We're working hard to bring you the
+            best experience.
           </p>
           <div className="flex flex-col sm:flex-row gap-2">
             <Button variant="outline" asChild className="flex-1">

@@ -17,24 +17,26 @@ const mockPages = [
     createdAt: new Date(),
     updatedAt: new Date(),
     publishedAt: null,
-  }
+  },
 ];
 
 // GET /api/projects/:projectId/pages - Get all pages for a project
 export const getPages: RequestHandler = async (req, res) => {
   try {
     const { projectId } = req.params;
-    const userId = req.headers['x-user-id'] as string;
-    
+    const userId = req.headers["x-user-id"] as string;
+
     if (!userId) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const projectPages = mockPages.filter(page => page.projectId === projectId);
+    const projectPages = mockPages.filter(
+      (page) => page.projectId === projectId,
+    );
     res.json(projectPages);
   } catch (error) {
-    console.error('Error fetching pages:', error);
-    res.status(500).json({ error: 'Failed to fetch pages' });
+    console.error("Error fetching pages:", error);
+    res.status(500).json({ error: "Failed to fetch pages" });
   }
 };
 
@@ -42,22 +44,24 @@ export const getPages: RequestHandler = async (req, res) => {
 export const getPage: RequestHandler = async (req, res) => {
   try {
     const { projectId, pageId } = req.params;
-    const userId = req.headers['x-user-id'] as string;
-    
+    const userId = req.headers["x-user-id"] as string;
+
     if (!userId) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const page = mockPages.find(p => p.id === pageId && p.projectId === projectId);
-    
+    const page = mockPages.find(
+      (p) => p.id === pageId && p.projectId === projectId,
+    );
+
     if (!page) {
-      return res.status(404).json({ error: 'Page not found' });
+      return res.status(404).json({ error: "Page not found" });
     }
 
     res.json(page);
   } catch (error) {
-    console.error('Error fetching page:', error);
-    res.status(500).json({ error: 'Failed to fetch page' });
+    console.error("Error fetching page:", error);
+    res.status(500).json({ error: "Failed to fetch page" });
   }
 };
 
@@ -65,10 +69,10 @@ export const getPage: RequestHandler = async (req, res) => {
 export const createPage: RequestHandler = async (req, res) => {
   try {
     const { projectId } = req.params;
-    const userId = req.headers['x-user-id'] as string;
-    
+    const userId = req.headers["x-user-id"] as string;
+
     if (!userId) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: "Unauthorized" });
     }
 
     const newPage = {
@@ -83,8 +87,8 @@ export const createPage: RequestHandler = async (req, res) => {
     mockPages.push(newPage);
     res.status(201).json(newPage);
   } catch (error) {
-    console.error('Error creating page:', error);
-    res.status(500).json({ error: 'Failed to create page' });
+    console.error("Error creating page:", error);
+    res.status(500).json({ error: "Failed to create page" });
   }
 };
 
@@ -92,16 +96,18 @@ export const createPage: RequestHandler = async (req, res) => {
 export const updatePage: RequestHandler = async (req, res) => {
   try {
     const { projectId, pageId } = req.params;
-    const userId = req.headers['x-user-id'] as string;
-    
+    const userId = req.headers["x-user-id"] as string;
+
     if (!userId) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const pageIndex = mockPages.findIndex(p => p.id === pageId && p.projectId === projectId);
-    
+    const pageIndex = mockPages.findIndex(
+      (p) => p.id === pageId && p.projectId === projectId,
+    );
+
     if (pageIndex === -1) {
-      return res.status(404).json({ error: 'Page not found' });
+      return res.status(404).json({ error: "Page not found" });
     }
 
     mockPages[pageIndex] = {
@@ -112,8 +118,8 @@ export const updatePage: RequestHandler = async (req, res) => {
 
     res.json(mockPages[pageIndex]);
   } catch (error) {
-    console.error('Error updating page:', error);
-    res.status(500).json({ error: 'Failed to update page' });
+    console.error("Error updating page:", error);
+    res.status(500).json({ error: "Failed to update page" });
   }
 };
 
@@ -121,29 +127,33 @@ export const updatePage: RequestHandler = async (req, res) => {
 export const deletePage: RequestHandler = async (req, res) => {
   try {
     const { projectId, pageId } = req.params;
-    const userId = req.headers['x-user-id'] as string;
-    
+    const userId = req.headers["x-user-id"] as string;
+
     if (!userId) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const page = mockPages.find(p => p.id === pageId && p.projectId === projectId);
-    
+    const page = mockPages.find(
+      (p) => p.id === pageId && p.projectId === projectId,
+    );
+
     if (!page) {
-      return res.status(404).json({ error: 'Page not found' });
+      return res.status(404).json({ error: "Page not found" });
     }
 
     if (page.isHomePage) {
-      return res.status(400).json({ error: 'Cannot delete the home page' });
+      return res.status(400).json({ error: "Cannot delete the home page" });
     }
 
-    const pageIndex = mockPages.findIndex(p => p.id === pageId && p.projectId === projectId);
+    const pageIndex = mockPages.findIndex(
+      (p) => p.id === pageId && p.projectId === projectId,
+    );
     mockPages.splice(pageIndex, 1);
-    
+
     res.status(204).send();
   } catch (error) {
-    console.error('Error deleting page:', error);
-    res.status(500).json({ error: 'Failed to delete page' });
+    console.error("Error deleting page:", error);
+    res.status(500).json({ error: "Failed to delete page" });
   }
 };
 
@@ -151,10 +161,10 @@ export const deletePage: RequestHandler = async (req, res) => {
 export const getPageVersions: RequestHandler = async (req, res) => {
   try {
     const { projectId, pageId } = req.params;
-    const userId = req.headers['x-user-id'] as string;
-    
+    const userId = req.headers["x-user-id"] as string;
+
     if (!userId) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ error: "Unauthorized" });
     }
 
     // Mock version history
@@ -167,12 +177,12 @@ export const getPageVersions: RequestHandler = async (req, res) => {
         changesDescription: "Initial version",
         createdBy: userId,
         createdAt: new Date(),
-      }
+      },
     ];
 
     res.json(versions);
   } catch (error) {
-    console.error('Error fetching page versions:', error);
-    res.status(500).json({ error: 'Failed to fetch page versions' });
+    console.error("Error fetching page versions:", error);
+    res.status(500).json({ error: "Failed to fetch page versions" });
   }
 };

@@ -44,12 +44,12 @@ interface SortableElementProps {
   allElements: CanvasElement[];
 }
 
-function SortableElement({ 
-  element, 
-  onSelect, 
-  isSelected, 
+function SortableElement({
+  element,
+  onSelect,
+  isSelected,
   onElementsChange,
-  allElements 
+  allElements,
 }: SortableElementProps) {
   const {
     attributes,
@@ -58,7 +58,7 @@ function SortableElement({
     transform,
     transition,
     isDragging,
-  } = useSortable({ 
+  } = useSortable({
     id: element.id,
     data: {
       type: "canvas-element",
@@ -82,20 +82,23 @@ function SortableElement({
     onSelect(element.id);
   };
 
-  const handleChildrenChange = useCallback((newChildren: CanvasElement[]) => {
-    const updateElement = (elements: CanvasElement[]): CanvasElement[] => {
-      return elements.map(el => {
-        if (el.id === element.id) {
-          return { ...el, children: newChildren };
-        }
-        if (el.children) {
-          return { ...el, children: updateElement(el.children) };
-        }
-        return el;
-      });
-    };
-    onElementsChange(updateElement(allElements));
-  }, [element.id, onElementsChange, allElements]);
+  const handleChildrenChange = useCallback(
+    (newChildren: CanvasElement[]) => {
+      const updateElement = (elements: CanvasElement[]): CanvasElement[] => {
+        return elements.map((el) => {
+          if (el.id === element.id) {
+            return { ...el, children: newChildren };
+          }
+          if (el.children) {
+            return { ...el, children: updateElement(el.children) };
+          }
+          return el;
+        });
+      };
+      onElementsChange(updateElement(allElements));
+    },
+    [element.id, onElementsChange, allElements],
+  );
 
   return (
     <div
@@ -106,19 +109,19 @@ function SortableElement({
       onClick={handleClick}
       className={cn(
         "relative group cursor-pointer",
-        isSelected && "ring-2 ring-blue-500 ring-offset-2"
+        isSelected && "ring-2 ring-blue-500 ring-offset-2",
       )}
     >
       {/* Selection overlay */}
-      <div 
+      <div
         className={cn(
           "absolute inset-0 pointer-events-none transition-all duration-200",
-          isSelected 
-            ? "bg-blue-500/10 border-2 border-blue-500" 
-            : "group-hover:bg-blue-500/5 group-hover:border border-blue-300"
+          isSelected
+            ? "bg-blue-500/10 border-2 border-blue-500"
+            : "group-hover:bg-blue-500/5 group-hover:border border-blue-300",
         )}
       />
-      
+
       {/* Element label */}
       {(isSelected || isDragging) && (
         <div className="absolute -top-6 left-0 z-10 bg-blue-500 text-white px-2 py-1 text-xs rounded font-medium">
@@ -126,13 +129,10 @@ function SortableElement({
         </div>
       )}
 
-      <Template 
-        {...element.props} 
-        style={element.style}
-      >
+      <Template {...element.props} style={element.style}>
         {elementConfig.canHaveChildren && element.children && (
-          <Canvas 
-            elements={element.children} 
+          <Canvas
+            elements={element.children}
             onElementsChange={handleChildrenChange}
             className="min-h-[50px]"
           />
@@ -151,7 +151,7 @@ export function Canvas({ elements, onElementsChange, className }: CanvasProps) {
       activationConstraint: {
         distance: 8,
       },
-    })
+    }),
   );
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -160,16 +160,16 @@ export function Canvas({ elements, onElementsChange, className }: CanvasProps) {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    
+
     if (!over) {
       setActiveId(null);
       return;
     }
 
     if (active.id !== over.id) {
-      const oldIndex = elements.findIndex(el => el.id === active.id);
-      const newIndex = elements.findIndex(el => el.id === over.id);
-      
+      const oldIndex = elements.findIndex((el) => el.id === active.id);
+      const newIndex = elements.findIndex((el) => el.id === over.id);
+
       if (oldIndex !== -1 && newIndex !== -1) {
         const newElements = arrayMove(elements, oldIndex, newIndex);
         onElementsChange(newElements);
@@ -181,7 +181,7 @@ export function Canvas({ elements, onElementsChange, className }: CanvasProps) {
 
   const handleDragOver = (event: DragOverEvent) => {
     const { active, over } = event;
-    
+
     if (!over) return;
 
     // Handle dropping new elements from the sidebar
@@ -205,12 +205,12 @@ export function Canvas({ elements, onElementsChange, className }: CanvasProps) {
       onDragEnd={handleDragEnd}
       onDragOver={handleDragOver}
     >
-      <div 
+      <div
         className={cn(
           "min-h-full p-4 bg-white dark:bg-gray-800",
           "border-2 border-dashed border-gray-300 dark:border-gray-600",
           "rounded-lg transition-colors",
-          className
+          className,
         )}
         onClick={handleCanvasClick}
       >
@@ -218,12 +218,14 @@ export function Canvas({ elements, onElementsChange, className }: CanvasProps) {
           <div className="flex items-center justify-center h-64 text-gray-500 dark:text-gray-400">
             <div className="text-center">
               <p className="text-lg font-medium mb-2">Drop elements here</p>
-              <p className="text-sm">Drag components from the sidebar to start building</p>
+              <p className="text-sm">
+                Drag components from the sidebar to start building
+              </p>
             </div>
           </div>
         ) : (
-          <SortableContext 
-            items={elements.map(el => el.id)} 
+          <SortableContext
+            items={elements.map((el) => el.id)}
             strategy={verticalListSortingStrategy}
           >
             <div className="space-y-4">

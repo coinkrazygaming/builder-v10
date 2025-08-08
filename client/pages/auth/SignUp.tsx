@@ -1,5 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -84,7 +90,10 @@ export default function AuthSignUp() {
 
         <p className="text-center text-sm text-gray-600 dark:text-gray-300 mt-4">
           Already have an account?{" "}
-          <Link to="/auth/signin" className="text-purple-600 hover:text-purple-700 font-medium">
+          <Link
+            to="/auth/signin"
+            className="text-purple-600 hover:text-purple-700 font-medium"
+          >
             Sign in
           </Link>
         </p>

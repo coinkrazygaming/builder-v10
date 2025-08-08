@@ -4,11 +4,11 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { 
-  builderElements, 
-  getAllCategories, 
+import {
+  builderElements,
+  getAllCategories,
   getElementsByCategory,
-  type BuilderElement 
+  type BuilderElement,
 } from "./BuilderElements";
 import { cn } from "@/lib/utils";
 
@@ -17,24 +17,21 @@ interface DraggableElementProps {
 }
 
 function DraggableElement({ element }: DraggableElementProps) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    isDragging,
-  } = useDraggable({
-    id: `sidebar-${element.id}`,
-    data: {
-      type: "sidebar-element",
-      element,
-    },
-  });
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({
+      id: `sidebar-${element.id}`,
+      data: {
+        type: "sidebar-element",
+        element,
+      },
+    });
 
-  const style = transform ? {
-    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-    opacity: isDragging ? 0.5 : 1,
-  } : undefined;
+  const style = transform
+    ? {
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+        opacity: isDragging ? 0.5 : 1,
+      }
+    : undefined;
 
   return (
     <div
@@ -46,7 +43,7 @@ function DraggableElement({ element }: DraggableElementProps) {
         "flex items-center space-x-3 p-3 rounded-lg border-2 border-gray-200 dark:border-gray-700",
         "bg-white dark:bg-gray-800 cursor-grab active:cursor-grabbing",
         "hover:border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors",
-        isDragging && "opacity-50"
+        isDragging && "opacity-50",
       )}
     >
       <div className="flex-shrink-0 w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-md flex items-center justify-center">

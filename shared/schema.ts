@@ -1,104 +1,127 @@
-import { 
-  pgTable, 
-  serial, 
-  text, 
-  integer, 
-  timestamp, 
+import {
+  pgTable,
+  serial,
+  text,
+  integer,
+  timestamp,
   jsonb,
   pgEnum,
   boolean,
-  uuid
-} from 'drizzle-orm/pg-core';
+  uuid,
+} from "drizzle-orm/pg-core";
 
 // Enums
-export const projectStatusEnum = pgEnum('project_status', ['draft', 'published', 'archived']);
-export const pageStatusEnum = pgEnum('page_status', ['draft', 'published', 'archived']);
-export const memberRoleEnum = pgEnum('member_role', ['owner', 'admin', 'editor', 'viewer']);
+export const projectStatusEnum = pgEnum("project_status", [
+  "draft",
+  "published",
+  "archived",
+]);
+export const pageStatusEnum = pgEnum("page_status", [
+  "draft",
+  "published",
+  "archived",
+]);
+export const memberRoleEnum = pgEnum("member_role", [
+  "owner",
+  "admin",
+  "editor",
+  "viewer",
+]);
 
 // Projects table
-export const projects = pgTable('projects', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  name: text('name').notNull(),
-  description: text('description'),
-  domain: text('domain'),
-  customDomain: text('custom_domain'),
-  status: projectStatusEnum('status').default('draft'),
-  ownerId: text('owner_id').notNull(),
-  settings: jsonb('settings').default({}),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+export const projects = pgTable("projects", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  description: text("description"),
+  domain: text("domain"),
+  customDomain: text("custom_domain"),
+  status: projectStatusEnum("status").default("draft"),
+  ownerId: text("owner_id").notNull(),
+  settings: jsonb("settings").default({}),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
 });
 
 // Project members table
-export const projectMembers = pgTable('project_members', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  projectId: uuid('project_id').notNull().references(() => projects.id, { onDelete: 'cascade' }),
-  userId: text('user_id').notNull(),
-  role: memberRoleEnum('role').default('viewer'),
-  invitedAt: timestamp('invited_at', { withTimezone: true }).defaultNow(),
-  acceptedAt: timestamp('accepted_at', { withTimezone: true }),
+export const projectMembers = pgTable("project_members", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  projectId: uuid("project_id")
+    .notNull()
+    .references(() => projects.id, { onDelete: "cascade" }),
+  userId: text("user_id").notNull(),
+  role: memberRoleEnum("role").default("viewer"),
+  invitedAt: timestamp("invited_at", { withTimezone: true }).defaultNow(),
+  acceptedAt: timestamp("accepted_at", { withTimezone: true }),
 });
 
 // Pages table
-export const pages = pgTable('pages', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  projectId: uuid('project_id').notNull().references(() => projects.id, { onDelete: 'cascade' }),
-  name: text('name').notNull(),
-  slug: text('slug').notNull(),
-  title: text('title'),
-  description: text('description'),
-  content: jsonb('content').default({}),
-  status: pageStatusEnum('status').default('draft'),
-  isHomePage: boolean('is_home_page').default(false),
-  seoMetadata: jsonb('seo_metadata').default({}),
-  createdBy: text('created_by').notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
-  publishedAt: timestamp('published_at', { withTimezone: true }),
+export const pages = pgTable("pages", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  projectId: uuid("project_id")
+    .notNull()
+    .references(() => projects.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  slug: text("slug").notNull(),
+  title: text("title"),
+  description: text("description"),
+  content: jsonb("content").default({}),
+  status: pageStatusEnum("status").default("draft"),
+  isHomePage: boolean("is_home_page").default(false),
+  seoMetadata: jsonb("seo_metadata").default({}),
+  createdBy: text("created_by").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+  publishedAt: timestamp("published_at", { withTimezone: true }),
 });
 
 // Page versions for version history
-export const pageVersions = pgTable('page_versions', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  pageId: uuid('page_id').notNull().references(() => pages.id, { onDelete: 'cascade' }),
-  versionNumber: integer('version_number').notNull(),
-  content: jsonb('content').notNull(),
-  changesDescription: text('changes_description'),
-  createdBy: text('created_by').notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+export const pageVersions = pgTable("page_versions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  pageId: uuid("page_id")
+    .notNull()
+    .references(() => pages.id, { onDelete: "cascade" }),
+  versionNumber: integer("version_number").notNull(),
+  content: jsonb("content").notNull(),
+  changesDescription: text("changes_description"),
+  createdBy: text("created_by").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
 // Components library
-export const components = pgTable('components', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  projectId: uuid('project_id').references(() => projects.id, { onDelete: 'cascade' }),
-  name: text('name').notNull(),
-  description: text('description'),
-  category: text('category'),
-  props: jsonb('props').default({}),
-  template: jsonb('template').notNull(),
-  thumbnail: text('thumbnail'),
-  isPublic: boolean('is_public').default(false),
-  createdBy: text('created_by').notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+export const components = pgTable("components", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  projectId: uuid("project_id").references(() => projects.id, {
+    onDelete: "cascade",
+  }),
+  name: text("name").notNull(),
+  description: text("description"),
+  category: text("category"),
+  props: jsonb("props").default({}),
+  template: jsonb("template").notNull(),
+  thumbnail: text("thumbnail"),
+  isPublic: boolean("is_public").default(false),
+  createdBy: text("created_by").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
 });
 
 // Media assets
-export const assets = pgTable('assets', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  projectId: uuid('project_id').notNull().references(() => projects.id, { onDelete: 'cascade' }),
-  name: text('name').notNull(),
-  filename: text('filename').notNull(),
-  mimeType: text('mime_type').notNull(),
-  size: integer('size').notNull(),
-  url: text('url').notNull(),
-  width: integer('width'),
-  height: integer('height'),
-  alt: text('alt'),
-  folder: text('folder'),
-  uploadedBy: text('uploaded_by').notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+export const assets = pgTable("assets", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  projectId: uuid("project_id")
+    .notNull()
+    .references(() => projects.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  filename: text("filename").notNull(),
+  mimeType: text("mime_type").notNull(),
+  size: integer("size").notNull(),
+  url: text("url").notNull(),
+  width: integer("width"),
+  height: integer("height"),
+  alt: text("alt"),
+  folder: text("folder"),
+  uploadedBy: text("uploaded_by").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
 // Export types

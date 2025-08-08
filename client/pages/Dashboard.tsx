@@ -1,15 +1,21 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
-  Plus, 
-  Search, 
-  MoreHorizontal, 
-  Globe, 
+import {
+  Plus,
+  Search,
+  MoreHorizontal,
+  Globe,
   Edit,
   Trash2,
   ExternalLink,
@@ -20,9 +26,9 @@ import {
   Settings,
   LogOut,
   Moon,
-  Sun
+  Sun,
 } from "lucide-react";
-import { 
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -40,7 +46,7 @@ const mockUser = {
   primaryEmail: "john@example.com",
   signOut: () => {
     window.location.href = "/";
-  }
+  },
 };
 
 export default function Dashboard() {
@@ -48,40 +54,41 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const [searchQuery, setSearchQuery] = useState("");
-  
+
   const {
     projects,
     isLoadingProjects,
     setProjects,
     setIsLoadingProjects,
     addProject,
-    deleteProject
+    deleteProject,
   } = useAppStore();
 
   // Load projects from API
   useEffect(() => {
     setIsLoadingProjects(true);
-    
+
     // Use the API endpoint
-    fetch('/api/projects', {
+    fetch("/api/projects", {
       headers: {
-        'x-user-id': user.id,
+        "x-user-id": user.id,
       },
     })
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         setProjects(data);
         setIsLoadingProjects(false);
       })
-      .catch(error => {
-        console.error('Error loading projects:', error);
+      .catch((error) => {
+        console.error("Error loading projects:", error);
         setIsLoadingProjects(false);
       });
   }, [user, setProjects, setIsLoadingProjects]);
 
-  const filteredProjects = projects.filter(project =>
-    project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    project.description?.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredProjects = projects.filter(
+    (project) =>
+      project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      project.description?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const handleCreateProject = () => {
@@ -92,36 +99,36 @@ export default function Dashboard() {
       status: "draft" as const,
     };
 
-    fetch('/api/projects', {
-      method: 'POST',
+    fetch("/api/projects", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'x-user-id': user.id,
+        "Content-Type": "application/json",
+        "x-user-id": user.id,
       },
       body: JSON.stringify(newProject),
     })
-      .then(res => res.json())
-      .then(project => {
+      .then((res) => res.json())
+      .then((project) => {
         addProject(project);
         navigate(`/editor/${project.id}`);
       })
-      .catch(error => {
-        console.error('Error creating project:', error);
+      .catch((error) => {
+        console.error("Error creating project:", error);
       });
   };
 
   const handleDeleteProject = (projectId: string) => {
     fetch(`/api/projects/${projectId}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
-        'x-user-id': user.id,
+        "x-user-id": user.id,
       },
     })
       .then(() => {
         deleteProject(projectId);
       })
-      .catch(error => {
-        console.error('Error deleting project:', error);
+      .catch((error) => {
+        console.error("Error deleting project:", error);
       });
   };
 
@@ -139,7 +146,7 @@ export default function Dashboard() {
                 BuilderClone
               </span>
             </Link>
-            
+
             <Badge variant="secondary" className="ml-4">
               Dashboard
             </Badge>
@@ -166,7 +173,9 @@ export default function Dashboard() {
                       {user.displayName?.[0] || user.primaryEmail?.[0] || "U"}
                     </span>
                   </div>
-                  <span className="hidden md:block">{user.displayName || user.primaryEmail}</span>
+                  <span className="hidden md:block">
+                    {user.displayName || user.primaryEmail}
+                  </span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
@@ -198,7 +207,7 @@ export default function Dashboard() {
                 Manage your websites and applications
               </p>
             </div>
-            
+
             <Button onClick={handleCreateProject} className="mt-4 md:mt-0">
               <Plus className="w-4 h-4 mr-2" />
               Create Project
@@ -241,10 +250,9 @@ export default function Dashboard() {
                 {searchQuery ? "No projects found" : "No projects yet"}
               </h3>
               <p className="text-gray-600 dark:text-gray-300 mb-6">
-                {searchQuery 
+                {searchQuery
                   ? "Try adjusting your search terms"
-                  : "Create your first project to get started building"
-                }
+                  : "Create your first project to get started building"}
               </p>
               {!searchQuery && (
                 <Button onClick={handleCreateProject}>
@@ -256,18 +264,27 @@ export default function Dashboard() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredProjects.map((project) => (
-                <Card key={project.id} className="hover:shadow-lg transition-shadow group">
+                <Card
+                  key={project.id}
+                  className="hover:shadow-lg transition-shadow group"
+                >
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <CardTitle className="text-lg mb-1">{project.name}</CardTitle>
+                        <CardTitle className="text-lg mb-1">
+                          {project.name}
+                        </CardTitle>
                         <CardDescription className="line-clamp-2">
                           {project.description || "No description"}
                         </CardDescription>
                       </div>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
                             <MoreHorizontal className="w-4 h-4" />
                           </Button>
                         </DropdownMenuTrigger>
@@ -283,7 +300,7 @@ export default function Dashboard() {
                             View Live
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem 
+                          <DropdownMenuItem
                             className="text-red-600"
                             onClick={() => handleDeleteProject(project.id)}
                           >
@@ -297,8 +314,12 @@ export default function Dashboard() {
                   <CardContent className="pt-0">
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <Badge 
-                          variant={project.status === "published" ? "default" : "secondary"}
+                        <Badge
+                          variant={
+                            project.status === "published"
+                              ? "default"
+                              : "secondary"
+                          }
                           className="capitalize"
                         >
                           {project.status}
@@ -309,28 +330,27 @@ export default function Dashboard() {
                           </Badge>
                         )}
                       </div>
-                      
+
                       <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
                         <Globe className="w-4 h-4 mr-2" />
                         <span className="truncate">
                           {project.customDomain || project.domain}
                         </span>
                       </div>
-                      
+
                       <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
                         <div className="flex items-center">
                           <Calendar className="w-3 h-3 mr-1" />
-                          Updated {formatDistanceToNow(new Date(project.updatedAt), { addSuffix: true })}
+                          Updated{" "}
+                          {formatDistanceToNow(new Date(project.updatedAt), {
+                            addSuffix: true,
+                          })}
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="mt-4 pt-4 border-t">
-                      <Button 
-                        variant="outline" 
-                        className="w-full"
-                        asChild
-                      >
+                      <Button variant="outline" className="w-full" asChild>
                         <Link to={`/editor/${project.id}`}>
                           <Edit className="w-4 h-4 mr-2" />
                           Open Editor

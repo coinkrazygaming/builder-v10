@@ -18,22 +18,54 @@ function App() {
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<Index />} />
-          
+
           {/* Auth routes */}
           <Route path="/auth/signin" element={<AuthSignIn />} />
           <Route path="/auth/signup" element={<AuthSignUp />} />
-          
+
           {/* Protected routes */}
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/editor/:projectId" element={<Editor />} />
           <Route path="/editor/:projectId/:pageId" element={<Editor />} />
-          
+
           {/* Placeholder routes for future features */}
-          <Route path="/templates" element={<PlaceholderPage title="Templates" description="Browse and use pre-built templates" />} />
-          <Route path="/components" element={<PlaceholderPage title="Components" description="Manage your component library" />} />
-          <Route path="/assets" element={<PlaceholderPage title="Assets" description="Upload and manage media assets" />} />
-          <Route path="/settings" element={<PlaceholderPage title="Settings" description="Manage your account and billing" />} />
-          
+          <Route
+            path="/templates"
+            element={
+              <PlaceholderPage
+                title="Templates"
+                description="Browse and use pre-built templates"
+              />
+            }
+          />
+          <Route
+            path="/components"
+            element={
+              <PlaceholderPage
+                title="Components"
+                description="Manage your component library"
+              />
+            }
+          />
+          <Route
+            path="/assets"
+            element={
+              <PlaceholderPage
+                title="Assets"
+                description="Upload and manage media assets"
+              />
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <PlaceholderPage
+                title="Settings"
+                description="Manage your account and billing"
+              />
+            }
+          />
+
           {/* Catch all */}
           <Route path="*" element={<NotFound />} />
         </Routes>

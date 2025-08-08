@@ -4,12 +4,12 @@ import { DndContext, DragEndEvent, DragOverEvent } from "@dnd-kit/core";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { 
-  Save, 
-  Eye, 
-  EyeOff, 
-  Layers, 
-  ArrowLeft, 
+import {
+  Save,
+  Eye,
+  EyeOff,
+  Layers,
+  ArrowLeft,
   Settings,
   Download,
   Share,
@@ -19,7 +19,7 @@ import {
   ZoomOut,
   Monitor,
   Tablet,
-  Smartphone
+  Smartphone,
 } from "lucide-react";
 import { Canvas, type CanvasElement } from "@/components/editor/Canvas";
 import { ElementsSidebar } from "@/components/editor/ElementsSidebar";
@@ -41,7 +41,7 @@ export default function Editor() {
   const user = mockUser;
   const navigate = useNavigate();
   const { theme } = useTheme();
-  
+
   const {
     currentProject,
     currentPage,
@@ -54,11 +54,13 @@ export default function Editor() {
     setSelectedElement,
     setIsPreviewMode,
     setEditorScale,
-    setSidebarCollapsed
+    setSidebarCollapsed,
   } = useAppStore();
 
   const [elements, setElements] = useState<CanvasElement[]>([]);
-  const [activeDevice, setActiveDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
+  const [activeDevice, setActiveDevice] = useState<
+    "desktop" | "tablet" | "mobile"
+  >("desktop");
   const [isLoading, setIsLoading] = useState(true);
 
   // Load project and page data
@@ -68,23 +70,23 @@ export default function Editor() {
     // Load project data
     fetch(`/api/projects/${projectId}`, {
       headers: {
-        'x-user-id': user.id,
+        "x-user-id": user.id,
       },
     })
-      .then(res => res.json())
-      .then(project => {
+      .then((res) => res.json())
+      .then((project) => {
         setCurrentProject(project);
 
         // Load page data
-        return fetch(`/api/projects/${projectId}/pages/${pageId || 'home'}`, {
+        return fetch(`/api/projects/${projectId}/pages/${pageId || "home"}`, {
           headers: {
-            'x-user-id': user.id,
+            "x-user-id": user.id,
           },
-        }).then(res => res.json());
+        }).then((res) => res.json());
       })
-      .then(page => {
+      .then((page) => {
         setCurrentPage(page);
-        
+
         // Initialize with some sample elements
         setElements([
           {
@@ -106,7 +108,8 @@ export default function Editor() {
             id: "text-1",
             type: "text",
             props: {
-              children: "This is a beautiful website built with our visual editor. You can drag and drop elements to create amazing layouts.",
+              children:
+                "This is a beautiful website built with our visual editor. You can drag and drop elements to create amazing layouts.",
             },
             style: {
               fontSize: "18px",
@@ -139,11 +142,11 @@ export default function Editor() {
             },
           },
         ]);
-        
+
         setIsLoading(false);
       })
-      .catch(error => {
-        console.error('Error loading editor data:', error);
+      .catch((error) => {
+        console.error("Error loading editor data:", error);
         // Fallback to mock data
         setCurrentProject({
           id: projectId || "1",
@@ -174,7 +177,7 @@ export default function Editor() {
           updatedAt: new Date(),
           publishedAt: null,
         });
-        
+
         setElements([
           {
             id: "header-1",
@@ -195,7 +198,8 @@ export default function Editor() {
             id: "text-1",
             type: "text",
             props: {
-              children: "This is a beautiful website built with our visual editor. You can drag and drop elements to create amazing layouts.",
+              children:
+                "This is a beautiful website built with our visual editor. You can drag and drop elements to create amazing layouts.",
             },
             style: {
               fontSize: "18px",
@@ -228,14 +232,14 @@ export default function Editor() {
             },
           },
         ]);
-        
+
         setIsLoading(false);
       });
   }, [projectId, pageId, user, setCurrentProject, setCurrentPage]);
 
   const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
-    
+
     if (!over) return;
 
     // Handle dropping new elements from sidebar
@@ -248,8 +252,8 @@ export default function Editor() {
         style: { ...element.defaultStyle },
         children: element.canHaveChildren ? [] : undefined,
       };
-      
-      setElements(prev => [...prev, newElement]);
+
+      setElements((prev) => [...prev, newElement]);
     }
   }, []);
 
@@ -257,33 +261,43 @@ export default function Editor() {
     setElements(newElements);
   }, []);
 
-  const updateElement = useCallback((elementId: string, updates: Partial<CanvasElement>) => {
-    const updateInElements = (elements: CanvasElement[]): CanvasElement[] => {
-      return elements.map(el => {
-        if (el.id === elementId) {
-          return { ...el, ...updates };
-        }
-        if (el.children) {
-          return { ...el, children: updateInElements(el.children) };
-        }
-        return el;
-      });
-    };
-    setElements(updateInElements);
-  }, []);
+  const updateElement = useCallback(
+    (elementId: string, updates: Partial<CanvasElement>) => {
+      const updateInElements = (elements: CanvasElement[]): CanvasElement[] => {
+        return elements.map((el) => {
+          if (el.id === elementId) {
+            return { ...el, ...updates };
+          }
+          if (el.children) {
+            return { ...el, children: updateInElements(el.children) };
+          }
+          return el;
+        });
+      };
+      setElements(updateInElements);
+    },
+    [],
+  );
 
-  const deleteElement = useCallback((elementId: string) => {
-    const removeFromElements = (elements: CanvasElement[]): CanvasElement[] => {
-      return elements.filter(el => el.id !== elementId).map(el => {
-        if (el.children) {
-          return { ...el, children: removeFromElements(el.children) };
-        }
-        return el;
-      });
-    };
-    setElements(removeFromElements);
-    setSelectedElement(null);
-  }, [setSelectedElement]);
+  const deleteElement = useCallback(
+    (elementId: string) => {
+      const removeFromElements = (
+        elements: CanvasElement[],
+      ): CanvasElement[] => {
+        return elements
+          .filter((el) => el.id !== elementId)
+          .map((el) => {
+            if (el.children) {
+              return { ...el, children: removeFromElements(el.children) };
+            }
+            return el;
+          });
+      };
+      setElements(removeFromElements);
+      setSelectedElement(null);
+    },
+    [setSelectedElement],
+  );
 
   const duplicateElement = useCallback((elementId: string) => {
     const findAndDuplicate = (elements: CanvasElement[]): CanvasElement[] => {
@@ -320,9 +334,12 @@ export default function Editor() {
 
   const getDeviceWidth = () => {
     switch (activeDevice) {
-      case "mobile": return "375px";
-      case "tablet": return "768px";
-      default: return "100%";
+      case "mobile":
+        return "375px";
+      case "tablet":
+        return "768px";
+      default:
+        return "100%";
     }
   };
 
@@ -351,17 +368,21 @@ export default function Editor() {
                 Back
               </Link>
             </Button>
-            
+
             <Separator orientation="vertical" className="h-6" />
-            
+
             <div>
               <h1 className="font-semibold">{currentProject?.name}</h1>
               <p className="text-sm text-gray-600 dark:text-gray-300">
                 {currentPage?.name}
               </p>
             </div>
-            
-            <Badge variant={currentPage?.status === "published" ? "default" : "secondary"}>
+
+            <Badge
+              variant={
+                currentPage?.status === "published" ? "default" : "secondary"
+              }
+            >
               {currentPage?.status}
             </Badge>
           </div>
@@ -374,7 +395,7 @@ export default function Editor() {
             <Button variant="ghost" size="sm" disabled>
               <Redo className="w-4 h-4" />
             </Button>
-            
+
             <Separator orientation="vertical" className="h-6" />
 
             {/* Device Selection */}
@@ -398,18 +419,20 @@ export default function Editor() {
 
             {/* Zoom Controls */}
             <div className="flex items-center space-x-1">
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 size="sm"
-                onClick={() => setEditorScale(Math.max(0.25, editorScale - 0.25))}
+                onClick={() =>
+                  setEditorScale(Math.max(0.25, editorScale - 0.25))
+                }
               >
                 <ZoomOut className="w-4 h-4" />
               </Button>
               <span className="text-sm font-medium px-2">
                 {Math.round(editorScale * 100)}%
               </span>
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 size="sm"
                 onClick={() => setEditorScale(Math.min(2, editorScale + 0.25))}
               >
@@ -443,7 +466,7 @@ export default function Editor() {
               <Share className="w-4 h-4 mr-2" />
               Share
             </Button>
-            
+
             <Button size="sm">
               <Save className="w-4 h-4 mr-2" />
               Save
@@ -455,10 +478,12 @@ export default function Editor() {
         <div className="flex-1 flex overflow-hidden">
           {/* Left Sidebar - Elements */}
           {!isPreviewMode && (
-            <div className={cn(
-              "transition-all duration-300",
-              sidebarCollapsed ? "w-0" : "w-64"
-            )}>
+            <div
+              className={cn(
+                "transition-all duration-300",
+                sidebarCollapsed ? "w-0" : "w-64",
+              )}
+            >
               <div className="w-64 h-full border-r bg-white dark:bg-gray-800">
                 <ElementsSidebar />
               </div>
@@ -468,15 +493,15 @@ export default function Editor() {
           {/* Canvas Area */}
           <div className="flex-1 flex flex-col">
             <div className="flex-1 overflow-auto bg-canvas-background p-8">
-              <div 
+              <div
                 className="mx-auto transition-all duration-300 bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden"
-                style={{ 
+                style={{
                   width: getDeviceWidth(),
                   transform: `scale(${editorScale})`,
                   transformOrigin: "top center",
                 }}
               >
-                <Canvas 
+                <Canvas
                   elements={elements}
                   onElementsChange={handleElementsChange}
                   className="min-h-[600px]"

@@ -4,7 +4,13 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -28,7 +34,14 @@ interface PropertyFieldProps {
   placeholder?: string;
 }
 
-function PropertyField({ label, value, onChange, type, options, placeholder }: PropertyFieldProps) {
+function PropertyField({
+  label,
+  value,
+  onChange,
+  type,
+  options,
+  placeholder,
+}: PropertyFieldProps) {
   const renderField = () => {
     switch (type) {
       case "text":
@@ -111,11 +124,11 @@ function PropertyField({ label, value, onChange, type, options, placeholder }: P
   );
 }
 
-export function PropertiesPanel({ 
-  selectedElement, 
-  onUpdateElement, 
-  onDeleteElement, 
-  onDuplicateElement 
+export function PropertiesPanel({
+  selectedElement,
+  onUpdateElement,
+  onDeleteElement,
+  onDuplicateElement,
 }: PropertiesPanelProps) {
   if (!selectedElement) {
     return (
@@ -123,7 +136,9 @@ export function PropertiesPanel({
         <div className="text-center text-gray-500 dark:text-gray-400">
           <Settings className="w-12 h-12 mx-auto mb-3 opacity-50" />
           <p className="font-medium">No element selected</p>
-          <p className="text-sm mt-1">Click on an element to edit its properties</p>
+          <p className="text-sm mt-1">
+            Click on an element to edit its properties
+          </p>
         </div>
       </Card>
     );
@@ -143,13 +158,13 @@ export function PropertiesPanel({
 
   const updateProperty = (key: string, value: any) => {
     onUpdateElement(selectedElement.id, {
-      props: { ...selectedElement.props, [key]: value }
+      props: { ...selectedElement.props, [key]: value },
     });
   };
 
   const updateStyle = (key: string, value: any) => {
     onUpdateElement(selectedElement.id, {
-      style: { ...selectedElement.style, [key]: value }
+      style: { ...selectedElement.style, [key]: value },
     });
   };
 
@@ -157,10 +172,10 @@ export function PropertiesPanel({
     const fields: Array<{
       key: string;
       label: string;
-      type: PropertyFieldProps['type'];
-      options?: PropertyFieldProps['options'];
+      type: PropertyFieldProps["type"];
+      options?: PropertyFieldProps["options"];
       placeholder?: string;
-      section: 'content' | 'style';
+      section: "content" | "style";
     }> = [];
 
     // Content properties based on element type
@@ -172,7 +187,7 @@ export function PropertiesPanel({
           label: "Text Content",
           type: "textarea",
           placeholder: "Enter text...",
-          section: "content"
+          section: "content",
         });
         break;
       case "image":
@@ -182,15 +197,15 @@ export function PropertiesPanel({
             label: "Image URL",
             type: "text",
             placeholder: "https://example.com/image.jpg",
-            section: "content"
+            section: "content",
           },
           {
             key: "alt",
             label: "Alt Text",
             type: "text",
             placeholder: "Image description",
-            section: "content"
-          }
+            section: "content",
+          },
         );
         break;
       case "button":
@@ -200,7 +215,7 @@ export function PropertiesPanel({
             label: "Button Text",
             type: "text",
             placeholder: "Click me",
-            section: "content"
+            section: "content",
           },
           {
             key: "variant",
@@ -209,10 +224,10 @@ export function PropertiesPanel({
             options: [
               { label: "Primary", value: "primary" },
               { label: "Secondary", value: "secondary" },
-              { label: "Outline", value: "outline" }
+              { label: "Outline", value: "outline" },
             ],
-            section: "content"
-          }
+            section: "content",
+          },
         );
         break;
       case "link":
@@ -222,15 +237,15 @@ export function PropertiesPanel({
             label: "Link Text",
             type: "text",
             placeholder: "Link text",
-            section: "content"
+            section: "content",
           },
           {
             key: "href",
             label: "URL",
             type: "text",
             placeholder: "https://example.com",
-            section: "content"
-          }
+            section: "content",
+          },
         );
         break;
     }
@@ -242,56 +257,56 @@ export function PropertiesPanel({
         label: "Font Size",
         type: "text",
         placeholder: "16px",
-        section: "style"
+        section: "style",
       },
       {
         key: "color",
         label: "Text Color",
         type: "color",
-        section: "style"
+        section: "style",
       },
       {
         key: "backgroundColor",
         label: "Background Color",
         type: "color",
-        section: "style"
+        section: "style",
       },
       {
         key: "padding",
         label: "Padding",
         type: "text",
         placeholder: "16px",
-        section: "style"
+        section: "style",
       },
       {
         key: "margin",
         label: "Margin",
         type: "text",
         placeholder: "16px",
-        section: "style"
+        section: "style",
       },
       {
         key: "borderRadius",
         label: "Border Radius",
         type: "text",
         placeholder: "8px",
-        section: "style"
+        section: "style",
       },
       {
         key: "border",
         label: "Border",
         type: "text",
         placeholder: "1px solid #ccc",
-        section: "style"
-      }
+        section: "style",
+      },
     );
 
     return fields;
   };
 
   const propertyFields = getPropertyFields();
-  const contentFields = propertyFields.filter(f => f.section === "content");
-  const styleFields = propertyFields.filter(f => f.section === "style");
+  const contentFields = propertyFields.filter((f) => f.section === "content");
+  const styleFields = propertyFields.filter((f) => f.section === "style");
 
   return (
     <Card className="h-full flex flex-col">
@@ -300,7 +315,7 @@ export function PropertiesPanel({
           <h3 className="font-semibold text-lg">Properties</h3>
           <Badge variant="outline">{elementConfig.name}</Badge>
         </div>
-        
+
         <div className="flex space-x-2">
           <Button
             variant="outline"
