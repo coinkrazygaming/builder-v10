@@ -64,7 +64,7 @@ export default function Editor() {
   // Load project and page data
   useEffect(() => {
     setIsLoading(true);
-    
+
     // Load project data
     fetch(`/api/projects/${projectId}`, {
       headers: {
@@ -74,15 +74,14 @@ export default function Editor() {
       .then(res => res.json())
       .then(project => {
         setCurrentProject(project);
-        
+
         // Load page data
         return fetch(`/api/projects/${projectId}/pages/${pageId || 'home'}`, {
           headers: {
             'x-user-id': user.id,
           },
-        });
+        }).then(res => res.json());
       })
-      .then(res => res.json())
       .then(page => {
         setCurrentPage(page);
         
