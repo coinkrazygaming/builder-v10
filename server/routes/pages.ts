@@ -1,7 +1,24 @@
 import { RequestHandler } from "express";
-import { eq, and } from "drizzle-orm";
-import { db } from "@shared/db";
-import { pages, projects, pageVersions, NewPage, NewPageVersion } from "@shared/schema";
+
+// Mock pages data
+const mockPages = [
+  {
+    id: "home",
+    projectId: "1",
+    name: "Home Page",
+    slug: "/",
+    title: "Welcome to My Website",
+    description: "The homepage of my awesome website",
+    content: {},
+    status: "draft",
+    isHomePage: true,
+    seoMetadata: {},
+    createdBy: "mock-user-id",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    publishedAt: null,
+  }
+];
 
 // GET /api/projects/:projectId/pages - Get all pages for a project
 export const getPages: RequestHandler = async (req, res) => {
@@ -13,26 +30,7 @@ export const getPages: RequestHandler = async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    // Verify project ownership
-    const project = await db
-      .select()
-      .from(projects)
-      .where(and(
-        eq(projects.id, projectId),
-        eq(projects.ownerId, userId)
-      ))
-      .limit(1);
-
-    if (project.length === 0) {
-      return res.status(404).json({ error: 'Project not found' });
-    }
-
-    const projectPages = await db
-      .select()
-      .from(pages)
-      .where(eq(pages.projectId, projectId))
-      .orderBy(pages.updatedAt);
-
+    const projectPages = mockPages.filter(page => page.projectId === projectId);
     res.json(projectPages);
   } catch (error) {
     console.error('Error fetching pages:', error);
@@ -50,34 +48,13 @@ export const getPage: RequestHandler = async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    // Verify project ownership
-    const project = await db
-      .select()
-      .from(projects)
-      .where(and(
-        eq(projects.id, projectId),
-        eq(projects.ownerId, userId)
-      ))
-      .limit(1);
-
-    if (project.length === 0) {
-      return res.status(404).json({ error: 'Project not found' });
-    }
-
-    const page = await db
-      .select()
-      .from(pages)
-      .where(and(
-        eq(pages.id, pageId),
-        eq(pages.projectId, projectId)
-      ))
-      .limit(1);
-
-    if (page.length === 0) {
+    const page = mockPages.find(p => p.id === pageId && p.projectId === projectId);
+    
+    if (!page) {
       return res.status(404).json({ error: 'Page not found' });
     }
 
-    res.json(page[0]);
+    res.json(page);
   } catch (error) {
     console.error('Error fetching page:', error);
     res.status(500).json({ error: 'Failed to fetch page' });
@@ -94,42 +71,16 @@ export const createPage: RequestHandler = async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    // Verify project ownership
-    const project = await db
-      .select()
-      .from(projects)
-      .where(and(
-        eq(projects.id, projectId),
-        eq(projects.ownerId, userId)
-      ))
-      .limit(1);
-
-    if (project.length === 0) {
-      return res.status(404).json({ error: 'Project not found' });
-    }
-
-    const pageData: NewPage = {
-      ...req.body,
+    const newPage = {
+      id: Date.now().toString(),
       projectId,
+      ...req.body,
       createdBy: userId,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
 
-    const [newPage] = await db
-      .insert(pages)
-      .values(pageData)
-      .returning();
-
-    // Create initial version
-    const versionData: NewPageVersion = {
-      pageId: newPage.id,
-      versionNumber: 1,
-      content: newPage.content,
-      changesDescription: "Initial version",
-      createdBy: userId,
-    };
-
-    await db.insert(pageVersions).values(versionData);
-
+    mockPages.push(newPage);
     res.status(201).json(newPage);
   } catch (error) {
     console.error('Error creating page:', error);
@@ -147,69 +98,19 @@ export const updatePage: RequestHandler = async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    // Verify project ownership
-    const project = await db
-      .select()
-      .from(projects)
-      .where(and(
-        eq(projects.id, projectId),
-        eq(projects.ownerId, userId)
-      ))
-      .limit(1);
-
-    if (project.length === 0) {
-      return res.status(404).json({ error: 'Project not found' });
-    }
-
-    // Get current page for version tracking
-    const currentPage = await db
-      .select()
-      .from(pages)
-      .where(and(
-        eq(pages.id, pageId),
-        eq(pages.projectId, projectId)
-      ))
-      .limit(1);
-
-    if (currentPage.length === 0) {
+    const pageIndex = mockPages.findIndex(p => p.id === pageId && p.projectId === projectId);
+    
+    if (pageIndex === -1) {
       return res.status(404).json({ error: 'Page not found' });
     }
 
-    const [updatedPage] = await db
-      .update(pages)
-      .set({
-        ...req.body,
-        updatedAt: new Date(),
-      })
-      .where(and(
-        eq(pages.id, pageId),
-        eq(pages.projectId, projectId)
-      ))
-      .returning();
+    mockPages[pageIndex] = {
+      ...mockPages[pageIndex],
+      ...req.body,
+      updatedAt: new Date(),
+    };
 
-    // Create new version if content changed
-    if (req.body.content && JSON.stringify(req.body.content) !== JSON.stringify(currentPage[0].content)) {
-      const latestVersion = await db
-        .select()
-        .from(pageVersions)
-        .where(eq(pageVersions.pageId, pageId))
-        .orderBy(pageVersions.versionNumber)
-        .limit(1);
-
-      const nextVersionNumber = latestVersion.length > 0 ? latestVersion[0].versionNumber + 1 : 1;
-
-      const versionData: NewPageVersion = {
-        pageId,
-        versionNumber: nextVersionNumber,
-        content: req.body.content,
-        changesDescription: req.body.changesDescription || "Updated content",
-        createdBy: userId,
-      };
-
-      await db.insert(pageVersions).values(versionData);
-    }
-
-    res.json(updatedPage);
+    res.json(mockPages[pageIndex]);
   } catch (error) {
     console.error('Error updating page:', error);
     res.status(500).json({ error: 'Failed to update page' });
@@ -226,50 +127,19 @@ export const deletePage: RequestHandler = async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    // Verify project ownership
-    const project = await db
-      .select()
-      .from(projects)
-      .where(and(
-        eq(projects.id, projectId),
-        eq(projects.ownerId, userId)
-      ))
-      .limit(1);
-
-    if (project.length === 0) {
-      return res.status(404).json({ error: 'Project not found' });
-    }
-
-    // Check if this is the home page
-    const page = await db
-      .select()
-      .from(pages)
-      .where(and(
-        eq(pages.id, pageId),
-        eq(pages.projectId, projectId)
-      ))
-      .limit(1);
-
-    if (page.length === 0) {
+    const page = mockPages.find(p => p.id === pageId && p.projectId === projectId);
+    
+    if (!page) {
       return res.status(404).json({ error: 'Page not found' });
     }
 
-    if (page[0].isHomePage) {
+    if (page.isHomePage) {
       return res.status(400).json({ error: 'Cannot delete the home page' });
     }
 
-    const result = await db
-      .delete(pages)
-      .where(and(
-        eq(pages.id, pageId),
-        eq(pages.projectId, projectId)
-      ))
-      .returning();
-
-    if (result.length === 0) {
-      return res.status(404).json({ error: 'Page not found' });
-    }
-
+    const pageIndex = mockPages.findIndex(p => p.id === pageId && p.projectId === projectId);
+    mockPages.splice(pageIndex, 1);
+    
     res.status(204).send();
   } catch (error) {
     console.error('Error deleting page:', error);
@@ -287,25 +157,18 @@ export const getPageVersions: RequestHandler = async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    // Verify project ownership
-    const project = await db
-      .select()
-      .from(projects)
-      .where(and(
-        eq(projects.id, projectId),
-        eq(projects.ownerId, userId)
-      ))
-      .limit(1);
-
-    if (project.length === 0) {
-      return res.status(404).json({ error: 'Project not found' });
-    }
-
-    const versions = await db
-      .select()
-      .from(pageVersions)
-      .where(eq(pageVersions.pageId, pageId))
-      .orderBy(pageVersions.versionNumber);
+    // Mock version history
+    const versions = [
+      {
+        id: "v1",
+        pageId,
+        versionNumber: 1,
+        content: {},
+        changesDescription: "Initial version",
+        createdBy: userId,
+        createdAt: new Date(),
+      }
+    ];
 
     res.json(versions);
   } catch (error) {
