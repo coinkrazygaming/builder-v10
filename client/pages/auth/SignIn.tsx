@@ -1,9 +1,22 @@
-import { Link } from "react-router-dom";
-import { SignIn } from "@stackframe/stack";
+import { Link, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Layers } from "lucide-react";
+import { useState } from "react";
 
 export default function AuthSignIn() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSignIn = (e: React.FormEvent) => {
+    e.preventDefault();
+    // For demo purposes, just redirect to dashboard
+    navigate("/dashboard");
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -27,7 +40,33 @@ export default function AuthSignIn() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <SignIn />
+            <form onSubmit={handleSignIn} className="space-y-4">
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  required
+                />
+              </div>
+              <Button type="submit" className="w-full">
+                Sign In
+              </Button>
+            </form>
           </CardContent>
         </Card>
 
