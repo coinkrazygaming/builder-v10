@@ -14,11 +14,9 @@ import {
   SortableContext,
   verticalListSortingStrategy,
   arrayMove,
-} from "@dnd-kit/sortable";
-import { 
   useSortable,
-  CSS,
 } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { getElementByType } from "./BuilderElements";
 import { useAppStore } from "@shared/store";
 import { cn } from "@/lib/utils";
