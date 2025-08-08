@@ -235,7 +235,7 @@ export default function Editor() {
 
         setIsLoading(false);
       });
-  }, [projectId, pageId, user, setCurrentProject, setCurrentPage]);
+  }, [projectId, pageId, user?.id]);
 
   const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
