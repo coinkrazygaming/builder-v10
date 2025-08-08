@@ -17,11 +17,8 @@ import {
   Star,
   Check
 } from "lucide-react";
-import { useUser } from "@stackframe/stack";
 
 export default function Index() {
-  const user = useUser();
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Header */}
@@ -52,20 +49,12 @@ export default function Index() {
           </nav>
           
           <div className="flex items-center space-x-4">
-            {user ? (
-              <Button asChild>
-                <Link to="/dashboard">Go to Dashboard</Link>
-              </Button>
-            ) : (
-              <>
-                <Button variant="ghost" asChild>
-                  <Link to="/auth/signin">Sign In</Link>
-                </Button>
-                <Button asChild>
-                  <Link to="/auth/signup">Get Started</Link>
-                </Button>
-              </>
-            )}
+            <Button variant="ghost" asChild>
+              <Link to="/auth/signin">Sign In</Link>
+            </Button>
+            <Button asChild>
+              <Link to="/dashboard">Get Started</Link>
+            </Button>
           </div>
         </div>
       </header>
@@ -92,7 +81,7 @@ export default function Index() {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
             <Button size="lg" asChild className="text-lg px-8 py-6">
-              <Link to="/auth/signup">
+              <Link to="/dashboard">
                 Start Building Free
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Link>
@@ -109,6 +98,9 @@ export default function Index() {
                   <div className="text-center">
                     <MousePointer className="w-16 h-16 text-purple-600 mx-auto mb-4" />
                     <p className="text-gray-600 dark:text-gray-300">Visual Editor Preview</p>
+                    <Button asChild className="mt-4">
+                      <Link to="/editor/1">Try the Editor</Link>
+                    </Button>
                   </div>
                 </div>
               </CardContent>
@@ -278,7 +270,7 @@ export default function Index() {
                     variant={plan.popular ? "default" : "outline"}
                     asChild
                   >
-                    <Link to="/auth/signup">Get Started</Link>
+                    <Link to="/dashboard">Get Started</Link>
                   </Button>
                 </CardContent>
               </Card>
