@@ -25,7 +25,6 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@neondatabase/serverless": "^1.0.1",
-    "@stackframe/stack": "^2.8.28",
     "dotenv": "^17.2.0",
     "drizzle-orm": "^0.44.4",
     "express": "^4.18.2",
