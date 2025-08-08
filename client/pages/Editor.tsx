@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { useUser } from "@stackframe/stack";
 import { DndContext, DragEndEvent, DragOverEvent } from "@dnd-kit/core";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,9 +29,16 @@ import { useAppStore } from "@shared/store";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 
+// Mock user for demo
+const mockUser = {
+  id: "mock-user-id",
+  displayName: "John Doe",
+  primaryEmail: "john@example.com",
+};
+
 export default function Editor() {
   const { projectId, pageId } = useParams();
-  const user = useUser({ or: "redirect" });
+  const user = mockUser;
   const navigate = useNavigate();
   const { theme } = useTheme();
   
@@ -55,98 +61,177 @@ export default function Editor() {
   const [activeDevice, setActiveDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const [isLoading, setIsLoading] = useState(true);
 
-  // Mock data for now
+  // Load project and page data
   useEffect(() => {
     setIsLoading(true);
-    // Simulate loading project data
-    setTimeout(() => {
-      setCurrentProject({
-        id: projectId || "1",
-        name: "My Awesome Website",
-        description: "A modern website built with the visual editor",
-        domain: "awesome.builder.app",
-        customDomain: null,
-        status: "draft",
-        ownerId: user?.id || "",
-        settings: {},
-        createdAt: new Date(),
-        updatedAt: new Date(),
+    
+    // Load project data
+    fetch(`/api/projects/${projectId}`, {
+      headers: {
+        'x-user-id': user.id,
+      },
+    })
+      .then(res => res.json())
+      .then(project => {
+        setCurrentProject(project);
+        
+        // Load page data
+        return fetch(`/api/projects/${projectId}/pages/${pageId || 'home'}`, {
+          headers: {
+            'x-user-id': user.id,
+          },
+        });
+      })
+      .then(res => res.json())
+      .then(page => {
+        setCurrentPage(page);
+        
+        // Initialize with some sample elements
+        setElements([
+          {
+            id: "header-1",
+            type: "heading",
+            props: {
+              children: "Welcome to My Website",
+              level: 1,
+            },
+            style: {
+              fontSize: "48px",
+              fontWeight: "bold",
+              color: "#1f2937",
+              textAlign: "center",
+              marginBottom: "24px",
+            },
+          },
+          {
+            id: "text-1",
+            type: "text",
+            props: {
+              children: "This is a beautiful website built with our visual editor. You can drag and drop elements to create amazing layouts.",
+            },
+            style: {
+              fontSize: "18px",
+              color: "#6b7280",
+              textAlign: "center",
+              lineHeight: "1.6",
+              marginBottom: "32px",
+              maxWidth: "600px",
+              margin: "0 auto 32px auto",
+            },
+          },
+          {
+            id: "button-1",
+            type: "button",
+            props: {
+              children: "Get Started",
+              variant: "primary",
+            },
+            style: {
+              fontSize: "16px",
+              padding: "16px 32px",
+              backgroundColor: "#8b5cf6",
+              color: "white",
+              border: "none",
+              borderRadius: "8px",
+              cursor: "pointer",
+              fontWeight: "600",
+              display: "block",
+              margin: "0 auto",
+            },
+          },
+        ]);
+        
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error('Error loading editor data:', error);
+        // Fallback to mock data
+        setCurrentProject({
+          id: projectId || "1",
+          name: "My Awesome Website",
+          description: "A modern website built with the visual editor",
+          domain: "awesome.builder.app",
+          customDomain: null,
+          status: "draft",
+          ownerId: user?.id || "",
+          settings: {},
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+
+        setCurrentPage({
+          id: pageId || "home",
+          projectId: projectId || "1",
+          name: "Home Page",
+          slug: "/",
+          title: "Welcome to My Website",
+          description: "The homepage of my awesome website",
+          content: {},
+          status: "draft",
+          isHomePage: true,
+          seoMetadata: {},
+          createdBy: user?.id || "",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          publishedAt: null,
+        });
+        
+        setElements([
+          {
+            id: "header-1",
+            type: "heading",
+            props: {
+              children: "Welcome to My Website",
+              level: 1,
+            },
+            style: {
+              fontSize: "48px",
+              fontWeight: "bold",
+              color: "#1f2937",
+              textAlign: "center",
+              marginBottom: "24px",
+            },
+          },
+          {
+            id: "text-1",
+            type: "text",
+            props: {
+              children: "This is a beautiful website built with our visual editor. You can drag and drop elements to create amazing layouts.",
+            },
+            style: {
+              fontSize: "18px",
+              color: "#6b7280",
+              textAlign: "center",
+              lineHeight: "1.6",
+              marginBottom: "32px",
+              maxWidth: "600px",
+              margin: "0 auto 32px auto",
+            },
+          },
+          {
+            id: "button-1",
+            type: "button",
+            props: {
+              children: "Get Started",
+              variant: "primary",
+            },
+            style: {
+              fontSize: "16px",
+              padding: "16px 32px",
+              backgroundColor: "#8b5cf6",
+              color: "white",
+              border: "none",
+              borderRadius: "8px",
+              cursor: "pointer",
+              fontWeight: "600",
+              display: "block",
+              margin: "0 auto",
+            },
+          },
+        ]);
+        
+        setIsLoading(false);
       });
-
-      setCurrentPage({
-        id: pageId || "home",
-        projectId: projectId || "1",
-        name: "Home Page",
-        slug: "/",
-        title: "Welcome to My Website",
-        description: "The homepage of my awesome website",
-        content: {},
-        status: "draft",
-        isHomePage: true,
-        seoMetadata: {},
-        createdBy: user?.id || "",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        publishedAt: null,
-      });
-
-      // Initialize with some sample elements
-      setElements([
-        {
-          id: "header-1",
-          type: "heading",
-          props: {
-            children: "Welcome to My Website",
-            level: 1,
-          },
-          style: {
-            fontSize: "48px",
-            fontWeight: "bold",
-            color: "#1f2937",
-            textAlign: "center",
-            marginBottom: "24px",
-          },
-        },
-        {
-          id: "text-1",
-          type: "text",
-          props: {
-            children: "This is a beautiful website built with our visual editor. You can drag and drop elements to create amazing layouts.",
-          },
-          style: {
-            fontSize: "18px",
-            color: "#6b7280",
-            textAlign: "center",
-            lineHeight: "1.6",
-            marginBottom: "32px",
-            maxWidth: "600px",
-            margin: "0 auto 32px auto",
-          },
-        },
-        {
-          id: "button-1",
-          type: "button",
-          props: {
-            children: "Get Started",
-            variant: "primary",
-          },
-          style: {
-            fontSize: "16px",
-            padding: "16px 32px",
-            backgroundColor: "#8b5cf6",
-            color: "white",
-            border: "none",
-            borderRadius: "8px",
-            cursor: "pointer",
-            fontWeight: "600",
-            display: "block",
-            margin: "0 auto",
-          },
-        },
-      ]);
-
-      setIsLoading(false);
-    }, 800);
   }, [projectId, pageId, user, setCurrentProject, setCurrentPage]);
 
   const handleDragEnd = useCallback((event: DragEndEvent) => {
