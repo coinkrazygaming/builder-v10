@@ -1,25 +1,44 @@
 import { RequestHandler } from "express";
-import { eq, and } from "drizzle-orm";
+
+// Mock data for development
+const mockProjects = [
+  {
+    id: "1",
+    name: "E-commerce Website", 
+    description: "Modern online store with shopping cart",
+    domain: "mystore.builder.app",
+    customDomain: null,
+    status: "published",
+    ownerId: "mock-user-id",
+    settings: {},
+    createdAt: new Date("2024-01-15"),
+    updatedAt: new Date("2024-01-20"),
+  },
+  {
+    id: "2",
+    name: "Portfolio Site",
+    description: "Personal portfolio showcase", 
+    domain: "portfolio.builder.app",
+    customDomain: "johndoe.com",
+    status: "draft",
+    ownerId: "mock-user-id",
+    settings: {},
+    createdAt: new Date("2024-01-10"),
+    updatedAt: new Date("2024-01-18"),
+  }
+];
 
 // GET /api/projects - Get all projects for the current user
 export const getProjects: RequestHandler = async (req, res) => {
   try {
-    const { db } = await import("@shared/db");
-    const { projects } = await import("@shared/schema");
-
-    // TODO: Get user ID from auth middleware
     const userId = req.headers['x-user-id'] as string;
-
+    
     if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const userProjects = await db
-      .select()
-      .from(projects)
-      .where(eq(projects.ownerId, userId))
-      .orderBy(projects.updatedAt);
-
+    // Return mock projects for now
+    const userProjects = mockProjects.filter(p => p.ownerId === userId);
     res.json(userProjects);
   } catch (error) {
     console.error('Error fetching projects:', error);
@@ -37,20 +56,13 @@ export const getProject: RequestHandler = async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const project = await db
-      .select()
-      .from(projects)
-      .where(and(
-        eq(projects.id, id),
-        eq(projects.ownerId, userId)
-      ))
-      .limit(1);
-
-    if (project.length === 0) {
+    const project = mockProjects.find(p => p.id === id && p.ownerId === userId);
+    
+    if (!project) {
       return res.status(404).json({ error: 'Project not found' });
     }
 
-    res.json(project[0]);
+    res.json(project);
   } catch (error) {
     console.error('Error fetching project:', error);
     res.status(500).json({ error: 'Failed to fetch project' });
@@ -66,30 +78,15 @@ export const createProject: RequestHandler = async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const projectData: NewProject = {
+    const newProject = {
+      id: Date.now().toString(),
       ...req.body,
       ownerId: userId,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
 
-    const [newProject] = await db
-      .insert(projects)
-      .values(projectData)
-      .returning();
-
-    // Create a default home page
-    const homePageData: NewPage = {
-      projectId: newProject.id,
-      name: "Home",
-      slug: "/",
-      title: "Home Page",
-      description: "The main page of your website",
-      content: {},
-      isHomePage: true,
-      createdBy: userId,
-    };
-
-    await db.insert(pages).values(homePageData);
-
+    mockProjects.push(newProject);
     res.status(201).json(newProject);
   } catch (error) {
     console.error('Error creating project:', error);
@@ -107,23 +104,19 @@ export const updateProject: RequestHandler = async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const [updatedProject] = await db
-      .update(projects)
-      .set({
-        ...req.body,
-        updatedAt: new Date(),
-      })
-      .where(and(
-        eq(projects.id, id),
-        eq(projects.ownerId, userId)
-      ))
-      .returning();
-
-    if (!updatedProject) {
+    const projectIndex = mockProjects.findIndex(p => p.id === id && p.ownerId === userId);
+    
+    if (projectIndex === -1) {
       return res.status(404).json({ error: 'Project not found' });
     }
 
-    res.json(updatedProject);
+    mockProjects[projectIndex] = {
+      ...mockProjects[projectIndex],
+      ...req.body,
+      updatedAt: new Date(),
+    };
+
+    res.json(mockProjects[projectIndex]);
   } catch (error) {
     console.error('Error updating project:', error);
     res.status(500).json({ error: 'Failed to update project' });
@@ -140,18 +133,13 @@ export const deleteProject: RequestHandler = async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const result = await db
-      .delete(projects)
-      .where(and(
-        eq(projects.id, id),
-        eq(projects.ownerId, userId)
-      ))
-      .returning();
-
-    if (result.length === 0) {
+    const projectIndex = mockProjects.findIndex(p => p.id === id && p.ownerId === userId);
+    
+    if (projectIndex === -1) {
       return res.status(404).json({ error: 'Project not found' });
     }
 
+    mockProjects.splice(projectIndex, 1);
     res.status(204).send();
   } catch (error) {
     console.error('Error deleting project:', error);
