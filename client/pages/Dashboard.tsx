@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useUser } from "@stackframe/stack";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -34,8 +33,18 @@ import { useAppStore } from "@shared/store";
 import { useTheme } from "next-themes";
 import { formatDistanceToNow } from "date-fns";
 
+// Mock user for demo
+const mockUser = {
+  id: "mock-user-id",
+  displayName: "John Doe",
+  primaryEmail: "john@example.com",
+  signOut: () => {
+    window.location.href = "/";
+  }
+};
+
 export default function Dashboard() {
-  const user = useUser({ or: "redirect" });
+  const user = mockUser;
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const [searchQuery, setSearchQuery] = useState("");
@@ -49,40 +58,25 @@ export default function Dashboard() {
     deleteProject
   } = useAppStore();
 
-  // Mock data for now - will be replaced with real API calls
+  // Load projects from API
   useEffect(() => {
     setIsLoadingProjects(true);
-    // Simulate API call
-    setTimeout(() => {
-      const mockProjects = [
-        {
-          id: "1",
-          name: "E-commerce Website",
-          description: "Modern online store with shopping cart",
-          domain: "mystore.builder.app",
-          customDomain: null,
-          status: "published" as const,
-          ownerId: user?.id || "",
-          settings: {},
-          createdAt: new Date("2024-01-15"),
-          updatedAt: new Date("2024-01-20"),
-        },
-        {
-          id: "2", 
-          name: "Portfolio Site",
-          description: "Personal portfolio showcase",
-          domain: "portfolio.builder.app",
-          customDomain: "johndoe.com",
-          status: "draft" as const,
-          ownerId: user?.id || "",
-          settings: {},
-          createdAt: new Date("2024-01-10"),
-          updatedAt: new Date("2024-01-18"),
-        }
-      ];
-      setProjects(mockProjects);
-      setIsLoadingProjects(false);
-    }, 1000);
+    
+    // Use the API endpoint
+    fetch('/api/projects', {
+      headers: {
+        'x-user-id': user.id,
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        setProjects(data);
+        setIsLoadingProjects(false);
+      })
+      .catch(error => {
+        console.error('Error loading projects:', error);
+        setIsLoadingProjects(false);
+      });
   }, [user, setProjects, setIsLoadingProjects]);
 
   const filteredProjects = projects.filter(project =>
@@ -91,28 +85,45 @@ export default function Dashboard() {
   );
 
   const handleCreateProject = () => {
-    // For now, navigate to placeholder - will implement project creation modal
     const newProject = {
-      id: Date.now().toString(),
       name: "New Project",
       description: "A new website project",
       domain: `project-${Date.now()}.builder.app`,
-      customDomain: null,
       status: "draft" as const,
-      ownerId: user?.id || "",
-      settings: {},
-      createdAt: new Date(),
-      updatedAt: new Date(),
     };
-    addProject(newProject);
-    navigate(`/editor/${newProject.id}`);
+
+    fetch('/api/projects', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-user-id': user.id,
+      },
+      body: JSON.stringify(newProject),
+    })
+      .then(res => res.json())
+      .then(project => {
+        addProject(project);
+        navigate(`/editor/${project.id}`);
+      })
+      .catch(error => {
+        console.error('Error creating project:', error);
+      });
   };
 
   const handleDeleteProject = (projectId: string) => {
-    deleteProject(projectId);
+    fetch(`/api/projects/${projectId}`, {
+      method: 'DELETE',
+      headers: {
+        'x-user-id': user.id,
+      },
+    })
+      .then(() => {
+        deleteProject(projectId);
+      })
+      .catch(error => {
+        console.error('Error deleting project:', error);
+      });
   };
-
-  if (!user) return null;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
