@@ -1,7 +1,5 @@
 import { RequestHandler } from "express";
 import { eq, and } from "drizzle-orm";
-import { db } from "@shared/db";
-import { projects, pages, NewProject, NewPage } from "@shared/schema";
 
 // GET /api/projects - Get all projects for the current user
 export const getProjects: RequestHandler = async (req, res) => {
