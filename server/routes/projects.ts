@@ -4,9 +4,12 @@ import { eq, and } from "drizzle-orm";
 // GET /api/projects - Get all projects for the current user
 export const getProjects: RequestHandler = async (req, res) => {
   try {
+    const { db } = await import("@shared/db");
+    const { projects } = await import("@shared/schema");
+
     // TODO: Get user ID from auth middleware
     const userId = req.headers['x-user-id'] as string;
-    
+
     if (!userId) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
