@@ -247,6 +247,10 @@ export default function Editor() {
 
         setIsLoading(false);
       });
+
+    return () => {
+      abortController.abort();
+    };
   }, [projectId, pageId, user?.id]);
 
   const handleDragEnd = useCallback((event: DragEndEvent) => {
