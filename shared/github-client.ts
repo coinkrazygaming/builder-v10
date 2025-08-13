@@ -78,9 +78,16 @@ export class GitHubClient {
   private octokit: Octokit;
 
   constructor(accessToken: string) {
-    this.octokit = new Octokit({
-      auth: accessToken,
-    });
+    try {
+      console.log("Initializing Octokit with token...");
+      this.octokit = new Octokit({
+        auth: accessToken,
+      });
+      console.log("Octokit initialized successfully");
+    } catch (error) {
+      console.error("Failed to initialize Octokit:", error);
+      throw new Error(`Failed to initialize GitHub client: ${error.message}`);
+    }
   }
 
   // Authentication
@@ -100,10 +107,7 @@ export class GitHubClient {
   }
 
   // Repositories
-  async getUserRepositories(
-    page = 1,
-    perPage = 30,
-  ): Promise<GitHubRepository[]> {
+  async getUserRepositories(page = 1, perPage = 30): Promise<GitHubRepository[]> {
     try {
       const { data } = await this.octokit.rest.repos.listForAuthenticatedUser({
         page,
@@ -112,24 +116,22 @@ export class GitHubClient {
         type: "all",
       });
 
-      return data.map(
-        (repo): GitHubRepository => ({
-          id: repo.id,
-          name: repo.name,
-          fullName: repo.full_name,
-          description: repo.description,
-          htmlUrl: repo.html_url,
-          cloneUrl: repo.clone_url,
-          defaultBranch: repo.default_branch,
-          private: repo.private,
-          owner: {
-            login: repo.owner.login,
-            avatarUrl: repo.owner.avatar_url,
-          },
-          updatedAt: repo.updated_at,
-          language: repo.language,
-        }),
-      );
+      return data.map((repo): GitHubRepository => ({
+        id: repo.id,
+        name: repo.name,
+        fullName: repo.full_name,
+        description: repo.description,
+        htmlUrl: repo.html_url,
+        cloneUrl: repo.clone_url,
+        defaultBranch: repo.default_branch,
+        private: repo.private,
+        owner: {
+          login: repo.owner.login,
+          avatarUrl: repo.owner.avatar_url,
+        },
+        updatedAt: repo.updated_at,
+        language: repo.language,
+      }));
     } catch (error) {
       throw new Error(`Failed to fetch repositories: ${error}`);
     }
@@ -171,27 +173,21 @@ export class GitHubClient {
         repo,
       });
 
-      return data.map(
-        (branch): GitHubBranch => ({
-          name: branch.name,
-          commit: {
-            sha: branch.commit.sha,
-            url: branch.commit.url,
-          },
-          protected: branch.protected,
-        }),
-      );
+      return data.map((branch): GitHubBranch => ({
+        name: branch.name,
+        commit: {
+          sha: branch.commit.sha,
+          url: branch.commit.url,
+        },
+        protected: branch.protected,
+      }));
     } catch (error) {
       throw new Error(`Failed to fetch branches: ${error}`);
     }
   }
 
   // Commits
-  async getCommits(
-    owner: string,
-    repo: string,
-    sha?: string,
-  ): Promise<GitHubCommit[]> {
+  async getCommits(owner: string, repo: string, sha?: string): Promise<GitHubCommit[]> {
     try {
       const { data } = await this.octokit.rest.repos.listCommits({
         owner,
@@ -200,30 +196,23 @@ export class GitHubClient {
         per_page: 10,
       });
 
-      return data.map(
-        (commit): GitHubCommit => ({
-          sha: commit.sha,
-          message: commit.commit.message,
-          author: {
-            name: commit.commit.author?.name || "Unknown",
-            email: commit.commit.author?.email || "",
-            date: commit.commit.author?.date || "",
-          },
-          url: commit.html_url,
-        }),
-      );
+      return data.map((commit): GitHubCommit => ({
+        sha: commit.sha,
+        message: commit.commit.message,
+        author: {
+          name: commit.commit.author?.name || "Unknown",
+          email: commit.commit.author?.email || "",
+          date: commit.commit.author?.date || "",
+        },
+        url: commit.html_url,
+      }));
     } catch (error) {
       throw new Error(`Failed to fetch commits: ${error}`);
     }
   }
 
   // Files
-  async getFileContent(
-    owner: string,
-    repo: string,
-    path: string,
-    ref?: string,
-  ): Promise<GitHubFileContent> {
+  async getFileContent(owner: string, repo: string, path: string, ref?: string): Promise<GitHubFileContent> {
     try {
       const { data } = await this.octokit.rest.repos.getContent({
         owner,
@@ -254,12 +243,7 @@ export class GitHubClient {
     }
   }
 
-  async getDirectoryContents(
-    owner: string,
-    repo: string,
-    path = "",
-    ref?: string,
-  ): Promise<GitHubFileContent[]> {
+  async getDirectoryContents(owner: string, repo: string, path = "", ref?: string): Promise<GitHubFileContent[]> {
     try {
       const { data } = await this.octokit.rest.repos.getContent({
         owner,
@@ -272,30 +256,24 @@ export class GitHubClient {
         throw new Error("Path is a file, not a directory");
       }
 
-      return data.map(
-        (item): GitHubFileContent => ({
-          name: item.name,
-          path: item.path,
-          sha: item.sha,
-          size: item.size,
-          url: item.url,
-          htmlUrl: item.html_url,
-          gitUrl: item.git_url,
-          downloadUrl: item.download_url,
-          type: item.type as "file" | "dir",
-        }),
-      );
+      return data.map((item): GitHubFileContent => ({
+        name: item.name,
+        path: item.path,
+        sha: item.sha,
+        size: item.size,
+        url: item.url,
+        htmlUrl: item.html_url,
+        gitUrl: item.git_url,
+        downloadUrl: item.download_url,
+        type: item.type as "file" | "dir",
+      }));
     } catch (error) {
       throw new Error(`Failed to fetch directory contents: ${error}`);
     }
   }
 
   // Pull Requests
-  async getPullRequests(
-    owner: string,
-    repo: string,
-    state: "open" | "closed" | "all" = "open",
-  ): Promise<GitHubPullRequest[]> {
+  async getPullRequests(owner: string, repo: string, state: "open" | "closed" | "all" = "open"): Promise<GitHubPullRequest[]> {
     try {
       const { data } = await this.octokit.rest.pulls.list({
         owner,
@@ -304,30 +282,28 @@ export class GitHubClient {
         per_page: 30,
       });
 
-      return data.map(
-        (pr): GitHubPullRequest => ({
-          number: pr.number,
-          title: pr.title,
-          body: pr.body,
-          state: pr.state as "open" | "closed",
-          htmlUrl: pr.html_url,
-          head: {
-            ref: pr.head.ref,
-            sha: pr.head.sha,
-          },
-          base: {
-            ref: pr.base.ref,
-            sha: pr.base.sha,
-          },
-          user: {
-            login: pr.user?.login || "unknown",
-            avatarUrl: pr.user?.avatar_url || "",
-          },
-          createdAt: pr.created_at,
-          updatedAt: pr.updated_at,
-          mergedAt: pr.merged_at,
-        }),
-      );
+      return data.map((pr): GitHubPullRequest => ({
+        number: pr.number,
+        title: pr.title,
+        body: pr.body,
+        state: pr.state as "open" | "closed",
+        htmlUrl: pr.html_url,
+        head: {
+          ref: pr.head.ref,
+          sha: pr.head.sha,
+        },
+        base: {
+          ref: pr.base.ref,
+          sha: pr.base.sha,
+        },
+        user: {
+          login: pr.user?.login || "unknown",
+          avatarUrl: pr.user?.avatar_url || "",
+        },
+        createdAt: pr.created_at,
+        updatedAt: pr.updated_at,
+        mergedAt: pr.merged_at,
+      }));
     } catch (error) {
       throw new Error(`Failed to fetch pull requests: ${error}`);
     }
@@ -339,7 +315,7 @@ export class GitHubClient {
     title: string,
     head: string,
     base: string,
-    body?: string,
+    body?: string
   ): Promise<GitHubPullRequest> {
     try {
       const { data } = await this.octokit.rest.pulls.create({
@@ -386,20 +362,18 @@ export class GitHubClient {
     content: string,
     message: string,
     branch?: string,
-    sha?: string,
+    sha?: string
   ): Promise<{ commit: GitHubCommit; content: GitHubFileContent }> {
     try {
-      const { data } = await this.octokit.rest.repos.createOrUpdateFileContents(
-        {
-          owner,
-          repo,
-          path,
-          message,
-          content: Buffer.from(content, "utf-8").toString("base64"),
-          branch,
-          sha,
-        },
-      );
+      const { data } = await this.octokit.rest.repos.createOrUpdateFileContents({
+        owner,
+        repo,
+        path,
+        message,
+        content: Buffer.from(content, "utf-8").toString("base64"),
+        branch,
+        sha,
+      });
 
       return {
         commit: {
@@ -435,7 +409,7 @@ export class GitHubClient {
     path: string,
     message: string,
     sha: string,
-    branch?: string,
+    branch?: string
   ): Promise<GitHubCommit> {
     try {
       const { data } = await this.octokit.rest.repos.deleteFile({
@@ -463,12 +437,7 @@ export class GitHubClient {
   }
 
   // Webhooks
-  async createWebhook(
-    owner: string,
-    repo: string,
-    url: string,
-    secret?: string,
-  ) {
+  async createWebhook(owner: string, repo: string, url: string, secret?: string) {
     try {
       const { data } = await this.octokit.rest.repos.createWebhook({
         owner,
