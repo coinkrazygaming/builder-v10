@@ -13,6 +13,9 @@ async function setupBasicTables() {
       { name: "project_status", values: "('draft', 'published', 'archived')" },
       { name: "page_status", values: "('draft', 'published', 'archived')" },
       { name: "member_role", values: "('owner', 'admin', 'editor', 'viewer')" },
+      { name: "message_role", values: "('user', 'assistant', 'system')" },
+      { name: "task_status", values: "('pending', 'in_progress', 'completed', 'failed')" },
+      { name: "plan_status", values: "('analyzing', 'planning', 'approved', 'executing', 'completed', 'failed')" },
     ];
 
     for (const enumDef of enums) {
@@ -76,6 +79,72 @@ async function setupBasicTables() {
 
     await db.execute(createPagesTable);
     console.log("✅ Created pages table");
+
+    // Create JoseyAI tables
+    const createJoseyConversationsTable = `
+      CREATE TABLE IF NOT EXISTS "josey_conversations" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+        "user_id" text NOT NULL,
+        "project_id" uuid,
+        "title" text NOT NULL,
+        "is_active" boolean DEFAULT true,
+        "created_at" timestamp with time zone DEFAULT now(),
+        "updated_at" timestamp with time zone DEFAULT now()
+      );
+    `;
+
+    const createJoseyMessagesTable = `
+      CREATE TABLE IF NOT EXISTS "josey_messages" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+        "conversation_id" uuid NOT NULL,
+        "role" "message_role" NOT NULL,
+        "content" text NOT NULL,
+        "metadata" jsonb DEFAULT '{}',
+        "created_at" timestamp with time zone DEFAULT now()
+      );
+    `;
+
+    const createJoseyTasksTable = `
+      CREATE TABLE IF NOT EXISTS "josey_tasks" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+        "conversation_id" uuid NOT NULL,
+        "parent_task_id" uuid,
+        "title" text NOT NULL,
+        "description" text,
+        "status" "task_status" DEFAULT 'pending',
+        "priority" integer DEFAULT 0,
+        "estimated_minutes" integer,
+        "actual_minutes" integer,
+        "metadata" jsonb DEFAULT '{}',
+        "created_at" timestamp with time zone DEFAULT now(),
+        "updated_at" timestamp with time zone DEFAULT now(),
+        "completed_at" timestamp with time zone
+      );
+    `;
+
+    const createJoseyScreenContextTable = `
+      CREATE TABLE IF NOT EXISTS "josey_screen_context" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+        "user_id" text NOT NULL,
+        "current_view" text NOT NULL,
+        "current_file" text,
+        "selected_element" text,
+        "viewport_data" jsonb DEFAULT '{}',
+        "updated_at" timestamp with time zone DEFAULT now()
+      );
+    `;
+
+    await db.execute(createJoseyConversationsTable);
+    console.log("✅ Created josey_conversations table");
+
+    await db.execute(createJoseyMessagesTable);
+    console.log("✅ Created josey_messages table");
+
+    await db.execute(createJoseyTasksTable);
+    console.log("✅ Created josey_tasks table");
+
+    await db.execute(createJoseyScreenContextTable);
+    console.log("✅ Created josey_screen_context table");
 
     // Add foreign key constraints
     try {
