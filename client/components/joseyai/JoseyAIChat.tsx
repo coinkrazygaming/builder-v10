@@ -92,22 +92,26 @@ export default function JoseyAIChat({
 
   // Update screen context when props change
   useEffect(() => {
-    const context: JoseyScreenContext = {
-      id: `context_${Date.now()}`,
-      userId,
-      currentView,
-      currentFile: currentFile || null,
-      selectedElement: selectedElement || null,
-      viewportData: {},
-      updatedAt: new Date(),
+    const updateContext = async () => {
+      const context: JoseyScreenContext = {
+        id: `context_${Date.now()}`,
+        userId,
+        currentView,
+        currentFile: currentFile || null,
+        selectedElement: selectedElement || null,
+        viewportData: {},
+        updatedAt: new Date(),
+      };
+
+      try {
+        await apiClient.updateJoseyContext(context);
+        updateProactiveSuggestions();
+      } catch (error) {
+        console.error("Failed to update context:", error);
+      }
     };
 
-    try {
-      await apiClient.updateJoseyContext(context);
-      updateProactiveSuggestions();
-    } catch (error) {
-      console.error("Failed to update context:", error);
-    }
+    updateContext();
   }, [userId, currentView, currentFile, selectedElement]);
 
   const updateProactiveSuggestions = async () => {
