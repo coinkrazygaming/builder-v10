@@ -35,22 +35,27 @@ class ApiClient {
       ...options,
     });
 
-    // IMPORTANT: Read the response body only once to avoid "body stream already read" error
-    const responseText = await response.text();
+    // Clone the response to avoid body stream issues
+    const responseClone = response.clone();
 
     if (!response.ok) {
+      // Use the clone for error handling
+      const errorText = await responseClone.text();
       throw new Error(`API Error: ${response.status} ${response.statusText}`);
     }
 
     const contentType = response.headers.get("content-type");
     if (!contentType || !contentType.includes("application/json")) {
+      // Use the clone for non-JSON responses
+      const responseText = await responseClone.text();
       throw new Error(
         `Expected JSON response but got ${contentType}: ${responseText.substring(0, 100)}`,
       );
     }
 
     try {
-      return JSON.parse(responseText);
+      // Use the original response for JSON parsing
+      return await response.json();
     } catch (parseError) {
       throw new Error(`Failed to parse JSON response: ${parseError.message}`);
     }
