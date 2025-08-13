@@ -45,7 +45,6 @@ import GitHubImportDialog from "@/components/github/GitHubImportDialog";
 import GitHubSync from "@/components/github/GitHubSync";
 import GitHubPRDialog from "@/components/github/GitHubPRDialog";
 import GitHubWorkflow from "@/components/github/GitHubWorkflow";
-import GitHubDebug from "@/components/github/GitHubDebug";
 import type { GithubRepository, GithubSyncHistory, GithubPullRequest } from "@shared/schema";
 import type { GitHubRepository } from "@shared/github-client";
 
@@ -181,10 +180,6 @@ export default function GitHubDashboard() {
       {/* Main Content */}
       <main className="p-6">
         <div className="max-w-7xl mx-auto">
-          {/* Debug component - remove after testing */}
-          <div className="mb-6">
-            <GitHubDebug />
-          </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Repository List */}
             <div className="lg:col-span-1 space-y-4">
