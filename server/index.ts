@@ -28,6 +28,15 @@ import {
   createGitHubPullRequest,
   createOrUpdateGitHubFile,
 } from "./routes/github";
+import {
+  sendMessage,
+  updateContext,
+  getSuggestions,
+  createCheckpoint,
+  logAction,
+  executeWorkflowStep,
+  getStatus,
+} from "./routes/joseyai";
 
 export function createServer() {
   const app = express();
