@@ -108,7 +108,7 @@ export default function Editor() {
         return res.json();
       })
       .then((project) => {
-        if (abortController.signal.aborted) return;
+        if (abortController.signal.aborted || !isMountedRef.current) return;
         setCurrentProject(project);
 
         // Load page data
