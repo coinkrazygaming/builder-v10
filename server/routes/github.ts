@@ -1,4 +1,5 @@
 import { RequestHandler } from "express";
+import fetch from "node-fetch";
 import { createGitHubClient, GitHubRepository, GitHubBranch } from "../../shared/github-client";
 
 // GET /api/github/test - Simple test endpoint
