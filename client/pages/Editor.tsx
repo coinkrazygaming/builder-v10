@@ -65,6 +65,13 @@ export default function Editor() {
 
   // Load project and page data
   useEffect(() => {
+    // Validate required parameters
+    if (!projectId || !user?.id) {
+      console.log("Missing required parameters for editor:", { projectId, userId: user?.id });
+      setIsLoading(false);
+      return;
+    }
+
     const abortController = new AbortController();
     setIsLoading(true);
 
@@ -76,7 +83,9 @@ export default function Editor() {
       signal: abortController.signal,
     })
       .then((res) => {
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        if (!res.ok) {
+          throw new Error(`Project API error! status: ${res.status} for project ID: ${projectId}`);
+        }
         return res.json();
       })
       .then((project) => {
@@ -84,13 +93,16 @@ export default function Editor() {
         setCurrentProject(project);
 
         // Load page data
-        return fetch(`/api/projects/${projectId}/pages/${pageId || "home"}`, {
+        const targetPageId = pageId || "home";
+        return fetch(`/api/projects/${projectId}/pages/${targetPageId}`, {
           headers: {
             "x-user-id": user.id,
           },
           signal: abortController.signal,
         }).then((res) => {
-          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+          if (!res.ok) {
+            throw new Error(`Page API error! status: ${res.status} for page ID: ${targetPageId} in project: ${projectId}`);
+          }
           return res.json();
         });
       })
