@@ -38,7 +38,27 @@ class ApiClient {
     });
 
     if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      let errorMessage = `API Error: ${response.status} ${response.statusText}`;
+
+      try {
+        // Try to get more detailed error message from server
+        const errorData = await response.text();
+        if (errorData) {
+          try {
+            const parsed = JSON.parse(errorData);
+            if (parsed.error) {
+              errorMessage += ` - ${parsed.error}`;
+            }
+          } catch {
+            // If not JSON, use raw text
+            errorMessage += ` - ${errorData}`;
+          }
+        }
+      } catch {
+        // Ignore if we can't read the error response
+      }
+
+      throw new Error(errorMessage);
     }
 
     const contentType = response.headers.get("content-type");
