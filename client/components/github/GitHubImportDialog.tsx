@@ -139,11 +139,16 @@ export default function GitHubImportDialog({
     setError(null);
 
     try {
+      console.log("Starting GitHub import process...");
+      console.log("Project ID provided:", projectId);
+      console.log("Selected repo:", selectedRepo?.name);
+      console.log("Selected branch:", selectedBranch);
+
       let targetProjectId = projectId;
 
       // If no project ID provided, create a new project first
       if (!targetProjectId || targetProjectId.trim() === "") {
-        console.log("Creating new project for GitHub import...");
+        console.log("No project ID provided, creating new project...");
         const newProject = {
           name: selectedRepo.name,
           description: selectedRepo.description || `Imported from ${selectedRepo.fullName}`,
