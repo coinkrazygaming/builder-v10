@@ -1,11 +1,18 @@
 import { RequestHandler } from "express";
 import fetch from "node-fetch";
-import { createGitHubClient, GitHubRepository, GitHubBranch } from "../../shared/github-client";
+import {
+  createGitHubClient,
+  GitHubRepository,
+  GitHubBranch,
+} from "../../shared/github-client";
 
 // GET /api/github/test - Simple test endpoint
 export const testGitHub: RequestHandler = async (req, res) => {
   console.log("GitHub test endpoint called");
-  res.json({ message: "GitHub routes are working", timestamp: new Date().toISOString() });
+  res.json({
+    message: "GitHub routes are working",
+    timestamp: new Date().toISOString(),
+  });
 };
 
 // GET /api/github/user - Get authenticated GitHub user
@@ -30,11 +37,15 @@ export const getGitHubUser: RequestHandler = async (req, res) => {
     });
 
     if (!response.ok) {
-      console.log("GitHub API call failed:", response.status, response.statusText);
+      console.log(
+        "GitHub API call failed:",
+        response.status,
+        response.statusText,
+      );
       return res.status(response.status).json({
         error: "GitHub API call failed",
         status: response.status,
-        statusText: response.statusText
+        statusText: response.statusText,
       });
     }
 
@@ -51,7 +62,9 @@ export const getGitHubUser: RequestHandler = async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching GitHub user:", error);
-    res.status(500).json({ error: "Failed to fetch GitHub user", details: error.message });
+    res
+      .status(500)
+      .json({ error: "Failed to fetch GitHub user", details: error.message });
   }
 };
 
@@ -67,18 +80,21 @@ export const getGitHubRepositories: RequestHandler = async (req, res) => {
     }
 
     console.log("Fetching repositories...");
-    const response = await fetch(`https://api.github.com/user/repos?page=${page}&per_page=${perPage}&sort=updated&type=all`, {
-      headers: {
-        Authorization: `token ${accessToken}`,
-        "User-Agent": "BuilderClone/1.0",
+    const response = await fetch(
+      `https://api.github.com/user/repos?page=${page}&per_page=${perPage}&sort=updated&type=all`,
+      {
+        headers: {
+          Authorization: `token ${accessToken}`,
+          "User-Agent": "BuilderClone/1.0",
+        },
       },
-    });
+    );
 
     if (!response.ok) {
       console.log("GitHub repositories API call failed:", response.status);
       return res.status(response.status).json({
         error: "Failed to fetch repositories",
-        status: response.status
+        status: response.status,
       });
     }
 
@@ -106,7 +122,9 @@ export const getGitHubRepositories: RequestHandler = async (req, res) => {
     res.json(repositories);
   } catch (error) {
     console.error("Error fetching GitHub repositories:", error);
-    res.status(500).json({ error: "Failed to fetch repositories", details: error.message });
+    res
+      .status(500)
+      .json({ error: "Failed to fetch repositories", details: error.message });
   }
 };
 
@@ -115,14 +133,14 @@ export const getGitHubRepository: RequestHandler = async (req, res) => {
   try {
     const { owner, repo } = req.params;
     const accessToken = req.headers["x-github-token"] as string;
-    
+
     if (!accessToken) {
       return res.status(401).json({ error: "GitHub access token required" });
     }
 
     const client = createGitHubClient(accessToken);
     const repository = await client.getRepository(owner, repo);
-    
+
     res.json(repository);
   } catch (error) {
     console.error("Error fetching GitHub repository:", error);
@@ -135,14 +153,14 @@ export const getGitHubBranches: RequestHandler = async (req, res) => {
   try {
     const { owner, repo } = req.params;
     const accessToken = req.headers["x-github-token"] as string;
-    
+
     if (!accessToken) {
       return res.status(401).json({ error: "GitHub access token required" });
     }
 
     const client = createGitHubClient(accessToken);
     const branches = await client.getBranches(owner, repo);
-    
+
     res.json(branches);
   } catch (error) {
     console.error("Error fetching GitHub branches:", error);
@@ -154,17 +172,17 @@ export const getGitHubBranches: RequestHandler = async (req, res) => {
 export const getGitHubContents: RequestHandler = async (req, res) => {
   try {
     const { owner, repo } = req.params;
-    const path = req.query.path as string || "";
+    const path = (req.query.path as string) || "";
     const ref = req.query.ref as string;
     const accessToken = req.headers["x-github-token"] as string;
-    
+
     if (!accessToken) {
       return res.status(401).json({ error: "GitHub access token required" });
     }
 
     const client = createGitHubClient(accessToken);
     const contents = await client.getDirectoryContents(owner, repo, path, ref);
-    
+
     res.json(contents);
   } catch (error) {
     console.error("Error fetching GitHub contents:", error);
@@ -179,23 +197,23 @@ export const getGitHubFile: RequestHandler = async (req, res) => {
     const path = req.query.path as string;
     const ref = req.query.ref as string;
     const accessToken = req.headers["x-github-token"] as string;
-    
+
     if (!path) {
       return res.status(400).json({ error: "File path is required" });
     }
-    
+
     if (!accessToken) {
       return res.status(401).json({ error: "GitHub access token required" });
     }
 
     const client = createGitHubClient(accessToken);
     const file = await client.getFileContent(owner, repo, path, ref);
-    
+
     // Decode base64 content if it exists
     if (file.content && file.encoding === "base64") {
       file.content = Buffer.from(file.content, "base64").toString("utf-8");
     }
-    
+
     res.json(file);
   } catch (error) {
     console.error("Error fetching GitHub file:", error);
@@ -210,34 +228,34 @@ export const importGitHubRepository: RequestHandler = async (req, res) => {
     const { projectId, branch = "main" } = req.body;
     const accessToken = req.headers["x-github-token"] as string;
     const userId = req.headers["x-user-id"] as string;
-    
+
     if (!accessToken) {
       return res.status(401).json({ error: "GitHub access token required" });
     }
-    
+
     if (!userId) {
       return res.status(401).json({ error: "User ID required" });
     }
-    
+
     if (!projectId) {
       return res.status(400).json({ error: "Project ID is required" });
     }
 
     const client = createGitHubClient(accessToken);
-    
+
     // Get repository info
     const repository = await client.getRepository(owner, repo);
-    
+
     // Get repository contents from the specified branch
     const contents = await client.getDirectoryContents(owner, repo, "", branch);
-    
+
     // TODO: Process and import the repository structure into the project
     // This would involve:
     // 1. Creating pages from HTML files
     // 2. Importing assets
     // 3. Converting components
     // 4. Setting up the project structure
-    
+
     // For now, return success with repository info
     res.json({
       success: true,
@@ -255,16 +273,16 @@ export const importGitHubRepository: RequestHandler = async (req, res) => {
 export const getGitHubPullRequests: RequestHandler = async (req, res) => {
   try {
     const { owner, repo } = req.params;
-    const state = req.query.state as "open" | "closed" | "all" || "open";
+    const state = (req.query.state as "open" | "closed" | "all") || "open";
     const accessToken = req.headers["x-github-token"] as string;
-    
+
     if (!accessToken) {
       return res.status(401).json({ error: "GitHub access token required" });
     }
 
     const client = createGitHubClient(accessToken);
     const pullRequests = await client.getPullRequests(owner, repo, state);
-    
+
     res.json(pullRequests);
   } catch (error) {
     console.error("Error fetching GitHub pull requests:", error);
@@ -278,18 +296,27 @@ export const createGitHubPullRequest: RequestHandler = async (req, res) => {
     const { owner, repo } = req.params;
     const { title, head, base, body } = req.body;
     const accessToken = req.headers["x-github-token"] as string;
-    
+
     if (!accessToken) {
       return res.status(401).json({ error: "GitHub access token required" });
     }
-    
+
     if (!title || !head || !base) {
-      return res.status(400).json({ error: "Title, head, and base branches are required" });
+      return res
+        .status(400)
+        .json({ error: "Title, head, and base branches are required" });
     }
 
     const client = createGitHubClient(accessToken);
-    const pullRequest = await client.createPullRequest(owner, repo, title, head, base, body);
-    
+    const pullRequest = await client.createPullRequest(
+      owner,
+      repo,
+      title,
+      head,
+      base,
+      body,
+    );
+
     res.status(201).json(pullRequest);
   } catch (error) {
     console.error("Error creating GitHub pull request:", error);
@@ -303,18 +330,28 @@ export const createOrUpdateGitHubFile: RequestHandler = async (req, res) => {
     const { owner, repo } = req.params;
     const { path, content, message, branch, sha } = req.body;
     const accessToken = req.headers["x-github-token"] as string;
-    
+
     if (!accessToken) {
       return res.status(401).json({ error: "GitHub access token required" });
     }
-    
+
     if (!path || !content || !message) {
-      return res.status(400).json({ error: "Path, content, and commit message are required" });
+      return res
+        .status(400)
+        .json({ error: "Path, content, and commit message are required" });
     }
 
     const client = createGitHubClient(accessToken);
-    const result = await client.createOrUpdateFile(owner, repo, path, content, message, branch, sha);
-    
+    const result = await client.createOrUpdateFile(
+      owner,
+      repo,
+      path,
+      content,
+      message,
+      branch,
+      sha,
+    );
+
     res.json(result);
   } catch (error) {
     console.error("Error creating/updating GitHub file:", error);

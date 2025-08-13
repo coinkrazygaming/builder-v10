@@ -26,7 +26,7 @@ import {
   importGitHubRepository,
   getGitHubPullRequests,
   createGitHubPullRequest,
-  createOrUpdateGitHubFile
+  createOrUpdateGitHubFile,
 } from "./routes/github";
 
 export function createServer() {
@@ -84,10 +84,22 @@ export function createServer() {
   app.get("/api/github/repositories/:owner/:repo/branches", getGitHubBranches);
   app.get("/api/github/repositories/:owner/:repo/contents", getGitHubContents);
   app.get("/api/github/repositories/:owner/:repo/file", getGitHubFile);
-  app.post("/api/github/repositories/:owner/:repo/import", importGitHubRepository);
-  app.get("/api/github/repositories/:owner/:repo/pull-requests", getGitHubPullRequests);
-  app.post("/api/github/repositories/:owner/:repo/pull-requests", createGitHubPullRequest);
-  app.post("/api/github/repositories/:owner/:repo/files", createOrUpdateGitHubFile);
+  app.post(
+    "/api/github/repositories/:owner/:repo/import",
+    importGitHubRepository,
+  );
+  app.get(
+    "/api/github/repositories/:owner/:repo/pull-requests",
+    getGitHubPullRequests,
+  );
+  app.post(
+    "/api/github/repositories/:owner/:repo/pull-requests",
+    createGitHubPullRequest,
+  );
+  app.post(
+    "/api/github/repositories/:owner/:repo/files",
+    createOrUpdateGitHubFile,
+  );
   console.log("GitHub API routes registered successfully");
 
   return app;

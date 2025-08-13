@@ -14,11 +14,14 @@ export default function GitHubDebug() {
       console.log("Testing GitHub API endpoint...");
       const response = await fetch("/api/github/test");
       console.log("Response status:", response.status);
-      console.log("Response headers:", Object.fromEntries(response.headers.entries()));
-      
+      console.log(
+        "Response headers:",
+        Object.fromEntries(response.headers.entries()),
+      );
+
       const text = await response.text();
       console.log("Response text:", text);
-      
+
       if (response.ok) {
         try {
           const data = JSON.parse(text);
