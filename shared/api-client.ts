@@ -288,6 +288,7 @@ class ApiClient {
       method: "POST",
       headers: {
         "x-github-token": accessToken,
+        "x-user-id": "mock-user-id", // TODO: Get from auth context
       },
       body: JSON.stringify({ projectId, branch }),
     });
