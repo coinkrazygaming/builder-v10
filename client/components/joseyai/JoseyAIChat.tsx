@@ -312,12 +312,7 @@ export default function JoseyAIChat({
   }
 
   return (
-    <div
-      className={cn(
-        "w-full h-full flex flex-col",
-        className,
-      )}
-    >
+    <div className={cn("w-full h-full flex flex-col", className)}>
       <Card className="flex-1 flex flex-col shadow-2xl border-purple-200">
         <CardHeader className="pb-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-t-lg">
           <div className="flex items-center justify-between">
