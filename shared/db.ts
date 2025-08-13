@@ -4,16 +4,16 @@ import { neon } from "@neondatabase/serverless";
 if (!process.env.DATABASE_URL) {
   throw new Error(
     "DATABASE_URL is not defined. Please set up your Neon database connection.\n" +
-    "See DATABASE_SETUP.md for detailed instructions."
+      "See DATABASE_SETUP.md for detailed instructions.",
   );
 }
 
 // Validate DATABASE_URL format
 const dbUrl = process.env.DATABASE_URL;
-if (!dbUrl.startsWith('postgresql://') && !dbUrl.startsWith('postgres://')) {
+if (!dbUrl.startsWith("postgresql://") && !dbUrl.startsWith("postgres://")) {
   throw new Error(
     "Invalid DATABASE_URL format. Expected a PostgreSQL connection string.\n" +
-    "Example: postgresql://username:password@host:port/database"
+      "Example: postgresql://username:password@host:port/database",
   );
 }
 
@@ -27,7 +27,7 @@ const sql = neon(dbUrl, {
 // Create Drizzle instance
 export const db = drizzle({
   client: sql,
-  logger: process.env.NODE_ENV === 'development' ? true : false
+  logger: process.env.NODE_ENV === "development" ? true : false,
 });
 
 // Connection test function

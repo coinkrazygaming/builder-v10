@@ -3,11 +3,11 @@ import { db } from "../shared/db";
 async function setupBasicTables() {
   try {
     console.log("🚀 Setting up basic database tables...");
-    
+
     // Test connection first
     await db.execute("SELECT 1");
     console.log("✅ Database connection successful!");
-    
+
     // Create enums first (handle existing ones)
     const enums = [
       { name: "project_status", values: "('draft', 'published', 'archived')" },
@@ -17,17 +17,23 @@ async function setupBasicTables() {
 
     for (const enumDef of enums) {
       try {
-        await db.execute(`CREATE TYPE "${enumDef.name}" AS ENUM${enumDef.values};`);
+        await db.execute(
+          `CREATE TYPE "${enumDef.name}" AS ENUM${enumDef.values};`,
+        );
         console.log("✅ Created enum:", enumDef.name);
       } catch (error) {
-        if (error.message.includes('already exists')) {
+        if (error.message.includes("already exists")) {
           console.log("⚠️  Enum already exists:", enumDef.name);
         } else {
-          console.log("⚠️  Could not create enum:", enumDef.name, error.message);
+          console.log(
+            "⚠️  Could not create enum:",
+            enumDef.name,
+            error.message,
+          );
         }
       }
     }
-    
+
     // Create basic projects table
     const createProjectsTable = `
       CREATE TABLE IF NOT EXISTS "projects" (
@@ -44,10 +50,10 @@ async function setupBasicTables() {
         "updated_at" timestamp with time zone DEFAULT now()
       );
     `;
-    
+
     await db.execute(createProjectsTable);
     console.log("✅ Created projects table");
-    
+
     // Create basic pages table
     const createPagesTable = `
       CREATE TABLE IF NOT EXISTS "pages" (
@@ -67,10 +73,10 @@ async function setupBasicTables() {
         "published_at" timestamp with time zone
       );
     `;
-    
+
     await db.execute(createPagesTable);
     console.log("✅ Created pages table");
-    
+
     // Add foreign key constraints
     try {
       await db.execute(`
@@ -80,13 +86,13 @@ async function setupBasicTables() {
       `);
       console.log("✅ Added foreign key constraint");
     } catch (error) {
-      if (error.message.includes('already exists')) {
+      if (error.message.includes("already exists")) {
         console.log("⚠️  Foreign key constraint already exists");
       } else {
         console.log("⚠️  Could not add foreign key constraint:", error.message);
       }
     }
-    
+
     // Check tables
     const tables = await db.execute(`
       SELECT table_name 
@@ -94,10 +100,12 @@ async function setupBasicTables() {
       WHERE table_schema = 'public'
       ORDER BY table_name;
     `);
-    
-    console.log("📋 Available tables:", tables.rows.map(row => row.table_name));
+
+    console.log(
+      "📋 Available tables:",
+      tables.rows.map((row) => row.table_name),
+    );
     console.log("🎉 Basic database setup complete!");
-    
   } catch (error) {
     console.error("❌ Database setup failed:", error);
     process.exit(1);
