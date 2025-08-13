@@ -188,6 +188,11 @@ export default function GitHubImportDialog({
         throw new Error("Project ID is required but not available");
       }
 
+      // Validate we have an access token
+      if (!accessToken || accessToken.trim() === "") {
+        throw new Error("GitHub access token is required but not available");
+      }
+
       console.log("Importing repository to project:", targetProjectId);
       console.log("Import parameters:", {
         owner: selectedRepo.owner.login,
