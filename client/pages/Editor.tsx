@@ -64,6 +64,9 @@ export default function Editor() {
     "desktop" | "tablet" | "mobile"
   >("desktop");
   const [isLoading, setIsLoading] = useState(true);
+  const [showJoseyTaskManager, setShowJoseyTaskManager] = useState(false);
+  const [joseyTasks, setJoseyTasks] = useState([]);
+  const [joseyWorkflow, setJoseyWorkflow] = useState(null);
 
   // Load project and page data
   useEffect(() => {
