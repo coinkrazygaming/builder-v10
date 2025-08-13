@@ -574,19 +574,64 @@ export default function Editor() {
             </div>
           </div>
 
-          {/* Right Sidebar - Properties */}
+          {/* Right Sidebar - Properties & Tasks */}
           {!isPreviewMode && (
-            <div className="w-80 h-full border-l bg-white dark:bg-gray-800">
-              <PropertiesPanel
-                selectedElement={getSelectedElementData()}
-                onUpdateElement={updateElement}
-                onDeleteElement={deleteElement}
-                onDuplicateElement={duplicateElement}
-              />
+            <div className="w-80 h-full border-l bg-white dark:bg-gray-800 flex flex-col">
+              <div className="border-b p-2">
+                <div className="flex rounded-lg bg-gray-100 dark:bg-gray-700 p-1">
+                  <button
+                    onClick={() => setShowJoseyTaskManager(false)}
+                    className={cn(
+                      "flex-1 text-sm py-2 px-3 rounded-md transition-colors",
+                      !showJoseyTaskManager && "bg-white dark:bg-gray-800 shadow-sm"
+                    )}
+                  >
+                    Properties
+                  </button>
+                  <button
+                    onClick={() => setShowJoseyTaskManager(true)}
+                    className={cn(
+                      "flex-1 text-sm py-2 px-3 rounded-md transition-colors",
+                      showJoseyTaskManager && "bg-white dark:bg-gray-800 shadow-sm"
+                    )}
+                  >
+                    Tasks
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1 overflow-hidden">
+                {showJoseyTaskManager ? (
+                  <JoseyAITaskManager
+                    workflowPlan={joseyWorkflow}
+                    tasks={joseyTasks}
+                    onTaskAction={(taskId, action) => {
+                      console.log(`Task ${taskId}: ${action}`);
+                      // Handle task actions
+                    }}
+                    className="border-0 shadow-none h-full"
+                  />
+                ) : (
+                  <PropertiesPanel
+                    selectedElement={getSelectedElementData()}
+                    onUpdateElement={updateElement}
+                    onDeleteElement={deleteElement}
+                    onDuplicateElement={duplicateElement}
+                  />
+                )}
+              </div>
             </div>
           )}
         </div>
       </div>
+
+      {/* JoseyAI Chat - Permanent overlay */}
+      <JoseyAIChat
+        userId={user.id}
+        projectId={projectId}
+        currentView="editor"
+        currentFile={currentPage?.name}
+        selectedElement={selectedElement?.id}
+      />
     </DndContext>
   );
 }
