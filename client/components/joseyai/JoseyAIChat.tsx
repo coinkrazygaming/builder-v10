@@ -308,7 +308,7 @@ export default function JoseyAIChat({
   return (
     <div
       className={cn(
-        "fixed bottom-4 right-4 w-96 h-[600px] z-50 flex flex-col",
+        "fixed top-20 right-4 w-96 h-[calc(100vh-6rem)] z-50 flex flex-col",
         className,
       )}
     >
