@@ -7,7 +7,16 @@ import type {
   NewComponent,
   Asset,
   NewAsset,
+  GithubRepository,
+  NewGithubRepository,
 } from "./schema";
+import type {
+  GitHubRepository,
+  GitHubBranch,
+  GitHubCommit,
+  GitHubPullRequest,
+  GitHubFileContent,
+} from "./github-client";
 
 class ApiClient {
   private baseUrl = "/api";
@@ -154,6 +163,117 @@ class ApiClient {
   async deleteAsset(projectId: string, assetId: string): Promise<void> {
     return this.request<void>(`/projects/${projectId}/assets/${assetId}`, {
       method: "DELETE",
+    });
+  }
+
+  // GitHub integration
+  async getGitHubUser(accessToken: string) {
+    return this.request(`/github/user`, {
+      headers: {
+        "x-github-token": accessToken,
+      },
+    });
+  }
+
+  async getGitHubRepositories(accessToken: string, page = 1, perPage = 30): Promise<GitHubRepository[]> {
+    return this.request<GitHubRepository[]>(`/github/repositories?page=${page}&per_page=${perPage}`, {
+      headers: {
+        "x-github-token": accessToken,
+      },
+    });
+  }
+
+  async getGitHubRepository(accessToken: string, owner: string, repo: string): Promise<GitHubRepository> {
+    return this.request<GitHubRepository>(`/github/repositories/${owner}/${repo}`, {
+      headers: {
+        "x-github-token": accessToken,
+      },
+    });
+  }
+
+  async getGitHubBranches(accessToken: string, owner: string, repo: string): Promise<GitHubBranch[]> {
+    return this.request<GitHubBranch[]>(`/github/repositories/${owner}/${repo}/branches`, {
+      headers: {
+        "x-github-token": accessToken,
+      },
+    });
+  }
+
+  async getGitHubContents(accessToken: string, owner: string, repo: string, path = "", ref?: string): Promise<GitHubFileContent[]> {
+    const params = new URLSearchParams();
+    if (path) params.append("path", path);
+    if (ref) params.append("ref", ref);
+
+    return this.request<GitHubFileContent[]>(`/github/repositories/${owner}/${repo}/contents?${params}`, {
+      headers: {
+        "x-github-token": accessToken,
+      },
+    });
+  }
+
+  async getGitHubFile(accessToken: string, owner: string, repo: string, path: string, ref?: string): Promise<GitHubFileContent> {
+    const params = new URLSearchParams({ path });
+    if (ref) params.append("ref", ref);
+
+    return this.request<GitHubFileContent>(`/github/repositories/${owner}/${repo}/file?${params}`, {
+      headers: {
+        "x-github-token": accessToken,
+      },
+    });
+  }
+
+  async importGitHubRepository(accessToken: string, owner: string, repo: string, projectId: string, branch = "main") {
+    return this.request(`/github/repositories/${owner}/${repo}/import`, {
+      method: "POST",
+      headers: {
+        "x-github-token": accessToken,
+      },
+      body: JSON.stringify({ projectId, branch }),
+    });
+  }
+
+  async getGitHubPullRequests(accessToken: string, owner: string, repo: string, state: "open" | "closed" | "all" = "open"): Promise<GitHubPullRequest[]> {
+    return this.request<GitHubPullRequest[]>(`/github/repositories/${owner}/${repo}/pull-requests?state=${state}`, {
+      headers: {
+        "x-github-token": accessToken,
+      },
+    });
+  }
+
+  async createGitHubPullRequest(
+    accessToken: string,
+    owner: string,
+    repo: string,
+    title: string,
+    head: string,
+    base: string,
+    body?: string
+  ): Promise<GitHubPullRequest> {
+    return this.request<GitHubPullRequest>(`/github/repositories/${owner}/${repo}/pull-requests`, {
+      method: "POST",
+      headers: {
+        "x-github-token": accessToken,
+      },
+      body: JSON.stringify({ title, head, base, body }),
+    });
+  }
+
+  async createOrUpdateGitHubFile(
+    accessToken: string,
+    owner: string,
+    repo: string,
+    path: string,
+    content: string,
+    message: string,
+    branch?: string,
+    sha?: string
+  ) {
+    return this.request(`/github/repositories/${owner}/${repo}/files`, {
+      method: "POST",
+      headers: {
+        "x-github-token": accessToken,
+      },
+      body: JSON.stringify({ path, content, message, branch, sha }),
     });
   }
 }
