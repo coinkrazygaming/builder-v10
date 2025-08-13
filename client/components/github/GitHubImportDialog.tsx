@@ -182,8 +182,21 @@ export default function GitHubImportDialog({
       setIsOpen(false);
       resetDialog();
     } catch (err) {
-      setError("Failed to import repository");
       console.error("Import error:", err);
+
+      // Provide more specific error messages
+      if (err.message.includes("Failed to create project")) {
+        setError("Failed to create project. Please try again.");
+      } else if (err.message.includes("Project ID is required")) {
+        setError("Project setup failed. Please try again.");
+      } else if (err.message.includes("GitHub access token")) {
+        setError("GitHub authentication failed. Please check your token.");
+      } else if (err.message.includes("Failed to fetch")) {
+        setError("Network error. Please check your connection and try again.");
+      } else {
+        setError(`Failed to import repository: ${err.message}`);
+      }
+
       setStep("branches");
     } finally {
       setIsLoading(false);
