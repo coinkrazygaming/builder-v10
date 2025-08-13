@@ -543,7 +543,7 @@ export default function JoseyAIChat({
           )}
 
           {/* Input Area */}
-          <div className="border-t p-4">
+          <div className="border-t border-gray-200 dark:border-gray-700 p-3 bg-gray-50 dark:bg-gray-800">
             <div className="flex items-center space-x-2">
               <Input
                 value={input}
@@ -551,24 +551,24 @@ export default function JoseyAIChat({
                 onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
                 placeholder="Ask JoseyAI anything..."
                 disabled={isLoading}
-                className="flex-1"
+                className="flex-1 text-sm bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:border-purple-500 dark:focus:border-purple-400"
               />
               <Button
                 onClick={handleSendMessage}
                 disabled={isLoading || !input.trim()}
                 size="icon"
-                className="bg-purple-600 hover:bg-purple-700"
+                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 shadow-sm"
               >
                 <Send className="w-4 h-4" />
               </Button>
             </div>
-            <div className="flex items-center justify-between mt-2 text-xs text-gray-500">
+            <div className="flex items-center justify-between mt-2 text-xs text-gray-500 dark:text-gray-400">
               <div className="flex items-center space-x-2">
-                <Zap className="w-3 h-3" />
+                <Zap className="w-3 h-3 text-amber-500" />
                 <span>Auto-execute in 5s</span>
               </div>
               <div className="flex items-center space-x-1">
-                <Terminal className="w-3 h-3" />
+                <Terminal className="w-3 h-3 text-green-500" />
                 <span>Server access enabled</span>
               </div>
             </div>
