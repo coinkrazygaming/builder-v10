@@ -19,14 +19,35 @@ export const getGitHubUser: RequestHandler = async (req, res) => {
       return res.status(401).json({ error: "GitHub access token required" });
     }
 
-    console.log("Creating GitHub client...");
-    const client = createGitHubClient(accessToken);
+    // For debugging, let's try a direct fetch to GitHub API first
+    console.log("Testing direct GitHub API call...");
+    const response = await fetch("https://api.github.com/user", {
+      headers: {
+        Authorization: `token ${accessToken}`,
+        "User-Agent": "BuilderClone/1.0",
+      },
+    });
 
-    console.log("Fetching authenticated user...");
-    const user = await client.getAuthenticatedUser();
+    if (!response.ok) {
+      console.log("GitHub API call failed:", response.status, response.statusText);
+      return res.status(response.status).json({
+        error: "GitHub API call failed",
+        status: response.status,
+        statusText: response.statusText
+      });
+    }
 
+    const user = await response.json();
     console.log("User fetched successfully:", user.login);
-    res.json(user);
+
+    // Return in the format expected by the client
+    res.json({
+      id: user.id,
+      login: user.login,
+      name: user.name,
+      email: user.email,
+      avatarUrl: user.avatar_url,
+    });
   } catch (error) {
     console.error("Error fetching GitHub user:", error);
     res.status(500).json({ error: "Failed to fetch GitHub user", details: error.message });
