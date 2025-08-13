@@ -299,12 +299,13 @@ export default function Editor() {
 
     return () => {
       try {
-        if (!abortController.signal.aborted) {
+        // Check if the controller and signal exist and are not already aborted
+        if (abortController && abortController.signal && !abortController.signal.aborted) {
           abortController.abort();
         }
       } catch (error) {
-        // Ignore AbortController errors during cleanup
-        console.log("AbortController cleanup completed");
+        // Completely ignore all AbortController errors during cleanup
+        // This includes "signal is aborted without reason" errors from React strict mode
       }
     };
   }, [projectId, pageId, user?.id]);
