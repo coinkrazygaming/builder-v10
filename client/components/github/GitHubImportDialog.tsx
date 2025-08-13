@@ -201,17 +201,25 @@ export default function GitHubImportDialog({
     } catch (err) {
       console.error("Import error:", err);
 
-      // Provide more specific error messages
+      // Provide more specific error messages based on the error content
       if (err.message.includes("Failed to create project")) {
-        setError("Failed to create project. Please try again.");
+        setError("Could not create project. Please try again or create a project first.");
       } else if (err.message.includes("Project ID is required")) {
-        setError("Project setup failed. Please try again.");
-      } else if (err.message.includes("GitHub access token")) {
-        setError("GitHub authentication failed. Please check your token.");
+        setError("Project ID validation failed. Please try again.");
+      } else if (err.message.includes("GitHub access token required")) {
+        setError("GitHub authentication failed. Please check your access token.");
+      } else if (err.message.includes("User ID required")) {
+        setError("Authentication error. Please try again.");
+      } else if (err.message.includes("API Error: 400")) {
+        setError("Invalid request. Please check your repository selection and try again.");
+      } else if (err.message.includes("API Error: 401")) {
+        setError("Authentication failed. Please check your GitHub token.");
+      } else if (err.message.includes("API Error: 404")) {
+        setError("Repository not found. Please check the repository exists and is accessible.");
       } else if (err.message.includes("Failed to fetch")) {
         setError("Network error. Please check your connection and try again.");
       } else {
-        setError(`Failed to import repository: ${err.message}`);
+        setError(`Import failed: ${err.message}`);
       }
 
       setStep("branches");
