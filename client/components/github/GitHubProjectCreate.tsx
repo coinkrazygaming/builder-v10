@@ -238,7 +238,7 @@ export default function GitHubProjectCreate({ onProjectCreated }: GitHubProjectC
               <CardDescription>
                 Import an existing repository and continue building with our visual editor
               </CardDescription>
-            </CardContent>
+            </CardHeader>
             <CardContent className="space-y-4">
               <div className="text-center space-y-4">
                 <div className="p-8 border-2 border-dashed border-muted rounded-lg">
