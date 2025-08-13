@@ -40,6 +40,7 @@ import { useAppStore } from "@shared/store";
 import { useTheme } from "next-themes";
 import { formatDistanceToNow } from "date-fns";
 import GitHubImportDialog from "@/components/github/GitHubImportDialog";
+import DatabaseStatus from "@/components/database/DatabaseStatus";
 
 // Mock user for demo
 const mockUser = {
@@ -199,6 +200,11 @@ export default function Dashboard() {
       {/* Main Content */}
       <main className="p-6">
         <div className="max-w-7xl mx-auto">
+          {/* Database Status */}
+          <div className="mb-8">
+            <DatabaseStatus />
+          </div>
+
           {/* Page Header */}
           <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
             <div>
