@@ -181,17 +181,27 @@ export default function GitHubImportDialog({
         }
         // Ensure project ID is a string
         targetProjectId = String(project.id);
-        console.log("Created project successfully:", project.id, "type:", typeof project.id);
+        console.log(
+          "Created project successfully:",
+          project.id,
+          "type:",
+          typeof project.id,
+        );
       }
 
       // Validate we have a valid project ID
-      console.log("Final validation - targetProjectId:", targetProjectId, "type:", typeof targetProjectId);
+      console.log(
+        "Final validation - targetProjectId:",
+        targetProjectId,
+        "type:",
+        typeof targetProjectId,
+      );
       if (!targetProjectId || targetProjectId.trim() === "") {
         console.error("❌ Project ID validation failed:", {
           targetProjectId,
           originalProjectId: projectId,
           selectedRepo: selectedRepo?.name,
-          selectedBranch
+          selectedBranch,
         });
         throw new Error("Project ID validation failed. Please try again.");
       }
@@ -201,7 +211,10 @@ export default function GitHubImportDialog({
         throw new Error("GitHub access token is required but not available");
       }
 
-      console.log("✅ All validations passed. Importing repository to project:", targetProjectId);
+      console.log(
+        "✅ All validations passed. Importing repository to project:",
+        targetProjectId,
+      );
       console.log("Import parameters:", {
         owner: selectedRepo.owner.login,
         repo: selectedRepo.name,
