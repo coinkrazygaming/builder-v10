@@ -111,5 +111,16 @@ export function createServer() {
   );
   console.log("GitHub API routes registered successfully");
 
+  // JoseyAI API routes
+  console.log("Registering JoseyAI API routes...");
+  app.post("/api/joseyai/chat", sendMessage);
+  app.post("/api/joseyai/context", updateContext);
+  app.get("/api/joseyai/suggestions", getSuggestions);
+  app.post("/api/joseyai/checkpoint", createCheckpoint);
+  app.post("/api/joseyai/log", logAction);
+  app.post("/api/joseyai/execute", executeWorkflowStep);
+  app.get("/api/joseyai/status", getStatus);
+  console.log("JoseyAI API routes registered successfully");
+
   return app;
 }
