@@ -151,14 +151,10 @@ export const githubSyncHistory = pgTable("github_sync_history", {
   repositoryId: uuid("repository_id")
     .notNull()
     .references(() => githubRepositories.id, { onDelete: "cascade" }),
-  syncType: pgEnum("sync_type", ["push", "pull", "import"])(
-    "sync_type",
-  ).notNull(),
+  syncType: pgEnum("sync_type", ["push", "pull", "import"])("sync_type").notNull(),
   commitHash: text("commit_hash"),
   commitMessage: text("commit_message"),
-  status: pgEnum("sync_status", ["pending", "success", "failed"])(
-    "status",
-  ).default("pending"),
+  status: pgEnum("sync_status", ["pending", "success", "failed"])("status").default("pending"),
   errorMessage: text("error_message"),
   changedFiles: jsonb("changed_files").default([]),
   triggeredBy: text("triggered_by").notNull(),
@@ -176,14 +172,103 @@ export const githubPullRequests = pgTable("github_pull_requests", {
   description: text("description"),
   sourceBranch: text("source_branch").notNull(),
   targetBranch: text("target_branch").notNull(),
-  status: pgEnum("pr_status", ["open", "closed", "merged"])("status").default(
-    "open",
-  ),
+  status: pgEnum("pr_status", ["open", "closed", "merged"])("status").default("open"),
   prUrl: text("pr_url").notNull(),
   createdBy: text("created_by").notNull(),
   mergedBy: text("merged_by"),
   mergedAt: timestamp("merged_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+});
+
+// JoseyAI tables
+export const joseyConversations = pgTable("josey_conversations", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: text("user_id").notNull(),
+  projectId: uuid("project_id").references(() => projects.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+});
+
+export const joseyMessages = pgTable("josey_messages", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  conversationId: uuid("conversation_id")
+    .notNull()
+    .references(() => joseyConversations.id, { onDelete: "cascade" }),
+  role: pgEnum("message_role", ["user", "assistant", "system"])("role").notNull(),
+  content: text("content").notNull(),
+  metadata: jsonb("metadata").default({}),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});
+
+export const joseyTasks = pgTable("josey_tasks", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  conversationId: uuid("conversation_id")
+    .notNull()
+    .references(() => joseyConversations.id, { onDelete: "cascade" }),
+  parentTaskId: uuid("parent_task_id"),
+  title: text("title").notNull(),
+  description: text("description"),
+  status: pgEnum("task_status", ["pending", "in_progress", "completed", "failed"])("status").default("pending"),
+  priority: integer("priority").default(0),
+  estimatedMinutes: integer("estimated_minutes"),
+  actualMinutes: integer("actual_minutes"),
+  metadata: jsonb("metadata").default({}),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+  completedAt: timestamp("completed_at", { withTimezone: true }),
+});
+
+export const joseyWorkflowPlans = pgTable("josey_workflow_plans", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  conversationId: uuid("conversation_id")
+    .notNull()
+    .references(() => joseyConversations.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  description: text("description"),
+  status: pgEnum("plan_status", ["analyzing", "planning", "approved", "executing", "completed", "failed"])("status").default("analyzing"),
+  stepsTotal: integer("steps_total").default(0),
+  stepsCompleted: integer("steps_completed").default(0),
+  approvedBy: text("approved_by"),
+  approvedAt: timestamp("approved_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+});
+
+export const joseyCheckpoints = pgTable("josey_checkpoints", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  conversationId: uuid("conversation_id")
+    .notNull()
+    .references(() => joseyConversations.id, { onDelete: "cascade" }),
+  taskId: uuid("task_id").references(() => joseyTasks.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  description: text("description"),
+  snapshotData: jsonb("snapshot_data").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});
+
+export const joseyLogs = pgTable("josey_logs", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  conversationId: uuid("conversation_id")
+    .notNull()
+    .references(() => joseyConversations.id, { onDelete: "cascade" }),
+  taskId: uuid("task_id").references(() => joseyTasks.id, { onDelete: "cascade" }),
+  action: text("action").notNull(),
+  details: text("details"),
+  metadata: jsonb("metadata").default({}),
+  success: boolean("success").default(true),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});
+
+export const joseyScreenContext = pgTable("josey_screen_context", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: text("user_id").notNull(),
+  currentView: text("current_view").notNull(), // editor, dashboard, etc.
+  currentFile: text("current_file"),
+  selectedElement: text("selected_element"),
+  viewportData: jsonb("viewport_data").default({}),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
 });
 
@@ -206,3 +291,19 @@ export type GithubSyncHistory = typeof githubSyncHistory.$inferSelect;
 export type NewGithubSyncHistory = typeof githubSyncHistory.$inferInsert;
 export type GithubPullRequest = typeof githubPullRequests.$inferSelect;
 export type NewGithubPullRequest = typeof githubPullRequests.$inferInsert;
+
+// JoseyAI types
+export type JoseyConversation = typeof joseyConversations.$inferSelect;
+export type NewJoseyConversation = typeof joseyConversations.$inferInsert;
+export type JoseyMessage = typeof joseyMessages.$inferSelect;
+export type NewJoseyMessage = typeof joseyMessages.$inferInsert;
+export type JoseyTask = typeof joseyTasks.$inferSelect;
+export type NewJoseyTask = typeof joseyTasks.$inferInsert;
+export type JoseyWorkflowPlan = typeof joseyWorkflowPlans.$inferSelect;
+export type NewJoseyWorkflowPlan = typeof joseyWorkflowPlans.$inferInsert;
+export type JoseyCheckpoint = typeof joseyCheckpoints.$inferSelect;
+export type NewJoseyCheckpoint = typeof joseyCheckpoints.$inferInsert;
+export type JoseyLog = typeof joseyLogs.$inferSelect;
+export type NewJoseyLog = typeof joseyLogs.$inferInsert;
+export type JoseyScreenContext = typeof joseyScreenContext.$inferSelect;
+export type NewJoseyScreenContext = typeof joseyScreenContext.$inferInsert;
