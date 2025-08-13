@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { createGitHubClient, GitHubRepository, GitHubBranch } from "@shared/github-client";
+import { createGitHubClient, GitHubRepository, GitHubBranch } from "../../shared/github-client";
 
 // GET /api/github/test - Simple test endpoint
 export const testGitHub: RequestHandler = async (req, res) => {
