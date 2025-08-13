@@ -293,7 +293,9 @@ export default function Editor() {
 
     return () => {
       try {
-        abortController.abort();
+        if (!abortController.signal.aborted) {
+          abortController.abort();
+        }
       } catch (error) {
         // Ignore AbortController errors during cleanup
         console.log("AbortController cleanup completed");
