@@ -287,7 +287,12 @@ export default function Editor() {
       });
 
     return () => {
-      abortController.abort();
+      try {
+        abortController.abort();
+      } catch (error) {
+        // Ignore AbortController errors during cleanup
+        console.log("AbortController cleanup completed");
+      }
     };
   }, [projectId, pageId, user?.id]);
 
