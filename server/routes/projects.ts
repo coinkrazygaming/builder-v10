@@ -1,14 +1,14 @@
 import { RequestHandler } from "express";
 
 // Mock data for development
-const mockProjects = [
+let mockProjects = [
   {
     id: "1",
-    name: "E-commerce Website",
-    description: "Modern online store with shopping cart",
-    domain: "mystore.builder.app",
+    name: "My Awesome Website",
+    description: "A modern website built with the visual editor",
+    domain: "awesome.builder.app",
     customDomain: null,
-    status: "published",
+    status: "draft",
     ownerId: "mock-user-id",
     settings: {},
     createdAt: new Date("2024-01-15"),
