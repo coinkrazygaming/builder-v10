@@ -26,7 +26,6 @@ class ApiClient {
     options: RequestInit = {},
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
-    console.log("Making API request to:", url);
 
     const response = await fetch(url, {
       headers: {
@@ -36,28 +35,21 @@ class ApiClient {
       ...options,
     });
 
-    console.log("Response status:", response.status);
-    console.log("Response headers:", Object.fromEntries(response.headers.entries()));
-
     // IMPORTANT: Read the response body only once to avoid "body stream already read" error
     const responseText = await response.text();
 
     if (!response.ok) {
-      console.log("Error response body:", responseText.substring(0, 200));
       throw new Error(`API Error: ${response.status} ${response.statusText}`);
     }
 
     const contentType = response.headers.get("content-type");
     if (!contentType || !contentType.includes("application/json")) {
-      console.log("Non-JSON response:", responseText.substring(0, 200));
       throw new Error(`Expected JSON response but got ${contentType}: ${responseText.substring(0, 100)}`);
     }
 
     try {
       return JSON.parse(responseText);
     } catch (parseError) {
-      console.log("JSON parse error:", parseError);
-      console.log("Response text:", responseText.substring(0, 200));
       throw new Error(`Failed to parse JSON response: ${parseError.message}`);
     }
   }
