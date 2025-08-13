@@ -273,10 +273,25 @@ export default function Dashboard() {
                   : "Create your first project to get started building"}
               </p>
               {!searchQuery && (
-                <Button onClick={handleCreateProject}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create Your First Project
-                </Button>
+                <div className="flex space-x-2 justify-center">
+                  <GitHubImportDialog
+                    projectId=""
+                    onImportSuccess={(repo) => {
+                      console.log("Repository imported:", repo);
+                      window.location.reload();
+                    }}
+                    trigger={
+                      <Button variant="outline">
+                        <Github className="w-4 h-4 mr-2" />
+                        Import from GitHub
+                      </Button>
+                    }
+                  />
+                  <Button onClick={handleCreateProject}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Create Your First Project
+                  </Button>
+                </div>
               )}
             </div>
           ) : (
