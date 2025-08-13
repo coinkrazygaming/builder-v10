@@ -96,7 +96,7 @@ export default function JoseyAIChat({
 
     // Generate initial suggestions (with longer delay to avoid startup issues)
     const suggestionTimeout = setTimeout(() => {
-      if (document.visibilityState === 'visible') {
+      if (document.visibilityState === "visible") {
         updateProactiveSuggestions();
       }
     }, 2000);
@@ -131,7 +131,10 @@ export default function JoseyAIChat({
 
         // Update suggestions after context update (with debounce)
         setTimeout(() => {
-          if (!isUpdatingSuggestions && document.visibilityState === 'visible') {
+          if (
+            !isUpdatingSuggestions &&
+            document.visibilityState === "visible"
+          ) {
             updateProactiveSuggestions();
           }
         }, 1000);
