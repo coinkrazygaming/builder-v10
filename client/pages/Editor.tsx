@@ -67,7 +67,10 @@ export default function Editor() {
   useEffect(() => {
     // Validate required parameters
     if (!projectId || !user?.id) {
-      console.log("Missing required parameters for editor:", { projectId, userId: user?.id });
+      console.log("Missing required parameters for editor:", {
+        projectId,
+        userId: user?.id,
+      });
       setIsLoading(false);
       return;
     }
@@ -84,7 +87,9 @@ export default function Editor() {
     })
       .then((res) => {
         if (!res.ok) {
-          throw new Error(`Project API error! status: ${res.status} for project ID: ${projectId}`);
+          throw new Error(
+            `Project API error! status: ${res.status} for project ID: ${projectId}`,
+          );
         }
         return res.json();
       })
@@ -101,7 +106,9 @@ export default function Editor() {
           signal: abortController.signal,
         }).then((res) => {
           if (!res.ok) {
-            throw new Error(`Page API error! status: ${res.status} for page ID: ${targetPageId} in project: ${projectId}`);
+            throw new Error(
+              `Page API error! status: ${res.status} for page ID: ${targetPageId} in project: ${projectId}`,
+            );
           }
           return res.json();
         });
@@ -173,9 +180,15 @@ export default function Editor() {
 
         // Categorize error types for better debugging
         if (error.message.includes("Project API error")) {
-          console.warn("Project not found, using fallback project data:", error.message);
+          console.warn(
+            "Project not found, using fallback project data:",
+            error.message,
+          );
         } else if (error.message.includes("Page API error")) {
-          console.warn("Page not found, using fallback page data:", error.message);
+          console.warn(
+            "Page not found, using fallback page data:",
+            error.message,
+          );
         } else {
           console.error("Unexpected error loading editor data:", error);
         }
