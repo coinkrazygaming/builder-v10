@@ -50,28 +50,31 @@ npm run db:test
 ## 🛠️ Troubleshooting
 
 ### Connection Issues
+
 - Verify your DATABASE_URL format
 - Check that your Neon database is active
 - Ensure your IP is allowlisted in Neon (if applicable)
 
 ### Migration Issues
+
 - Run `npm run db:generate` to create new migrations
 - Use `npm run db:push` for development (direct schema sync)
 - Use `npm run db:migrate` for production deployments
 
 ### Database Explorer
+
 - Use `npm run db:studio` to visually explore your database
 - Access at http://localhost:4983 (default Drizzle Studio port)
 
 ## 📋 Available Database Commands
 
-| Command | Description |
-|---------|-------------|
-| `npm run db:test` | Test database connection |
-| `npm run db:generate` | Generate migration files |
-| `npm run db:push` | Push schema changes directly |
-| `npm run db:migrate` | Run pending migrations |
-| `npm run db:studio` | Open Drizzle Studio |
+| Command               | Description                  |
+| --------------------- | ---------------------------- |
+| `npm run db:test`     | Test database connection     |
+| `npm run db:generate` | Generate migration files     |
+| `npm run db:push`     | Push schema changes directly |
+| `npm run db:migrate`  | Run pending migrations       |
+| `npm run db:studio`   | Open Drizzle Studio          |
 
 ## 🔒 Security Notes
 

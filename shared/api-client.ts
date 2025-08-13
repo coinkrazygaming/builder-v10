@@ -26,7 +26,7 @@ class ApiClient {
     options: RequestInit = {},
   ): Promise<T> {
     // Add cache busting to ensure fresh requests
-    const separator = endpoint.includes('?') ? '&' : '?';
+    const separator = endpoint.includes("?") ? "&" : "?";
     const url = `${this.baseUrl}${endpoint}${separator}_t=${Date.now()}`;
 
     const response = await fetch(url, {
