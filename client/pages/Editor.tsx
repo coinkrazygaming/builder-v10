@@ -159,6 +159,12 @@ export default function Editor() {
       .catch((error) => {
         if (abortController.signal.aborted) return;
         console.error("Error loading editor data:", error);
+
+        // If it's a 404 error, try to create a default page or use fallback data
+        if (error.message.includes("404")) {
+          console.log("Page or project not found, using fallback data");
+        }
+
         // Fallback to mock data
         setCurrentProject({
           id: projectId || "1",
