@@ -542,7 +542,7 @@ export default function Editor() {
 
         {/* Main Editor */}
         <div className="flex-1 flex overflow-hidden">
-          {/* Left Sidebar - Elements & JoseyAI */}
+          {/* Left Sidebar - JoseyAI & Elements */}
           {!isPreviewMode && (
             <div
               className={cn(
@@ -550,9 +550,6 @@ export default function Editor() {
                 sidebarCollapsed ? "w-0" : "w-[32rem]",
               )}
             >
-              <div className="w-64 h-full border-r bg-white dark:bg-gray-800">
-                <ElementsSidebar />
-              </div>
               <div className="w-80 h-full border-r bg-white dark:bg-gray-800">
                 <JoseyAIChat
                   userId={user.id}
@@ -562,6 +559,9 @@ export default function Editor() {
                   selectedElement={selectedElement?.id}
                   className="h-full"
                 />
+              </div>
+              <div className="w-64 h-full border-r bg-white dark:bg-gray-800">
+                <ElementsSidebar />
               </div>
             </div>
           )}
