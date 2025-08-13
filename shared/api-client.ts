@@ -25,13 +25,16 @@ class ApiClient {
     endpoint: string,
     options: RequestInit = {},
   ): Promise<T> {
-    const url = `${this.baseUrl}${endpoint}`;
+    // Add cache busting to ensure fresh requests
+    const separator = endpoint.includes('?') ? '&' : '?';
+    const url = `${this.baseUrl}${endpoint}${separator}_t=${Date.now()}`;
 
     const response = await fetch(url, {
       headers: {
         "Content-Type": "application/json",
         ...options.headers,
       },
+      cache: "no-cache", // Prevent caching issues
       ...options,
     });
 
