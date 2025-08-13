@@ -542,16 +542,26 @@ export default function Editor() {
 
         {/* Main Editor */}
         <div className="flex-1 flex overflow-hidden">
-          {/* Left Sidebar - Elements */}
+          {/* Left Sidebar - Elements & JoseyAI */}
           {!isPreviewMode && (
             <div
               className={cn(
-                "transition-all duration-300",
-                sidebarCollapsed ? "w-0" : "w-64",
+                "transition-all duration-300 flex",
+                sidebarCollapsed ? "w-0" : "w-[32rem]",
               )}
             >
               <div className="w-64 h-full border-r bg-white dark:bg-gray-800">
                 <ElementsSidebar />
+              </div>
+              <div className="w-80 h-full border-r bg-white dark:bg-gray-800">
+                <JoseyAIChat
+                  userId={user.id}
+                  projectId={projectId}
+                  currentView="editor"
+                  currentFile={currentPage?.name}
+                  selectedElement={selectedElement?.id}
+                  className="h-full"
+                />
               </div>
             </div>
           )}
@@ -628,14 +638,6 @@ export default function Editor() {
         </div>
       </div>
 
-      {/* JoseyAI Chat - Permanent overlay */}
-      <JoseyAIChat
-        userId={user.id}
-        projectId={projectId}
-        currentView="editor"
-        currentFile={currentPage?.name}
-        selectedElement={selectedElement?.id}
-      />
     </DndContext>
   );
 }
