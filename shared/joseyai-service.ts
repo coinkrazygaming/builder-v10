@@ -98,7 +98,7 @@ export class JoseyAIService {
     const response: JoseyResponse = {
       message: this.generateResponseMessage(analysis, workflowPlan),
       workflowPlan,
-      requiresApproval: workflowPlan.stepsTotal > 1,
+      requiresApproval: workflowPlan && workflowPlan.stepsTotal > 1,
       autoExecuteAfter: 5, // Auto-execute after 5 seconds
     };
 
