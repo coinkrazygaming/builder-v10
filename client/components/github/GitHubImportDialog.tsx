@@ -166,12 +166,14 @@ export default function GitHubImportDialog({
         });
 
         if (!response.ok) {
-          throw new Error("Failed to create project");
+          const errorText = await response.text();
+          console.error("Project creation failed:", response.status, errorText);
+          throw new Error(`Failed to create project: ${response.status} ${response.statusText}`);
         }
 
         const project = await response.json();
         targetProjectId = project.id;
-        console.log("Created project:", project.id);
+        console.log("Created project successfully:", project.id);
       }
 
       console.log("Importing repository to project:", targetProjectId);
