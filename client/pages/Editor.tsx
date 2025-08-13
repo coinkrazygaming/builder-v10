@@ -176,7 +176,11 @@ export default function Editor() {
         setIsLoading(false);
       })
       .catch((error) => {
-        if (abortController.signal.aborted) return;
+        // Handle AbortError specifically - this is expected during cleanup
+        if (error.name === 'AbortError' || abortController.signal.aborted) {
+          console.log('Fetch request was aborted during cleanup');
+          return;
+        }
 
         // Categorize error types for better debugging
         if (error.message.includes("Project API error")) {
