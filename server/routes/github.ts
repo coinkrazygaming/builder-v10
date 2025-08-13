@@ -224,10 +224,22 @@ export const getGitHubFile: RequestHandler = async (req, res) => {
 // POST /api/github/repositories/:owner/:repo/import - Import repository to project
 export const importGitHubRepository: RequestHandler = async (req, res) => {
   try {
+    console.log("📥 GitHub import request received");
+    console.log("Request params:", req.params);
+    console.log("Request body:", req.body);
+    console.log("Request headers:", {
+      contentType: req.headers['content-type'],
+      userAgent: req.headers['user-agent'],
+      githubToken: req.headers['x-github-token'] ? 'present' : 'missing',
+      userId: req.headers['x-user-id'] ? req.headers['x-user-id'] : 'missing'
+    });
+
     const { owner, repo } = req.params;
     const { projectId, branch = "main" } = req.body;
     const accessToken = req.headers["x-github-token"] as string;
     const userId = req.headers["x-user-id"] as string;
+
+    console.log("Extracted values:", { owner, repo, projectId, branch, accessToken: accessToken ? 'present' : 'missing', userId });
 
     if (!accessToken) {
       return res.status(401).json({ error: "GitHub access token required" });
