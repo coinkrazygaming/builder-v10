@@ -1,13 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -20,7 +14,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import {
   Github,
   GitBranch,
@@ -46,11 +45,8 @@ import GitHubImportDialog from "@/components/github/GitHubImportDialog";
 import GitHubSync from "@/components/github/GitHubSync";
 import GitHubPRDialog from "@/components/github/GitHubPRDialog";
 import GitHubWorkflow from "@/components/github/GitHubWorkflow";
-import type {
-  GithubRepository,
-  GithubSyncHistory,
-  GithubPullRequest,
-} from "@shared/schema";
+import GitHubDebug from "@/components/github/GitHubDebug";
+import type { GithubRepository, GithubSyncHistory, GithubPullRequest } from "@shared/schema";
 import type { GitHubRepository } from "@shared/github-client";
 
 // Mock data for demonstration
@@ -90,18 +86,15 @@ const mockRepositories: GithubRepository[] = [
 ];
 
 export default function GitHubDashboard() {
-  const [repositories, setRepositories] =
-    useState<GithubRepository[]>(mockRepositories);
+  const [repositories, setRepositories] = useState<GithubRepository[]>(mockRepositories);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedRepo, setSelectedRepo] = useState<GithubRepository | null>(
-    repositories[0] || null,
-  );
+  const [selectedRepo, setSelectedRepo] = useState<GithubRepository | null>(repositories[0] || null);
 
   const filteredRepositories = repositories.filter(
     (repo) =>
       repo.repoName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      repo.repoOwner.toLowerCase().includes(searchQuery.toLowerCase()),
+      repo.repoOwner.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleRepositoryImport = (repository: GitHubRepository) => {
@@ -128,9 +121,9 @@ export default function GitHubDashboard() {
   };
 
   const handleDisconnectRepository = (repoId: string) => {
-    setRepositories(repositories.filter((repo) => repo.id !== repoId));
+    setRepositories(repositories.filter(repo => repo.id !== repoId));
     if (selectedRepo?.id === repoId) {
-      setSelectedRepo(repositories.find((repo) => repo.id !== repoId) || null);
+      setSelectedRepo(repositories.find(repo => repo.id !== repoId) || null);
     }
   };
 
@@ -138,20 +131,15 @@ export default function GitHubDashboard() {
     if (!repo.syncEnabled) {
       return <Badge variant="outline">Disabled</Badge>;
     }
-
+    
     if (!repo.lastSync) {
       return <Badge variant="secondary">Never synced</Badge>;
     }
 
-    const hoursSinceSync =
-      (Date.now() - new Date(repo.lastSync).getTime()) / (1000 * 60 * 60);
-
+    const hoursSinceSync = (Date.now() - new Date(repo.lastSync).getTime()) / (1000 * 60 * 60);
+    
     if (hoursSinceSync < 1) {
-      return (
-        <Badge variant="default" className="bg-green-500">
-          Recently synced
-        </Badge>
-      );
+      return <Badge variant="default" className="bg-green-500">Recently synced</Badge>;
     } else if (hoursSinceSync < 24) {
       return <Badge variant="secondary">Synced today</Badge>;
     } else {
@@ -193,14 +181,16 @@ export default function GitHubDashboard() {
       {/* Main Content */}
       <main className="p-6">
         <div className="max-w-7xl mx-auto">
+          {/* Debug component - remove after testing */}
+          <div className="mb-6">
+            <GitHubDebug />
+          </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Repository List */}
             <div className="lg:col-span-1 space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">
-                    Connected Repositories
-                  </CardTitle>
+                  <CardTitle className="text-lg">Connected Repositories</CardTitle>
                   <CardDescription>
                     Manage your GitHub repository connections
                   </CardDescription>
@@ -233,26 +223,16 @@ export default function GitHubDashboard() {
                           <CardContent className="p-4">
                             <div className="space-y-2">
                               <div className="flex items-center justify-between">
-                                <h4 className="font-medium text-sm">
-                                  {repo.repoName}
-                                </h4>
+                                <h4 className="font-medium text-sm">{repo.repoName}</h4>
                                 <DropdownMenu>
                                   <DropdownMenuTrigger asChild>
-                                    <Button
-                                      variant="ghost"
-                                      size="icon"
-                                      className="h-6 w-6"
-                                    >
+                                    <Button variant="ghost" size="icon" className="h-6 w-6">
                                       <MoreHorizontal className="w-3 h-3" />
                                     </Button>
                                   </DropdownMenuTrigger>
                                   <DropdownMenuContent align="end">
                                     <DropdownMenuItem asChild>
-                                      <a
-                                        href={repo.repoUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                      >
+                                      <a href={repo.repoUrl} target="_blank" rel="noopener noreferrer">
                                         <ExternalLink className="mr-2 h-4 w-4" />
                                         View on GitHub
                                       </a>
@@ -264,9 +244,7 @@ export default function GitHubDashboard() {
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem
                                       className="text-red-600"
-                                      onClick={() =>
-                                        handleDisconnectRepository(repo.id)
-                                      }
+                                      onClick={() => handleDisconnectRepository(repo.id)}
                                     >
                                       <Trash2 className="mr-2 h-4 w-4" />
                                       Disconnect
@@ -274,24 +252,20 @@ export default function GitHubDashboard() {
                                   </DropdownMenuContent>
                                 </DropdownMenu>
                               </div>
-
+                              
                               <p className="text-xs text-muted-foreground">
                                 {repo.repoOwner}/{repo.repoName}
                               </p>
-
+                              
                               <div className="flex items-center space-x-2">
                                 <GitBranch className="w-3 h-3 text-muted-foreground" />
                                 <span className="text-xs">{repo.branch}</span>
                                 {getSyncStatusBadge(repo)}
                               </div>
-
+                              
                               {repo.lastSync && (
                                 <p className="text-xs text-muted-foreground">
-                                  Last sync:{" "}
-                                  {formatDistanceToNow(
-                                    new Date(repo.lastSync),
-                                    { addSuffix: true },
-                                  )}
+                                  Last sync: {formatDistanceToNow(new Date(repo.lastSync), { addSuffix: true })}
                                 </p>
                               )}
                             </div>
@@ -304,9 +278,7 @@ export default function GitHubDashboard() {
                   {filteredRepositories.length === 0 && !searchQuery && (
                     <div className="text-center py-8">
                       <Github className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold mb-2">
-                        No Repositories Connected
-                      </h3>
+                      <h3 className="text-lg font-semibold mb-2">No Repositories Connected</h3>
                       <p className="text-muted-foreground mb-4">
                         Connect your first GitHub repository to get started
                       </p>
@@ -341,18 +313,14 @@ export default function GitHubDashboard() {
                   <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="sync">Sync & Deploy</TabsTrigger>
                     <TabsTrigger value="workflow">Push/Pull</TabsTrigger>
-                    <TabsTrigger value="pull-requests">
-                      Pull Requests
-                    </TabsTrigger>
+                    <TabsTrigger value="pull-requests">Pull Requests</TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="sync">
                     <GitHubSync
                       projectId={selectedRepo.projectId}
                       repository={selectedRepo}
-                      onDisconnect={() =>
-                        handleDisconnectRepository(selectedRepo.id)
-                      }
+                      onDisconnect={() => handleDisconnectRepository(selectedRepo.id)}
                     />
                   </TabsContent>
 
@@ -403,12 +371,9 @@ export default function GitHubDashboard() {
                   <CardContent className="pt-6">
                     <div className="text-center space-y-4">
                       <Github className="w-16 h-16 text-muted-foreground mx-auto" />
-                      <h3 className="text-xl font-semibold">
-                        Select a Repository
-                      </h3>
+                      <h3 className="text-xl font-semibold">Select a Repository</h3>
                       <p className="text-muted-foreground">
-                        Choose a repository from the list to manage its GitHub
-                        integration
+                        Choose a repository from the list to manage its GitHub integration
                       </p>
                     </div>
                   </CardContent>
