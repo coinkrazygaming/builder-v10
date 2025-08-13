@@ -6,6 +6,7 @@ import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Editor from "./pages/Editor";
+import GitHubDashboard from "./pages/GitHubDashboard";
 import AuthSignIn from "./pages/auth/SignIn";
 import AuthSignUp from "./pages/auth/SignUp";
 import NotFound from "./pages/NotFound";
@@ -25,6 +26,7 @@ function App() {
 
           {/* Protected routes */}
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/github" element={<GitHubDashboard />} />
           <Route path="/editor/:projectId" element={<Editor />} />
           <Route path="/editor/:projectId/:pageId" element={<Editor />} />
 
