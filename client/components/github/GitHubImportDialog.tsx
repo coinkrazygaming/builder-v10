@@ -144,7 +144,7 @@ export default function GitHubImportDialog({
       console.log("Selected repo:", selectedRepo?.name);
       console.log("Selected branch:", selectedBranch);
 
-      let targetProjectId = projectId;
+      let targetProjectId = projectId ? String(projectId) : undefined;
 
       // If no project ID provided, create a new project first
       if (!targetProjectId || targetProjectId.trim() === "") {
