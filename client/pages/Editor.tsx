@@ -157,6 +157,7 @@ export default function Editor() {
         setIsLoading(false);
       })
       .catch((error) => {
+        if (abortController.signal.aborted) return;
         console.error("Error loading editor data:", error);
         // Fallback to mock data
         setCurrentProject({
