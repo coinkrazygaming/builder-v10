@@ -501,14 +501,18 @@ export default function JoseyAIChat({
                 </div>
               ))}
               {isLoading && (
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center">
-                    <Bot className="w-4 h-4" />
+                <div className="flex items-start space-x-3 group">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                    <Bot className="w-3 h-3" />
                   </div>
-                  <div className="bg-gray-100 p-3 rounded-lg">
-                    <div className="flex items-center space-x-2">
-                      <Clock className="w-3 h-3 animate-spin" />
-                      <span className="text-sm">JoseyAI is thinking...</span>
+                  <div className="flex-1">
+                    <div className="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600 p-3 rounded-lg shadow-sm">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
+                        <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
+                        <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+                        <span className="text-sm text-gray-600 dark:text-gray-400 ml-2">JoseyAI is thinking...</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -519,17 +523,17 @@ export default function JoseyAIChat({
 
           {/* Proactive Suggestions */}
           {suggestions.length > 0 && (
-            <div className="border-t p-3 bg-gray-50">
-              <div className="flex items-center space-x-2 mb-2">
-                <Lightbulb className="w-4 h-4 text-yellow-500" />
-                <span className="text-xs font-medium">Suggestions</span>
+            <div className="border-t border-gray-200 dark:border-gray-700 p-3 bg-gray-50 dark:bg-gray-800">
+              <div className="flex items-center space-x-2 mb-3">
+                <Lightbulb className="w-4 h-4 text-amber-500" />
+                <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">Quick Suggestions</span>
               </div>
-              <div className="space-y-1">
+              <div className="space-y-2">
                 {suggestions.slice(0, 2).map((suggestion, index) => (
                   <button
                     key={index}
                     onClick={() => handleSuggestionClick(suggestion)}
-                    className="w-full text-left text-xs p-2 rounded bg-white hover:bg-purple-50 border border-gray-200 transition-colors"
+                    className="w-full text-left text-xs p-2 rounded-md bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 transition-colors shadow-sm"
                   >
                     {suggestion}
                   </button>
