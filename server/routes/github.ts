@@ -60,18 +60,52 @@ export const getGitHubRepositories: RequestHandler = async (req, res) => {
     const accessToken = req.headers["x-github-token"] as string;
     const page = parseInt(req.query.page as string) || 1;
     const perPage = parseInt(req.query.per_page as string) || 30;
-    
+
     if (!accessToken) {
       return res.status(401).json({ error: "GitHub access token required" });
     }
 
-    const client = createGitHubClient(accessToken);
-    const repositories = await client.getUserRepositories(page, perPage);
-    
+    console.log("Fetching repositories...");
+    const response = await fetch(`https://api.github.com/user/repos?page=${page}&per_page=${perPage}&sort=updated&type=all`, {
+      headers: {
+        Authorization: `token ${accessToken}`,
+        "User-Agent": "BuilderClone/1.0",
+      },
+    });
+
+    if (!response.ok) {
+      console.log("GitHub repositories API call failed:", response.status);
+      return res.status(response.status).json({
+        error: "Failed to fetch repositories",
+        status: response.status
+      });
+    }
+
+    const repos = await response.json();
+
+    // Transform to our expected format
+    const repositories = repos.map((repo: any) => ({
+      id: repo.id,
+      name: repo.name,
+      fullName: repo.full_name,
+      description: repo.description,
+      htmlUrl: repo.html_url,
+      cloneUrl: repo.clone_url,
+      defaultBranch: repo.default_branch,
+      private: repo.private,
+      owner: {
+        login: repo.owner.login,
+        avatarUrl: repo.owner.avatar_url,
+      },
+      updatedAt: repo.updated_at,
+      language: repo.language,
+    }));
+
+    console.log(`Fetched ${repositories.length} repositories`);
     res.json(repositories);
   } catch (error) {
     console.error("Error fetching GitHub repositories:", error);
-    res.status(500).json({ error: "Failed to fetch repositories" });
+    res.status(500).json({ error: "Failed to fetch repositories", details: error.message });
   }
 };
 
