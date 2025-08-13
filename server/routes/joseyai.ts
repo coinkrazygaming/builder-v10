@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { joseyAI, type JoseyRequest } from "@shared/joseyai-service";
+import { joseyAI, type JoseyRequest } from "../../shared/joseyai-service";
 
 // POST /api/joseyai/chat - Send message to JoseyAI
 export const sendMessage: RequestHandler = async (req, res) => {
