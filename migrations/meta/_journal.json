@@ -8,6 +8,13 @@
       "when": 1754638105777,
       "tag": "0000_silky_mesmero",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1755088688716,
+      "tag": "0001_friendly_sasquatch",
+      "breakpoints": true
     }
   ]
 }
