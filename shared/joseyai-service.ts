@@ -77,6 +77,11 @@ export class JoseyAIService {
   async processRequest(request: JoseyRequest): Promise<JoseyResponse> {
     console.log("🤖 JoseyAI processing request:", request.message);
 
+    // Validate request
+    if (!request || !request.message || !request.userId) {
+      throw new Error("Invalid request: missing required fields");
+    }
+
     // Update screen context
     if (request.context) {
       this.updateScreenContext(request.userId, request.context);
@@ -84,6 +89,7 @@ export class JoseyAIService {
 
     // Analyze the request
     const analysis = await this.analyzeRequest(request);
+    console.log("🔍 Request analysis:", analysis);
 
     // Create workflow plan
     const workflowPlan = await this.createWorkflowPlan(request, analysis);
