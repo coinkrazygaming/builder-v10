@@ -391,19 +391,19 @@ export default function JoseyAIChat({
                 <div
                   key={message.id}
                   className={cn(
-                    "flex items-start space-x-3",
+                    "flex items-start space-x-3 group",
                     message.role === "user" &&
                       "flex-row-reverse space-x-reverse",
                   )}
                 >
                   <div
                     className={cn(
-                      "w-8 h-8 rounded-full flex items-center justify-center",
+                      "w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm",
                       message.role === "user"
-                        ? "bg-blue-100 text-blue-600"
+                        ? "bg-blue-500 text-white"
                         : message.role === "system"
-                          ? "bg-red-100 text-red-600"
-                          : "bg-purple-100 text-purple-600",
+                          ? "bg-amber-500 text-white"
+                          : "bg-gradient-to-r from-purple-600 to-blue-600 text-white",
                     )}
                   >
                     {message.role === "user" ? (
@@ -411,7 +411,7 @@ export default function JoseyAIChat({
                     ) : message.role === "system" ? (
                       <AlertCircle className="w-4 h-4" />
                     ) : (
-                      <Bot className="w-4 h-4" />
+                      <Bot className="w-3 h-3" />
                     )}
                   </div>
 
@@ -423,13 +423,13 @@ export default function JoseyAIChat({
                   >
                     <div
                       className={cn(
-                        "inline-block p-3 rounded-lg max-w-[85%]",
+                        "inline-block p-3 rounded-lg max-w-[85%] shadow-sm border",
                         message.role === "user"
-                          ? "bg-blue-500 text-white ml-auto"
-                          : "bg-gray-100 text-gray-900",
+                          ? "bg-blue-500 text-white ml-auto border-blue-500"
+                          : "bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-200 dark:border-gray-600",
                       )}
                     >
-                      <p className="text-sm whitespace-pre-wrap">
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap">
                         {message.content}
                       </p>
                     </div>
