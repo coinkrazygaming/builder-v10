@@ -66,6 +66,7 @@ export function createServer() {
   app.get("/api/projects/:projectId/pages/:pageId/versions", getPageVersions);
 
   // GitHub API routes
+  console.log("Registering GitHub API routes...");
   app.get("/api/github/test", testGitHub);
   app.get("/api/github/user", getGitHubUser);
   app.get("/api/github/repositories", getGitHubRepositories);
@@ -77,6 +78,7 @@ export function createServer() {
   app.get("/api/github/repositories/:owner/:repo/pull-requests", getGitHubPullRequests);
   app.post("/api/github/repositories/:owner/:repo/pull-requests", createGitHubPullRequest);
   app.post("/api/github/repositories/:owner/:repo/files", createOrUpdateGitHubFile);
+  console.log("GitHub API routes registered successfully");
 
   return app;
 }
