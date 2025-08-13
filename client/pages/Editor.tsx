@@ -182,7 +182,7 @@ export default function Editor() {
       })
       .catch((error) => {
         // Handle AbortError specifically - this is expected during cleanup
-        if (error.name === "AbortError" || abortController.signal.aborted) {
+        if (error.name === "AbortError" || error.code === 20 || abortController.signal.aborted) {
           console.log("Fetch request was aborted during cleanup");
           return;
         }
