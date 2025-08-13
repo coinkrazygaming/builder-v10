@@ -139,11 +139,42 @@ export default function GitHubImportDialog({
     setError(null);
 
     try {
+      let targetProjectId = projectId;
+
+      // If no project ID provided, create a new project first
+      if (!targetProjectId || targetProjectId.trim() === "") {
+        console.log("Creating new project for GitHub import...");
+        const newProject = {
+          name: selectedRepo.name,
+          description: selectedRepo.description || `Imported from ${selectedRepo.fullName}`,
+          domain: `${selectedRepo.name.toLowerCase().replace(/[^a-z0-9-]/g, '-')}.builder.app`,
+          status: "draft" as const,
+        };
+
+        const response = await fetch("/api/projects", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-user-id": "mock-user-id", // TODO: Get from auth context
+          },
+          body: JSON.stringify(newProject),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to create project");
+        }
+
+        const project = await response.json();
+        targetProjectId = project.id;
+        console.log("Created project:", project.id);
+      }
+
+      console.log("Importing repository to project:", targetProjectId);
       const result = await apiClient.importGitHubRepository(
         accessToken,
         selectedRepo.owner.login,
         selectedRepo.name,
-        projectId,
+        targetProjectId,
         selectedBranch,
       );
 
