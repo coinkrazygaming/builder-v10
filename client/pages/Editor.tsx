@@ -128,7 +128,7 @@ export default function Editor() {
         });
       })
       .then((page) => {
-        if (abortController.signal.aborted) return;
+        if (abortController.signal.aborted || !isMountedRef.current) return;
         setCurrentPage(page);
 
         // Initialize with some sample elements
