@@ -179,8 +179,9 @@ export default function GitHubImportDialog({
         if (!project || !project.id) {
           throw new Error("Project creation failed: No project ID returned");
         }
-        targetProjectId = project.id;
-        console.log("Created project successfully:", project.id);
+        // Ensure project ID is a string
+        targetProjectId = String(project.id);
+        console.log("Created project successfully:", project.id, "type:", typeof project.id);
       }
 
       // Validate we have a valid project ID
