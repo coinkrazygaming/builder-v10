@@ -94,10 +94,14 @@ export default function JoseyAIChat({
     };
     setMessages([welcomeMessage]);
 
-    // Generate initial suggestions (with delay to avoid startup race conditions)
-    setTimeout(() => {
-      updateProactiveSuggestions();
-    }, 1000);
+    // Generate initial suggestions (with longer delay to avoid startup issues)
+    const suggestionTimeout = setTimeout(() => {
+      if (document.visibilityState === 'visible') {
+        updateProactiveSuggestions();
+      }
+    }, 2000);
+
+    return () => clearTimeout(suggestionTimeout);
   }, []);
 
   // Update screen context when props change
@@ -142,11 +146,16 @@ export default function JoseyAIChat({
 
     setIsUpdatingSuggestions(true);
     try {
+      // Add timeout and additional error handling
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+
       const response = await apiClient.getJoseySuggestions();
-      setSuggestions(response.suggestions || []);
+      clearTimeout(timeoutId);
+
+      setSuggestions(response?.suggestions || []);
     } catch (error) {
-      // Silently fail for now - JoseyAI API might not be available
-      console.warn("JoseyAI suggestions unavailable:", error.message);
+      // Complete silent handling - no console output to reduce noise
       setSuggestions([]);
     } finally {
       setIsUpdatingSuggestions(false);
