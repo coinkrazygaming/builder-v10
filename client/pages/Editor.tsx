@@ -67,9 +67,12 @@ export default function Editor() {
   const [showJoseyTaskManager, setShowJoseyTaskManager] = useState(false);
   const [joseyTasks, setJoseyTasks] = useState([]);
   const [joseyWorkflow, setJoseyWorkflow] = useState(null);
+  const isMountedRef = useRef(true);
 
   // Load project and page data
   useEffect(() => {
+    isMountedRef.current = true;
+
     // Validate required parameters
     if (!projectId || !user?.id) {
       console.log("Missing required parameters for editor:", {
@@ -84,7 +87,7 @@ export default function Editor() {
     setIsLoading(true);
 
     // Check if already aborted before starting
-    if (abortController.signal.aborted) {
+    if (abortController.signal.aborted || !isMountedRef.current) {
       setIsLoading(false);
       return;
     }
@@ -302,19 +305,23 @@ export default function Editor() {
       });
 
     return () => {
-      try {
-        // Check if the controller and signal exist and are not already aborted
-        if (
-          abortController &&
-          abortController.signal &&
-          !abortController.signal.aborted
-        ) {
-          abortController.abort();
+      isMountedRef.current = false;
+
+      // Use a timeout to defer the abort to avoid React strict mode issues
+      setTimeout(() => {
+        try {
+          // Check if the controller and signal exist and are not already aborted
+          if (
+            abortController &&
+            abortController.signal &&
+            !abortController.signal.aborted
+          ) {
+            abortController.abort();
+          }
+        } catch (error) {
+          // Completely ignore all AbortController errors during cleanup
         }
-      } catch (error) {
-        // Completely ignore all AbortController errors during cleanup
-        // This includes "signal is aborted without reason" errors from React strict mode
-      }
+      }, 0);
     };
   }, [projectId, pageId, user?.id]);
 
