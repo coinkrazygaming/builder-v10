@@ -176,6 +176,9 @@ export default function GitHubImportDialog({
         }
 
         const project = await response.json();
+        if (!project || !project.id) {
+          throw new Error("Project creation failed: No project ID returned");
+        }
         targetProjectId = project.id;
         console.log("Created project successfully:", project.id);
       }
