@@ -337,15 +337,17 @@ export default function JoseyAIChat({
 
   return (
     <div className={cn("w-full h-full flex flex-col", className)}>
-      <Card className="flex-1 flex flex-col shadow-2xl border-purple-200">
-        <CardHeader className="pb-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-t-lg">
+      <Card className="flex-1 flex flex-col shadow-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+        <CardHeader className="pb-3 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 rounded-t-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <Bot className="w-5 h-5" />
-              <CardTitle className="text-lg">JoseyAI</CardTitle>
+              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center">
+                <Bot className="w-4 h-4 text-white" />
+              </div>
+              <CardTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">JoseyAI</CardTitle>
               <Badge
                 variant="secondary"
-                className="bg-purple-100 text-purple-700"
+                className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 text-xs"
               >
                 {currentView}
               </Badge>
@@ -367,14 +369,14 @@ export default function JoseyAIChat({
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsMinimized(true)}
-                className="text-white hover:bg-white/20"
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 <Minimize2 className="w-4 h-4" />
               </Button>
             </div>
           </div>
           {currentFile && (
-            <div className="flex items-center space-x-1 text-sm opacity-90">
+            <div className="flex items-center space-x-1 text-xs text-gray-600 dark:text-gray-400 mt-1">
               <Code className="w-3 h-3" />
               <span>{currentFile}</span>
             </div>
@@ -383,8 +385,8 @@ export default function JoseyAIChat({
 
         <CardContent className="flex-1 flex flex-col p-0">
           {/* Messages Area */}
-          <ScrollArea className="flex-1 p-4">
-            <div className="space-y-4">
+          <ScrollArea className="flex-1 p-3">
+            <div className="space-y-3">
               {messages.map((message) => (
                 <div
                   key={message.id}
