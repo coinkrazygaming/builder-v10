@@ -250,6 +250,8 @@ export const importGitHubRepository: RequestHandler = async (req, res) => {
     }
 
     if (!projectId) {
+      console.error("❌ GitHub import failed: Project ID is missing or empty");
+      console.error("Request body was:", JSON.stringify(req.body, null, 2));
       return res.status(400).json({ error: "Project ID is required" });
     }
 
