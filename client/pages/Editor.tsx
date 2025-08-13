@@ -83,6 +83,12 @@ export default function Editor() {
     const abortController = new AbortController();
     setIsLoading(true);
 
+    // Check if already aborted before starting
+    if (abortController.signal.aborted) {
+      setIsLoading(false);
+      return;
+    }
+
     // Load project data
     fetch(`/api/projects/${projectId}`, {
       headers: {
