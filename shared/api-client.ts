@@ -39,7 +39,7 @@ class ApiClient {
     console.log("Response status:", response.status);
     console.log("Response headers:", Object.fromEntries(response.headers.entries()));
 
-    // Read the response body only once
+    // IMPORTANT: Read the response body only once to avoid "body stream already read" error
     const responseText = await response.text();
 
     if (!response.ok) {
