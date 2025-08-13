@@ -39,20 +39,27 @@ class ApiClient {
     console.log("Response status:", response.status);
     console.log("Response headers:", Object.fromEntries(response.headers.entries()));
 
+    // Read the response body only once
+    const responseText = await response.text();
+
     if (!response.ok) {
-      const responseText = await response.text();
       console.log("Error response body:", responseText.substring(0, 200));
       throw new Error(`API Error: ${response.status} ${response.statusText}`);
     }
 
     const contentType = response.headers.get("content-type");
     if (!contentType || !contentType.includes("application/json")) {
-      const responseText = await response.text();
       console.log("Non-JSON response:", responseText.substring(0, 200));
       throw new Error(`Expected JSON response but got ${contentType}: ${responseText.substring(0, 100)}`);
     }
 
-    return response.json();
+    try {
+      return JSON.parse(responseText);
+    } catch (parseError) {
+      console.log("JSON parse error:", parseError);
+      console.log("Response text:", responseText.substring(0, 200));
+      throw new Error(`Failed to parse JSON response: ${parseError.message}`);
+    }
   }
 
   // Projects
