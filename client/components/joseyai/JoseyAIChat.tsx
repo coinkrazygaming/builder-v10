@@ -1,0 +1,482 @@
+import { useState, useEffect, useRef } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
+import {
+  Bot,
+  User,
+  Send,
+  Minimize2,
+  Maximize2,
+  CheckCircle,
+  Circle,
+  Clock,
+  Zap,
+  AlertCircle,
+  Brain,
+  Eye,
+  Terminal,
+  Code,
+  Lightbulb,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { joseyAI, type JoseyRequest, type JoseyResponse } from "@shared/joseyai-service";
+import type { JoseyScreenContext, JoseyTask, JoseyWorkflowPlan } from "@shared/schema";
+
+interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  timestamp: Date;
+  workflowPlan?: JoseyWorkflowPlan;
+  tasks?: JoseyTask[];
+  autoExecuteAfter?: number;
+}
+
+interface JoseyAIChatProps {
+  userId: string;
+  projectId?: string;
+  currentView: string;
+  currentFile?: string;
+  selectedElement?: string;
+  className?: string;
+}
+
+export default function JoseyAIChat({
+  userId,
+  projectId,
+  currentView,
+  currentFile,
+  selectedElement,
+  className,
+}: JoseyAIChatProps) {
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [input, setInput] = useState("");
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeWorkflow, setActiveWorkflow] = useState<JoseyWorkflowPlan | null>(null);
+  const [autoExecuteTimer, setAutoExecuteTimer] = useState<number | null>(null);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const autoExecuteRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Auto-scroll to bottom
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  // Initialize with welcome message
+  useEffect(() => {
+    const welcomeMessage: ChatMessage = {
+      id: "welcome",
+      role: "assistant",
+      content: "👋 Hi! I'm JoseyAI, your coding companion. I can help you create, edit, debug, and deploy code. I'm aware of what you're working on and can provide context-aware assistance. What would you like to build today?",
+      timestamp: new Date(),
+    };
+    setMessages([welcomeMessage]);
+
+    // Generate initial suggestions
+    updateProactiveSuggestions();
+  }, []);
+
+  // Update screen context when props change
+  useEffect(() => {
+    const context: JoseyScreenContext = {
+      id: `context_${Date.now()}`,
+      userId,
+      currentView,
+      currentFile: currentFile || null,
+      selectedElement: selectedElement || null,
+      viewportData: {},
+      updatedAt: new Date(),
+    };
+
+    joseyAI.updateScreenContext(userId, context);
+    updateProactiveSuggestions();
+  }, [userId, currentView, currentFile, selectedElement]);
+
+  const updateProactiveSuggestions = () => {
+    const context = joseyAI.getScreenContext(userId);
+    if (context) {
+      const newSuggestions = joseyAI.generateProactiveSuggestions(context);
+      setSuggestions(newSuggestions);
+    }
+  };
+
+  const handleSendMessage = async () => {
+    if (!input.trim() || isLoading) return;
+
+    const userMessage: ChatMessage = {
+      id: `user_${Date.now()}`,
+      role: "user",
+      content: input,
+      timestamp: new Date(),
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInput("");
+    setIsLoading(true);
+
+    try {
+      const context = joseyAI.getScreenContext(userId);
+      const request: JoseyRequest = {
+        message: input,
+        userId,
+        projectId,
+        context,
+      };
+
+      const response = await joseyAI.processRequest(request);
+      
+      const assistantMessage: ChatMessage = {
+        id: `assistant_${Date.now()}`,
+        role: "assistant",
+        content: response.message,
+        timestamp: new Date(),
+        workflowPlan: response.workflowPlan,
+        tasks: response.tasks,
+        autoExecuteAfter: response.autoExecuteAfter,
+      };
+
+      setMessages(prev => [...prev, assistantMessage]);
+      
+      if (response.workflowPlan) {
+        setActiveWorkflow(response.workflowPlan);
+      }
+
+      // Start auto-execute timer if required
+      if (response.requiresApproval && response.autoExecuteAfter) {
+        startAutoExecuteTimer(response.autoExecuteAfter);
+      }
+
+    } catch (error) {
+      console.error("Error processing message:", error);
+      const errorMessage: ChatMessage = {
+        id: `error_${Date.now()}`,
+        role: "system",
+        content: "Sorry, I encountered an error processing your request. Please try again.",
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const startAutoExecuteTimer = (seconds: number) => {
+    setAutoExecuteTimer(seconds);
+    
+    if (autoExecuteRef.current) {
+      clearInterval(autoExecuteRef.current);
+    }
+
+    autoExecuteRef.current = setInterval(() => {
+      setAutoExecuteTimer(prev => {
+        if (prev === null || prev <= 1) {
+          handleAutoExecute();
+          return null;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const handleAutoExecute = () => {
+    if (autoExecuteRef.current) {
+      clearInterval(autoExecuteRef.current);
+      autoExecuteRef.current = null;
+    }
+    setAutoExecuteTimer(null);
+    handleApproveWorkflow();
+  };
+
+  const handleApproveWorkflow = () => {
+    if (activeWorkflow) {
+      const approvalMessage: ChatMessage = {
+        id: `approval_${Date.now()}`,
+        role: "assistant",
+        content: `✅ Executing plan: ${activeWorkflow.title}. I'll work through each step and keep you updated.`,
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, approvalMessage]);
+      
+      // Start executing workflow
+      executeWorkflow(activeWorkflow);
+    }
+  };
+
+  const handleDenyWorkflow = () => {
+    if (autoExecuteRef.current) {
+      clearInterval(autoExecuteRef.current);
+      autoExecuteRef.current = null;
+    }
+    setAutoExecuteTimer(null);
+    setActiveWorkflow(null);
+
+    const denialMessage: ChatMessage = {
+      id: `denial_${Date.now()}`,
+      role: "assistant",
+      content: "Understood. The plan has been cancelled. What would you like me to do instead?",
+      timestamp: new Date(),
+    };
+    setMessages(prev => [...prev, denialMessage]);
+  };
+
+  const executeWorkflow = async (workflow: JoseyWorkflowPlan) => {
+    // This is where we'd execute the actual workflow steps
+    // For now, we'll simulate the execution
+    const executionMessage: ChatMessage = {
+      id: `execution_${Date.now()}`,
+      role: "assistant",
+      content: `🚀 Starting execution of ${workflow.stepsTotal} steps. I'll create checkpoints after each step.`,
+      timestamp: new Date(),
+    };
+    setMessages(prev => [...prev, executionMessage]);
+
+    // Simulate workflow execution
+    setTimeout(() => {
+      const completionMessage: ChatMessage = {
+        id: `completion_${Date.now()}`,
+        role: "assistant",
+        content: `✅ Workflow completed successfully! All ${workflow.stepsTotal} steps have been executed. A checkpoint has been created.`,
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, completionMessage]);
+      setActiveWorkflow(null);
+    }, 2000);
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setInput(suggestion.replace(/[💡🔒⚡🎨🧪📱]/g, '').trim());
+  };
+
+  const getWorkflowStatusIcon = (status: string) => {
+    switch (status) {
+      case 'completed': return <CheckCircle className="w-4 h-4 text-green-500" />;
+      case 'in_progress': return <Clock className="w-4 h-4 text-blue-500 animate-spin" />;
+      case 'failed': return <AlertCircle className="w-4 h-4 text-red-500" />;
+      default: return <Circle className="w-4 h-4 text-gray-400" />;
+    }
+  };
+
+  if (isMinimized) {
+    return (
+      <div className={cn(
+        "fixed bottom-4 right-4 z-50",
+        className
+      )}>
+        <Button
+          onClick={() => setIsMinimized(false)}
+          className="bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg hover:shadow-xl transition-all"
+        >
+          <Bot className="w-4 h-4 mr-2" />
+          JoseyAI
+          {isLoading && <Clock className="w-3 h-3 ml-2 animate-spin" />}
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className={cn(
+      "fixed bottom-4 right-4 w-96 h-[600px] z-50 flex flex-col",
+      className
+    )}>
+      <Card className="flex-1 flex flex-col shadow-2xl border-purple-200">
+        <CardHeader className="pb-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-t-lg">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Bot className="w-5 h-5" />
+              <CardTitle className="text-lg">JoseyAI</CardTitle>
+              <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+                {currentView}
+              </Badge>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Eye className="w-4 h-4" title="Screen Aware" />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsMinimized(true)}
+                className="text-white hover:bg-white/20"
+              >
+                <Minimize2 className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+          {currentFile && (
+            <div className="flex items-center space-x-1 text-sm opacity-90">
+              <Code className="w-3 h-3" />
+              <span>{currentFile}</span>
+            </div>
+          )}
+        </CardHeader>
+
+        <CardContent className="flex-1 flex flex-col p-0">
+          {/* Messages Area */}
+          <ScrollArea className="flex-1 p-4">
+            <div className="space-y-4">
+              {messages.map((message) => (
+                <div
+                  key={message.id}
+                  className={cn(
+                    "flex items-start space-x-3",
+                    message.role === "user" && "flex-row-reverse space-x-reverse"
+                  )}
+                >
+                  <div className={cn(
+                    "w-8 h-8 rounded-full flex items-center justify-center",
+                    message.role === "user" 
+                      ? "bg-blue-100 text-blue-600"
+                      : message.role === "system"
+                      ? "bg-red-100 text-red-600"
+                      : "bg-purple-100 text-purple-600"
+                  )}>
+                    {message.role === "user" ? (
+                      <User className="w-4 h-4" />
+                    ) : message.role === "system" ? (
+                      <AlertCircle className="w-4 h-4" />
+                    ) : (
+                      <Bot className="w-4 h-4" />
+                    )}
+                  </div>
+
+                  <div className={cn(
+                    "flex-1 space-y-2",
+                    message.role === "user" && "text-right"
+                  )}>
+                    <div className={cn(
+                      "inline-block p-3 rounded-lg max-w-[85%]",
+                      message.role === "user"
+                        ? "bg-blue-500 text-white ml-auto"
+                        : "bg-gray-100 text-gray-900"
+                    )}>
+                      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                    </div>
+
+                    {/* Workflow Plan Display */}
+                    {message.workflowPlan && (
+                      <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                        <h4 className="font-semibold text-sm mb-2 flex items-center">
+                          <Brain className="w-4 h-4 mr-2" />
+                          Master Plan: {message.workflowPlan.title}
+                        </h4>
+                        <p className="text-xs text-gray-600 mb-2">
+                          {message.workflowPlan.description}
+                        </p>
+                        <div className="space-y-1">
+                          {Array.from({ length: message.workflowPlan.stepsTotal }, (_, i) => (
+                            <div key={i} className="flex items-center space-x-2 text-xs">
+                              {getWorkflowStatusIcon('pending')}
+                              <span>Step {i + 1}: Processing...</span>
+                            </div>
+                          ))}
+                        </div>
+                        
+                        {message.autoExecuteAfter && autoExecuteTimer && (
+                          <div className="mt-3 space-y-2">
+                            <div className="flex items-center justify-between text-xs">
+                              <span>Auto-executing in {autoExecuteTimer}s</span>
+                              <div className="flex space-x-2">
+                                <Button size="sm" variant="outline" onClick={handleDenyWorkflow}>
+                                  Cancel
+                                </Button>
+                                <Button size="sm" onClick={handleApproveWorkflow}>
+                                  Approve Now
+                                </Button>
+                              </div>
+                            </div>
+                            <Progress 
+                              value={((message.autoExecuteAfter - autoExecuteTimer) / message.autoExecuteAfter) * 100} 
+                              className="h-1"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="text-xs text-gray-500">
+                      {message.timestamp.toLocaleTimeString()}
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {isLoading && (
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center">
+                    <Bot className="w-4 h-4" />
+                  </div>
+                  <div className="bg-gray-100 p-3 rounded-lg">
+                    <div className="flex items-center space-x-2">
+                      <Clock className="w-3 h-3 animate-spin" />
+                      <span className="text-sm">JoseyAI is thinking...</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+          </ScrollArea>
+
+          {/* Proactive Suggestions */}
+          {suggestions.length > 0 && (
+            <div className="border-t p-3 bg-gray-50">
+              <div className="flex items-center space-x-2 mb-2">
+                <Lightbulb className="w-4 h-4 text-yellow-500" />
+                <span className="text-xs font-medium">Suggestions</span>
+              </div>
+              <div className="space-y-1">
+                {suggestions.slice(0, 2).map((suggestion, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleSuggestionClick(suggestion)}
+                    className="w-full text-left text-xs p-2 rounded bg-white hover:bg-purple-50 border border-gray-200 transition-colors"
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Input Area */}
+          <div className="border-t p-4">
+            <div className="flex items-center space-x-2">
+              <Input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                placeholder="Ask JoseyAI anything..."
+                disabled={isLoading}
+                className="flex-1"
+              />
+              <Button
+                onClick={handleSendMessage}
+                disabled={isLoading || !input.trim()}
+                size="icon"
+                className="bg-purple-600 hover:bg-purple-700"
+              >
+                <Send className="w-4 h-4" />
+              </Button>
+            </div>
+            <div className="flex items-center justify-between mt-2 text-xs text-gray-500">
+              <div className="flex items-center space-x-2">
+                <Zap className="w-3 h-3" />
+                <span>Auto-execute in 5s</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <Terminal className="w-3 h-3" />
+                <span>Server access enabled</span>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
