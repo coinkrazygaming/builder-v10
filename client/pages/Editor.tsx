@@ -25,6 +25,8 @@ import { Canvas, type CanvasElement } from "@/components/editor/Canvas";
 import { ElementsSidebar } from "@/components/editor/ElementsSidebar";
 import { PropertiesPanel } from "@/components/editor/PropertiesPanel";
 import { getElementByType } from "@/components/editor/BuilderElements";
+import JoseyAIChat from "@/components/joseyai/JoseyAIChat";
+import JoseyAITaskManager from "@/components/joseyai/JoseyAITaskManager";
 import { useAppStore } from "@shared/store";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
