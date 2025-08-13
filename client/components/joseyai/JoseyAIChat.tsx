@@ -436,12 +436,12 @@ export default function JoseyAIChat({
 
                     {/* Workflow Plan Display */}
                     {message.workflowPlan && (
-                      <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
-                        <h4 className="font-semibold text-sm mb-2 flex items-center">
+                      <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border border-purple-200 dark:border-purple-700 rounded-lg p-3 mt-2">
+                        <h4 className="font-semibold text-sm mb-2 flex items-center text-purple-700 dark:text-purple-300">
                           <Brain className="w-4 h-4 mr-2" />
                           Master Plan: {message.workflowPlan.title}
                         </h4>
-                        <p className="text-xs text-gray-600 mb-2">
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
                           {message.workflowPlan.description}
                         </p>
                         <div className="space-y-1">
@@ -450,7 +450,7 @@ export default function JoseyAIChat({
                             (_, i) => (
                               <div
                                 key={i}
-                                className="flex items-center space-x-2 text-xs"
+                                className="flex items-center space-x-2 text-xs text-gray-600 dark:text-gray-400"
                               >
                                 {getWorkflowStatusIcon("pending")}
                                 <span>Step {i + 1}: Processing...</span>
@@ -462,18 +462,20 @@ export default function JoseyAIChat({
                         {message.autoExecuteAfter && autoExecuteTimer && (
                           <div className="mt-3 space-y-2">
                             <div className="flex items-center justify-between text-xs">
-                              <span>Auto-executing in {autoExecuteTimer}s</span>
+                              <span className="text-amber-600 dark:text-amber-400 font-medium">Auto-executing in {autoExecuteTimer}s</span>
                               <div className="flex space-x-2">
                                 <Button
                                   size="sm"
                                   variant="outline"
                                   onClick={handleDenyWorkflow}
+                                  className="h-7 px-3 text-xs"
                                 >
                                   Cancel
                                 </Button>
                                 <Button
                                   size="sm"
                                   onClick={handleApproveWorkflow}
+                                  className="h-7 px-3 text-xs bg-green-600 hover:bg-green-700"
                                 >
                                   Approve Now
                                 </Button>
