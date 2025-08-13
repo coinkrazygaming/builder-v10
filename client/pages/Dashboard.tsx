@@ -27,6 +27,7 @@ import {
   LogOut,
   Moon,
   Sun,
+  Github,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -38,6 +39,7 @@ import {
 import { useAppStore } from "@shared/store";
 import { useTheme } from "next-themes";
 import { formatDistanceToNow } from "date-fns";
+import GitHubImportDialog from "@/components/github/GitHubImportDialog";
 
 // Mock user for demo
 const mockUser = {
@@ -208,10 +210,26 @@ export default function Dashboard() {
               </p>
             </div>
 
-            <Button onClick={handleCreateProject} className="mt-4 md:mt-0">
-              <Plus className="w-4 h-4 mr-2" />
-              Create Project
-            </Button>
+            <div className="flex space-x-2 mt-4 md:mt-0">
+              <GitHubImportDialog
+                projectId="" // Will be set after project creation
+                onImportSuccess={(repo) => {
+                  console.log("Repository imported:", repo);
+                  // Refresh projects list
+                  window.location.reload();
+                }}
+                trigger={
+                  <Button variant="outline">
+                    <Github className="w-4 h-4 mr-2" />
+                    Import from GitHub
+                  </Button>
+                }
+              />
+              <Button onClick={handleCreateProject}>
+                <Plus className="w-4 h-4 mr-2" />
+                Create Project
+              </Button>
+            </div>
           </div>
 
           {/* Search and Filters */}
