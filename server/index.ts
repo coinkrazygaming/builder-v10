@@ -36,6 +36,16 @@ export function createServer() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
+  // Debug middleware - log all requests
+  app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    if (req.url.startsWith("/api/github")) {
+      console.log("GitHub API request detected");
+      console.log("Headers:", req.headers);
+    }
+    next();
+  });
+
   // Mock auth middleware - TODO: Replace with real Stack Auth middleware
   app.use("/api", (req, res, next) => {
     // For now, we'll mock the user ID
