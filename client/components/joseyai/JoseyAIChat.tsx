@@ -24,7 +24,7 @@ import {
   Lightbulb,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { joseyAI, type JoseyRequest, type JoseyResponse } from "@shared/joseyai-service";
+import { apiClient } from "@shared/api-client";
 import type { JoseyScreenContext, JoseyTask, JoseyWorkflowPlan } from "@shared/schema";
 
 interface ChatMessage {
@@ -96,15 +96,20 @@ export default function JoseyAIChat({
       updatedAt: new Date(),
     };
 
-    joseyAI.updateScreenContext(userId, context);
-    updateProactiveSuggestions();
+    try {
+      await apiClient.updateJoseyContext(context);
+      updateProactiveSuggestions();
+    } catch (error) {
+      console.error("Failed to update context:", error);
+    }
   }, [userId, currentView, currentFile, selectedElement]);
 
-  const updateProactiveSuggestions = () => {
-    const context = joseyAI.getScreenContext(userId);
-    if (context) {
-      const newSuggestions = joseyAI.generateProactiveSuggestions(context);
-      setSuggestions(newSuggestions);
+  const updateProactiveSuggestions = async () => {
+    try {
+      const response = await apiClient.getJoseySuggestions();
+      setSuggestions(response.suggestions || []);
+    } catch (error) {
+      console.error("Failed to get suggestions:", error);
     }
   };
 
@@ -123,15 +128,17 @@ export default function JoseyAIChat({
     setIsLoading(true);
 
     try {
-      const context = joseyAI.getScreenContext(userId);
-      const request: JoseyRequest = {
-        message: input,
+      const context: JoseyScreenContext = {
+        id: `context_${Date.now()}`,
         userId,
-        projectId,
-        context,
+        currentView,
+        currentFile: currentFile || null,
+        selectedElement: selectedElement || null,
+        viewportData: {},
+        updatedAt: new Date(),
       };
 
-      const response = await joseyAI.processRequest(request);
+      const response = await apiClient.sendMessageToJosey(input, projectId, context);
       
       const assistantMessage: ChatMessage = {
         id: `assistant_${Date.now()}`,
