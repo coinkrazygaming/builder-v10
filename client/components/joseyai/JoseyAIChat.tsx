@@ -72,6 +72,8 @@ export default function JoseyAIChat({
     useState<JoseyWorkflowPlan | null>(null);
   const [autoExecuteTimer, setAutoExecuteTimer] = useState<number | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [isUpdatingSuggestions, setIsUpdatingSuggestions] = useState(false);
+  const [isUpdatingContext, setIsUpdatingContext] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const autoExecuteRef = useRef<NodeJS.Timeout | null>(null);
@@ -111,15 +113,23 @@ export default function JoseyAIChat({
         updatedAt: new Date(),
       };
 
+      // Prevent multiple simultaneous context updates
+      if (isUpdatingContext) return;
+
+      setIsUpdatingContext(true);
       try {
         await apiClient.updateJoseyContext(context);
-        // Update suggestions after context update
+        // Update suggestions after context update (with debounce)
         setTimeout(() => {
-          updateProactiveSuggestions();
+          if (!isUpdatingSuggestions) {
+            updateProactiveSuggestions();
+          }
         }, 500);
       } catch (error) {
         // Silently fail for now - JoseyAI API might not be available
         console.warn("JoseyAI context update unavailable:", error.message);
+      } finally {
+        setIsUpdatingContext(false);
       }
     };
 
