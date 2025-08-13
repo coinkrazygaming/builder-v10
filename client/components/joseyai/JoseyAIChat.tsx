@@ -122,16 +122,21 @@ export default function JoseyAIChat({
 
       setIsUpdatingContext(true);
       try {
+        // Add timeout protection
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+
         await apiClient.updateJoseyContext(context);
+        clearTimeout(timeoutId);
+
         // Update suggestions after context update (with debounce)
         setTimeout(() => {
-          if (!isUpdatingSuggestions) {
+          if (!isUpdatingSuggestions && document.visibilityState === 'visible') {
             updateProactiveSuggestions();
           }
-        }, 500);
+        }, 1000);
       } catch (error) {
-        // Silently fail for now - JoseyAI API might not be available
-        console.warn("JoseyAI context update unavailable:", error.message);
+        // Complete silent handling
       } finally {
         setIsUpdatingContext(false);
       }
