@@ -217,6 +217,14 @@ export default function GitHubImportDialog({
       resetDialog();
     } catch (err) {
       console.error("Import error:", err);
+      console.error("Error details:", {
+        message: err.message,
+        stack: err.stack,
+        targetProjectId,
+        selectedRepo: selectedRepo?.name,
+        selectedBranch,
+        hasAccessToken: !!accessToken,
+      });
 
       // Provide more specific error messages based on the error content
       if (err.message.includes("Failed to create project")) {
