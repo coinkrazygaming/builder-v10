@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -55,7 +61,7 @@ export default function GitHubWorkflow({
   const [success, setSuccess] = useState<string | null>(null);
   const [showPushDialog, setShowPushDialog] = useState(false);
   const [showPullDialog, setShowPullDialog] = useState(false);
-  
+
   // Push state
   const [commitMessage, setCommitMessage] = useState("");
   const [pendingChanges, setPendingChanges] = useState<FileChange[]>([
@@ -74,7 +80,7 @@ export default function GitHubWorkflow({
       type: "deleted",
     },
   ]);
-  
+
   // Pull state
   const [incomingChanges, setIncomingChanges] = useState<FileChange[]>([]);
   const [pullProgress, setPullProgress] = useState(0);
@@ -92,7 +98,7 @@ export default function GitHubWorkflow({
     try {
       // Simulate pushing changes
       for (let i = 0; i <= 100; i += 10) {
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100));
         // Update progress if needed
       }
 
@@ -103,7 +109,9 @@ export default function GitHubWorkflow({
       // 3. Creating commits for each file
       // 4. Pushing to the repository
 
-      setSuccess(`Successfully pushed ${pendingChanges.length} changes to ${branch}`);
+      setSuccess(
+        `Successfully pushed ${pendingChanges.length} changes to ${branch}`,
+      );
       setPendingChanges([]);
       setShowPushDialog(false);
       setCommitMessage("");
@@ -125,7 +133,7 @@ export default function GitHubWorkflow({
       // Simulate fetching changes
       for (let i = 0; i <= 100; i += 20) {
         setPullProgress(i);
-        await new Promise(resolve => setTimeout(resolve, 200));
+        await new Promise((resolve) => setTimeout(resolve, 200));
       }
 
       // TODO: Implement actual pull logic
@@ -151,7 +159,9 @@ export default function GitHubWorkflow({
       ];
 
       setIncomingChanges(mockIncoming);
-      setSuccess(`Successfully pulled ${mockIncoming.length} changes from ${branch}`);
+      setSuccess(
+        `Successfully pulled ${mockIncoming.length} changes from ${branch}`,
+      );
       setShowPullDialog(false);
     } catch (err) {
       setError("Failed to pull changes from GitHub");
@@ -201,7 +211,9 @@ export default function GitHubWorkflow({
       {success && (
         <Alert className="border-green-200 bg-green-50">
           <CheckCircle className="h-4 w-4 text-green-600" />
-          <AlertDescription className="text-green-800">{success}</AlertDescription>
+          <AlertDescription className="text-green-800">
+            {success}
+          </AlertDescription>
         </Alert>
       )}
 
@@ -213,14 +225,14 @@ export default function GitHubWorkflow({
               <Upload className="w-4 h-4" />
               <span>Push Changes</span>
             </CardTitle>
-            <CardDescription>
-              Push your local changes to GitHub
-            </CardDescription>
+            <CardDescription>Push your local changes to GitHub</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Pending changes:</span>
+                <span className="text-sm text-muted-foreground">
+                  Pending changes:
+                </span>
                 <Badge variant="outline">{pendingChanges.length}</Badge>
               </div>
               <Button
@@ -241,14 +253,14 @@ export default function GitHubWorkflow({
               <Download className="w-4 h-4" />
               <span>Pull Changes</span>
             </CardTitle>
-            <CardDescription>
-              Pull latest changes from GitHub
-            </CardDescription>
+            <CardDescription>Pull latest changes from GitHub</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Incoming changes:</span>
+                <span className="text-sm text-muted-foreground">
+                  Incoming changes:
+                </span>
                 <Badge variant="outline">{incomingChanges.length}</Badge>
               </div>
               <Button
@@ -296,10 +308,18 @@ export default function GitHubWorkflow({
               <Label>Changed Files ({pendingChanges.length})</Label>
               <div className="max-h-48 overflow-y-auto space-y-2 border rounded-md p-3">
                 {pendingChanges.map((change, index) => (
-                  <div key={index} className="flex items-center space-x-3 p-2 bg-muted rounded-sm">
+                  <div
+                    key={index}
+                    className="flex items-center space-x-3 p-2 bg-muted rounded-sm"
+                  >
                     {getChangeIcon(change.type)}
-                    <span className="text-sm font-mono flex-1">{change.path}</span>
-                    <Badge variant="outline" className={`text-xs ${getChangeColor(change.type)}`}>
+                    <span className="text-sm font-mono flex-1">
+                      {change.path}
+                    </span>
+                    <Badge
+                      variant="outline"
+                      className={`text-xs ${getChangeColor(change.type)}`}
+                    >
                       {change.type}
                     </Badge>
                   </div>

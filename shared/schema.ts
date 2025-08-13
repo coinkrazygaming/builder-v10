@@ -151,10 +151,14 @@ export const githubSyncHistory = pgTable("github_sync_history", {
   repositoryId: uuid("repository_id")
     .notNull()
     .references(() => githubRepositories.id, { onDelete: "cascade" }),
-  syncType: pgEnum("sync_type", ["push", "pull", "import"])("sync_type").notNull(),
+  syncType: pgEnum("sync_type", ["push", "pull", "import"])(
+    "sync_type",
+  ).notNull(),
   commitHash: text("commit_hash"),
   commitMessage: text("commit_message"),
-  status: pgEnum("sync_status", ["pending", "success", "failed"])("status").default("pending"),
+  status: pgEnum("sync_status", ["pending", "success", "failed"])(
+    "status",
+  ).default("pending"),
   errorMessage: text("error_message"),
   changedFiles: jsonb("changed_files").default([]),
   triggeredBy: text("triggered_by").notNull(),
@@ -172,7 +176,9 @@ export const githubPullRequests = pgTable("github_pull_requests", {
   description: text("description"),
   sourceBranch: text("source_branch").notNull(),
   targetBranch: text("target_branch").notNull(),
-  status: pgEnum("pr_status", ["open", "closed", "merged"])("status").default("open"),
+  status: pgEnum("pr_status", ["open", "closed", "merged"])("status").default(
+    "open",
+  ),
   prUrl: text("pr_url").notNull(),
   createdBy: text("created_by").notNull(),
   mergedBy: text("merged_by"),

@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,12 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Github,
   Plus,
@@ -37,7 +38,9 @@ interface GitHubProjectCreateProps {
   onProjectCreated?: (project: any, repository?: GitHubRepository) => void;
 }
 
-export default function GitHubProjectCreate({ onProjectCreated }: GitHubProjectCreateProps) {
+export default function GitHubProjectCreate({
+  onProjectCreated,
+}: GitHubProjectCreateProps) {
   const [activeTab, setActiveTab] = useState<"blank" | "github">("blank");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -59,11 +62,13 @@ export default function GitHubProjectCreate({ onProjectCreated }: GitHubProjectC
 
     try {
       // Generate domain from project name if not provided
-      const domain = projectDomain || 
-        projectName.toLowerCase()
-          .replace(/[^a-z0-9-]/g, '-')
-          .replace(/-+/g, '-')
-          .replace(/^-|-$/g, '') + '.builder.app';
+      const domain =
+        projectDomain ||
+        projectName
+          .toLowerCase()
+          .replace(/[^a-z0-9-]/g, "-")
+          .replace(/-+/g, "-")
+          .replace(/^-|-$/g, "") + ".builder.app";
 
       const newProject = {
         name: projectName,
@@ -101,7 +106,8 @@ export default function GitHubProjectCreate({ onProjectCreated }: GitHubProjectC
     // Create project from imported repository
     const project = {
       name: repository.name,
-      description: repository.description || `Imported from ${repository.fullName}`,
+      description:
+        repository.description || `Imported from ${repository.fullName}`,
       domain: `${repository.name.toLowerCase()}.builder.app`,
       status: "draft" as const,
       githubRepositoryId: repository.id.toString(),
@@ -123,11 +129,15 @@ export default function GitHubProjectCreate({ onProjectCreated }: GitHubProjectC
       <div className="text-center space-y-2">
         <h1 className="text-3xl font-bold">Create New Project</h1>
         <p className="text-muted-foreground">
-          Start building your website with our visual editor or import from GitHub
+          Start building your website with our visual editor or import from
+          GitHub
         </p>
       </div>
 
-      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "blank" | "github")}>
+      <Tabs
+        value={activeTab}
+        onValueChange={(value) => setActiveTab(value as "blank" | "github")}
+      >
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="blank" className="flex items-center space-x-2">
             <Plus className="w-4 h-4" />
@@ -199,7 +209,9 @@ export default function GitHubProjectCreate({ onProjectCreated }: GitHubProjectC
                 <Checkbox
                   id="connect-github"
                   checked={connectGitHub}
-                  onCheckedChange={(checked) => setConnectGitHub(checked as boolean)}
+                  onCheckedChange={(checked) =>
+                    setConnectGitHub(checked as boolean)
+                  }
                   disabled={isLoading}
                 />
                 <Label htmlFor="connect-github" className="text-sm">
@@ -236,18 +248,22 @@ export default function GitHubProjectCreate({ onProjectCreated }: GitHubProjectC
                 <span>Import from GitHub</span>
               </CardTitle>
               <CardDescription>
-                Import an existing repository and continue building with our visual editor
+                Import an existing repository and continue building with our
+                visual editor
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="text-center space-y-4">
                 <div className="p-8 border-2 border-dashed border-muted rounded-lg">
                   <Github className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Connect Your Repository</h3>
+                  <h3 className="text-lg font-semibold mb-2">
+                    Connect Your Repository
+                  </h3>
                   <p className="text-muted-foreground mb-4">
-                    Import code from any GitHub repository and enhance it with visual editing
+                    Import code from any GitHub repository and enhance it with
+                    visual editing
                   </p>
-                  
+
                   <GitHubImportDialog
                     projectId="" // Will be created during import
                     onImportSuccess={handleGitHubImport}
@@ -270,7 +286,7 @@ export default function GitHubProjectCreate({ onProjectCreated }: GitHubProjectC
                       Bring in your existing codebase
                     </p>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto">
                       <Plus className="w-6 h-6 text-green-600" />
@@ -280,7 +296,7 @@ export default function GitHubProjectCreate({ onProjectCreated }: GitHubProjectC
                       Enhance with drag-and-drop editor
                     </p>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto">
                       <GitBranch className="w-6 h-6 text-purple-600" />

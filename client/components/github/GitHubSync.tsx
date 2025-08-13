@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -41,7 +47,11 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import type { GithubRepository, GithubSyncHistory, GithubPullRequest } from "@shared/schema";
+import type {
+  GithubRepository,
+  GithubSyncHistory,
+  GithubPullRequest,
+} from "@shared/schema";
 
 interface GitHubSyncProps {
   projectId: string;
@@ -95,7 +105,8 @@ const mockPullRequests: GithubPullRequest[] = [
     repositoryId: "repo1",
     prNumber: 42,
     title: "Feature: Add dark mode support",
-    description: "Implements dark mode theme switching with user preference persistence",
+    description:
+      "Implements dark mode theme switching with user preference persistence",
     sourceBranch: "feature/dark-mode",
     targetBranch: "main",
     status: "open",
@@ -124,11 +135,21 @@ const mockPullRequests: GithubPullRequest[] = [
   },
 ];
 
-export default function GitHubSync({ projectId, repository, onDisconnect }: GitHubSyncProps) {
-  const [syncEnabled, setSyncEnabled] = useState(repository?.syncEnabled ?? true);
-  const [autoDeployEnabled, setAutoDeployEnabled] = useState(repository?.autoDeployEnabled ?? false);
-  const [syncHistory, setSyncHistory] = useState<GithubSyncHistory[]>(mockSyncHistory);
-  const [pullRequests, setPullRequests] = useState<GithubPullRequest[]>(mockPullRequests);
+export default function GitHubSync({
+  projectId,
+  repository,
+  onDisconnect,
+}: GitHubSyncProps) {
+  const [syncEnabled, setSyncEnabled] = useState(
+    repository?.syncEnabled ?? true,
+  );
+  const [autoDeployEnabled, setAutoDeployEnabled] = useState(
+    repository?.autoDeployEnabled ?? false,
+  );
+  const [syncHistory, setSyncHistory] =
+    useState<GithubSyncHistory[]>(mockSyncHistory);
+  const [pullRequests, setPullRequests] =
+    useState<GithubPullRequest[]>(mockPullRequests);
 
   if (!repository) {
     return (
@@ -136,9 +157,12 @@ export default function GitHubSync({ projectId, repository, onDisconnect }: GitH
         <CardContent className="pt-6">
           <div className="text-center space-y-2">
             <Github className="w-12 h-12 text-muted-foreground mx-auto" />
-            <h3 className="text-lg font-semibold">No GitHub Repository Connected</h3>
+            <h3 className="text-lg font-semibold">
+              No GitHub Repository Connected
+            </h3>
             <p className="text-muted-foreground">
-              Connect a GitHub repository to enable version control and collaboration features.
+              Connect a GitHub repository to enable version control and
+              collaboration features.
             </p>
           </div>
         </CardContent>
@@ -177,9 +201,17 @@ export default function GitHubSync({ projectId, repository, onDisconnect }: GitH
   const getPRStatusBadge = (status: string) => {
     switch (status) {
       case "open":
-        return <Badge variant="default" className="bg-green-500">Open</Badge>;
+        return (
+          <Badge variant="default" className="bg-green-500">
+            Open
+          </Badge>
+        );
       case "merged":
-        return <Badge variant="secondary" className="bg-purple-500 text-white">Merged</Badge>;
+        return (
+          <Badge variant="secondary" className="bg-purple-500 text-white">
+            Merged
+          </Badge>
+        );
       case "closed":
         return <Badge variant="outline">Closed</Badge>;
       default:
@@ -198,7 +230,8 @@ export default function GitHubSync({ projectId, repository, onDisconnect }: GitH
               <div>
                 <CardTitle className="text-lg">{repository.repoName}</CardTitle>
                 <CardDescription>
-                  {repository.repoOwner}/{repository.repoName} • {repository.branch} branch
+                  {repository.repoOwner}/{repository.repoName} •{" "}
+                  {repository.branch} branch
                 </CardDescription>
               </div>
             </div>
@@ -210,7 +243,11 @@ export default function GitHubSync({ projectId, repository, onDisconnect }: GitH
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem asChild>
-                  <a href={repository.repoUrl} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={repository.repoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <ExternalLink className="mr-2 h-4 w-4" />
                     View on GitHub
                   </a>
@@ -229,15 +266,21 @@ export default function GitHubSync({ projectId, repository, onDisconnect }: GitH
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Disconnect GitHub Repository?</AlertDialogTitle>
+                      <AlertDialogTitle>
+                        Disconnect GitHub Repository?
+                      </AlertDialogTitle>
                       <AlertDialogDescription>
-                        This will remove the connection between your project and the GitHub repository.
-                        You won't be able to sync changes automatically.
+                        This will remove the connection between your project and
+                        the GitHub repository. You won't be able to sync changes
+                        automatically.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={onDisconnect} className="bg-red-500 hover:bg-red-600">
+                      <AlertDialogAction
+                        onClick={onDisconnect}
+                        className="bg-red-500 hover:bg-red-600"
+                      >
                         Disconnect
                       </AlertDialogAction>
                     </AlertDialogFooter>
@@ -261,7 +304,7 @@ export default function GitHubSync({ projectId, repository, onDisconnect }: GitH
               onCheckedChange={setSyncEnabled}
             />
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <Label htmlFor="auto-deploy">Auto Deploy</Label>
@@ -284,7 +327,11 @@ export default function GitHubSync({ projectId, repository, onDisconnect }: GitH
               <Upload className="w-4 h-4 mr-2" />
               Push Changes
             </Button>
-            <Button onClick={handlePullChanges} variant="outline" className="flex-1">
+            <Button
+              onClick={handlePullChanges}
+              variant="outline"
+              className="flex-1"
+            >
               <Download className="w-4 h-4 mr-2" />
               Pull Changes
             </Button>
@@ -303,16 +350,23 @@ export default function GitHubSync({ projectId, repository, onDisconnect }: GitH
             <GitPullRequest className="w-5 h-5" />
             <span>Pull Requests</span>
           </CardTitle>
-          <CardDescription>Recent pull requests for this repository</CardDescription>
+          <CardDescription>
+            Recent pull requests for this repository
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <ScrollArea className="h-48">
             <div className="space-y-3">
               {pullRequests.map((pr) => (
-                <div key={pr.id} className="flex items-start justify-between p-3 border rounded-lg">
+                <div
+                  key={pr.id}
+                  className="flex items-start justify-between p-3 border rounded-lg"
+                >
                   <div className="space-y-1 flex-1">
                     <div className="flex items-center space-x-2">
-                      <span className="font-medium text-sm">#{pr.prNumber}</span>
+                      <span className="font-medium text-sm">
+                        #{pr.prNumber}
+                      </span>
                       <span className="text-sm">{pr.title}</span>
                       {getPRStatusBadge(pr.status)}
                     </div>
@@ -320,11 +374,17 @@ export default function GitHubSync({ projectId, repository, onDisconnect }: GitH
                       {pr.sourceBranch} → {pr.targetBranch}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {formatDistanceToNow(new Date(pr.createdAt), { addSuffix: true })}
+                      {formatDistanceToNow(new Date(pr.createdAt), {
+                        addSuffix: true,
+                      })}
                     </p>
                   </div>
                   <Button variant="ghost" size="sm" asChild>
-                    <a href={pr.prUrl} target="_blank" rel="noopener noreferrer">
+                    <a
+                      href={pr.prUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <ExternalLink className="w-3 h-3" />
                     </a>
                   </Button>
@@ -348,14 +408,19 @@ export default function GitHubSync({ projectId, repository, onDisconnect }: GitH
           <ScrollArea className="h-64">
             <div className="space-y-3">
               {syncHistory.map((sync) => (
-                <div key={sync.id} className="flex items-start space-x-3 p-3 border rounded-lg">
+                <div
+                  key={sync.id}
+                  className="flex items-start space-x-3 p-3 border rounded-lg"
+                >
                   <div className="mt-0.5">{getStatusIcon(sync.status)}</div>
                   <div className="flex-1 space-y-1">
                     <div className="flex items-center space-x-2">
                       <Badge variant="outline" className="capitalize text-xs">
                         {sync.syncType}
                       </Badge>
-                      <span className="text-sm font-medium">{sync.commitMessage}</span>
+                      <span className="text-sm font-medium">
+                        {sync.commitMessage}
+                      </span>
                     </div>
                     {sync.commitHash && (
                       <p className="text-xs text-muted-foreground font-mono">
@@ -363,7 +428,9 @@ export default function GitHubSync({ projectId, repository, onDisconnect }: GitH
                       </p>
                     )}
                     {sync.errorMessage && (
-                      <p className="text-xs text-red-600">{sync.errorMessage}</p>
+                      <p className="text-xs text-red-600">
+                        {sync.errorMessage}
+                      </p>
                     )}
                     {sync.changedFiles && sync.changedFiles.length > 0 && (
                       <p className="text-xs text-muted-foreground">
@@ -371,7 +438,9 @@ export default function GitHubSync({ projectId, repository, onDisconnect }: GitH
                       </p>
                     )}
                     <p className="text-xs text-muted-foreground">
-                      {formatDistanceToNow(new Date(sync.createdAt), { addSuffix: true })}
+                      {formatDistanceToNow(new Date(sync.createdAt), {
+                        addSuffix: true,
+                      })}
                     </p>
                   </div>
                 </div>

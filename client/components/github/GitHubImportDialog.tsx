@@ -18,7 +18,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -51,10 +57,14 @@ export default function GitHubImportDialog({
   trigger,
 }: GitHubImportDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [step, setStep] = useState<"auth" | "repos" | "branches" | "importing">("auth");
+  const [step, setStep] = useState<"auth" | "repos" | "branches" | "importing">(
+    "auth",
+  );
   const [accessToken, setAccessToken] = useState("");
   const [repositories, setRepositories] = useState<GitHubRepository[]>([]);
-  const [selectedRepo, setSelectedRepo] = useState<GitHubRepository | null>(null);
+  const [selectedRepo, setSelectedRepo] = useState<GitHubRepository | null>(
+    null,
+  );
   const [branches, setBranches] = useState<GitHubBranch[]>([]);
   const [selectedBranch, setSelectedBranch] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -65,7 +75,7 @@ export default function GitHubImportDialog({
   const filteredRepositories = repositories.filter(
     (repo) =>
       repo.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      repo.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      repo.description?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const handleConnect = async () => {
@@ -102,7 +112,11 @@ export default function GitHubImportDialog({
     try {
       const repoName = repository.name;
       const owner = repository.owner.login;
-      const repoBranches = await apiClient.getGitHubBranches(accessToken, owner, repoName);
+      const repoBranches = await apiClient.getGitHubBranches(
+        accessToken,
+        owner,
+        repoName,
+      );
       setBranches(repoBranches);
       setSelectedBranch(repository.defaultBranch);
       setStep("branches");
@@ -130,7 +144,7 @@ export default function GitHubImportDialog({
         selectedRepo.owner.login,
         selectedRepo.name,
         projectId,
-        selectedBranch
+        selectedBranch,
       );
 
       onImportSuccess?.(selectedRepo);
@@ -212,11 +226,7 @@ export default function GitHubImportDialog({
             <p className="text-xs text-muted-foreground">{user?.email}</p>
           </div>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setStep("auth")}
-        >
+        <Button variant="outline" size="sm" onClick={() => setStep("auth")}>
           Change Account
         </Button>
       </div>
@@ -268,7 +278,10 @@ export default function GitHubImportDialog({
                       <div className="flex items-center space-x-1">
                         <Calendar className="w-3 h-3" />
                         <span>
-                          Updated {formatDistanceToNow(new Date(repo.updatedAt), { addSuffix: true })}
+                          Updated{" "}
+                          {formatDistanceToNow(new Date(repo.updatedAt), {
+                            addSuffix: true,
+                          })}
                         </span>
                       </div>
                     </div>
@@ -282,7 +295,9 @@ export default function GitHubImportDialog({
 
       {filteredRepositories.length === 0 && searchQuery && (
         <div className="text-center py-8">
-          <p className="text-muted-foreground">No repositories found matching "{searchQuery}"</p>
+          <p className="text-muted-foreground">
+            No repositories found matching "{searchQuery}"
+          </p>
         </div>
       )}
     </div>
@@ -354,7 +369,9 @@ export default function GitHubImportDialog({
     <div className="space-y-6 text-center">
       <div className="space-y-2">
         <CheckCircle className="w-16 h-16 text-green-500 mx-auto" />
-        <h3 className="text-lg font-semibold">Repository Imported Successfully!</h3>
+        <h3 className="text-lg font-semibold">
+          Repository Imported Successfully!
+        </h3>
         <p className="text-muted-foreground">
           {selectedRepo?.name} has been imported into your project.
         </p>
@@ -363,10 +380,13 @@ export default function GitHubImportDialog({
   );
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => {
-      setIsOpen(open);
-      if (!open) resetDialog();
-    }}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        setIsOpen(open);
+        if (!open) resetDialog();
+      }}
+    >
       <DialogTrigger asChild>
         {trigger || (
           <Button variant="outline">
@@ -382,7 +402,8 @@ export default function GitHubImportDialog({
             <span>Import from GitHub</span>
           </DialogTitle>
           <DialogDescription>
-            {step === "auth" && "Connect your GitHub account to import repositories"}
+            {step === "auth" &&
+              "Connect your GitHub account to import repositories"}
             {step === "repos" && "Select a repository to import"}
             {step === "branches" && "Choose a branch to import from"}
             {step === "importing" && "Repository imported successfully"}

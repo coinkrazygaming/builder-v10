@@ -45,7 +45,7 @@ export default function GitHubPRDialog({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [branches, setBranches] = useState<GitHubBranch[]>([]);
-  
+
   // Form state
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -62,13 +62,18 @@ export default function GitHubPRDialog({
   const loadBranches = async () => {
     try {
       setIsLoading(true);
-      const branchList = await apiClient.getGitHubBranches(accessToken, owner, repo);
+      const branchList = await apiClient.getGitHubBranches(
+        accessToken,
+        owner,
+        repo,
+      );
       setBranches(branchList);
-      
+
       // Set default target branch (usually main or master)
-      const mainBranch = branchList.find(b => b.name === "main") || 
-                        branchList.find(b => b.name === "master") ||
-                        branchList[0];
+      const mainBranch =
+        branchList.find((b) => b.name === "main") ||
+        branchList.find((b) => b.name === "master") ||
+        branchList[0];
       if (mainBranch) {
         setTargetBranch(mainBranch.name);
       }
@@ -102,14 +107,16 @@ export default function GitHubPRDialog({
         title,
         sourceBranch,
         targetBranch,
-        description || undefined
+        description || undefined,
       );
 
       onPRCreated?.(pullRequest);
       setIsOpen(false);
       resetForm();
     } catch (err) {
-      setError("Failed to create pull request. Please check your permissions and try again.");
+      setError(
+        "Failed to create pull request. Please check your permissions and try again.",
+      );
       console.error("Error creating PR:", err);
     } finally {
       setIsLoading(false);
@@ -226,7 +233,8 @@ export default function GitHubPRDialog({
           {sourceBranch && targetBranch && sourceBranch !== targetBranch && (
             <div className="p-3 bg-muted rounded-md">
               <p className="text-sm">
-                <span className="font-medium">Merge:</span> {sourceBranch} → {targetBranch}
+                <span className="font-medium">Merge:</span> {sourceBranch} →{" "}
+                {targetBranch}
               </p>
             </div>
           )}
@@ -250,7 +258,9 @@ export default function GitHubPRDialog({
           </Button>
           <Button
             onClick={handleCreatePR}
-            disabled={isLoading || !title.trim() || sourceBranch === targetBranch}
+            disabled={
+              isLoading || !title.trim() || sourceBranch === targetBranch
+            }
           >
             {isLoading ? "Creating..." : "Create Pull Request"}
           </Button>
