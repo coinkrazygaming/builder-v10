@@ -211,6 +211,12 @@ export default function Dashboard() {
             </div>
 
             <div className="flex space-x-2 mt-4 md:mt-0">
+              <Button variant="outline" asChild>
+                <Link to="/github">
+                  <Github className="w-4 h-4 mr-2" />
+                  GitHub
+                </Link>
+              </Button>
               <GitHubImportDialog
                 projectId="" // Will be set after project creation
                 onImportSuccess={(repo) => {
