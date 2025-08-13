@@ -369,6 +369,50 @@ class ApiClient {
       body: JSON.stringify({ path, content, message, branch, sha }),
     });
   }
+
+  // JoseyAI methods
+  async sendMessageToJosey(message: string, projectId?: string, context?: any) {
+    return this.request("/joseyai/chat", {
+      method: "POST",
+      body: JSON.stringify({ message, projectId, context }),
+    });
+  }
+
+  async updateJoseyContext(context: any) {
+    return this.request("/joseyai/context", {
+      method: "POST",
+      body: JSON.stringify({ context }),
+    });
+  }
+
+  async getJoseySuggestions() {
+    return this.request("/joseyai/suggestions");
+  }
+
+  async createJoseyCheckpoint(name: string, data: any) {
+    return this.request("/joseyai/checkpoint", {
+      method: "POST",
+      body: JSON.stringify({ name, data }),
+    });
+  }
+
+  async logJoseyAction(action: string, details: string, success: boolean = true) {
+    return this.request("/joseyai/log", {
+      method: "POST",
+      body: JSON.stringify({ action, details, success }),
+    });
+  }
+
+  async executeJoseyWorkflowStep(stepId: string, workflowId: string, action: any) {
+    return this.request("/joseyai/execute", {
+      method: "POST",
+      body: JSON.stringify({ stepId, workflowId, action }),
+    });
+  }
+
+  async getJoseyStatus() {
+    return this.request("/joseyai/status");
+  }
 }
 
 export const apiClient = new ApiClient();
