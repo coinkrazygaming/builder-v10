@@ -8,22 +8,22 @@ async function setupBasicTables() {
     await db.execute("SELECT 1");
     console.log("✅ Database connection successful!");
     
-    // Create enums first (if they don't exist)
+    // Create enums first (handle existing ones)
     const enums = [
-      `CREATE TYPE IF NOT EXISTS "project_status" AS ENUM('draft', 'published', 'archived');`,
-      `CREATE TYPE IF NOT EXISTS "page_status" AS ENUM('draft', 'published', 'archived');`,
-      `CREATE TYPE IF NOT EXISTS "member_role" AS ENUM('owner', 'admin', 'editor', 'viewer');`,
+      { name: "project_status", values: "('draft', 'published', 'archived')" },
+      { name: "page_status", values: "('draft', 'published', 'archived')" },
+      { name: "member_role", values: "('owner', 'admin', 'editor', 'viewer')" },
     ];
-    
-    for (const enumSql of enums) {
+
+    for (const enumDef of enums) {
       try {
-        await db.execute(enumSql);
-        console.log("✅ Created enum:", enumSql.match(/TYPE.*?"(\w+)"/)?.[1]);
+        await db.execute(`CREATE TYPE "${enumDef.name}" AS ENUM${enumDef.values};`);
+        console.log("✅ Created enum:", enumDef.name);
       } catch (error) {
         if (error.message.includes('already exists')) {
-          console.log("⚠️  Enum already exists:", enumSql.match(/TYPE.*?"(\w+)"/)?.[1]);
+          console.log("⚠️  Enum already exists:", enumDef.name);
         } else {
-          throw error;
+          console.log("⚠️  Could not create enum:", enumDef.name, error.message);
         }
       }
     }
