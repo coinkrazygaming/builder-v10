@@ -1,6 +1,12 @@
 import { RequestHandler } from "express";
 import { createGitHubClient, GitHubRepository, GitHubBranch } from "@shared/github-client";
 
+// GET /api/github/test - Simple test endpoint
+export const testGitHub: RequestHandler = async (req, res) => {
+  console.log("GitHub test endpoint called");
+  res.json({ message: "GitHub routes are working", timestamp: new Date().toISOString() });
+};
+
 // GET /api/github/user - Get authenticated GitHub user
 export const getGitHubUser: RequestHandler = async (req, res) => {
   try {
