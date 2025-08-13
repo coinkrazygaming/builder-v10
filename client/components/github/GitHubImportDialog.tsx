@@ -180,6 +180,11 @@ export default function GitHubImportDialog({
         console.log("Created project successfully:", project.id);
       }
 
+      // Validate we have a valid project ID
+      if (!targetProjectId || targetProjectId.trim() === "") {
+        throw new Error("Project ID is required but not available");
+      }
+
       console.log("Importing repository to project:", targetProjectId);
       console.log("Import parameters:", {
         owner: selectedRepo.owner.login,
