@@ -344,7 +344,9 @@ export default function JoseyAIChat({
               <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center">
                 <Bot className="w-4 h-4 text-white" />
               </div>
-              <CardTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">JoseyAI</CardTitle>
+              <CardTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                JoseyAI
+              </CardTitle>
               <Badge
                 variant="secondary"
                 className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 text-xs"
@@ -462,7 +464,9 @@ export default function JoseyAIChat({
                         {message.autoExecuteAfter && autoExecuteTimer && (
                           <div className="mt-3 space-y-2">
                             <div className="flex items-center justify-between text-xs">
-                              <span className="text-amber-600 dark:text-amber-400 font-medium">Auto-executing in {autoExecuteTimer}s</span>
+                              <span className="text-amber-600 dark:text-amber-400 font-medium">
+                                Auto-executing in {autoExecuteTimer}s
+                              </span>
                               <div className="flex space-x-2">
                                 <Button
                                   size="sm"
@@ -509,9 +513,17 @@ export default function JoseyAIChat({
                     <div className="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600 p-3 rounded-lg shadow-sm">
                       <div className="flex items-center space-x-2">
                         <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
-                        <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
-                        <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
-                        <span className="text-sm text-gray-600 dark:text-gray-400 ml-2">JoseyAI is thinking...</span>
+                        <div
+                          className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"
+                          style={{ animationDelay: "0.2s" }}
+                        ></div>
+                        <div
+                          className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"
+                          style={{ animationDelay: "0.4s" }}
+                        ></div>
+                        <span className="text-sm text-gray-600 dark:text-gray-400 ml-2">
+                          JoseyAI is thinking...
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -526,7 +538,9 @@ export default function JoseyAIChat({
             <div className="border-t border-gray-200 dark:border-gray-700 p-3 bg-gray-50 dark:bg-gray-800">
               <div className="flex items-center space-x-2 mb-3">
                 <Lightbulb className="w-4 h-4 text-amber-500" />
-                <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">Quick Suggestions</span>
+                <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
+                  Quick Suggestions
+                </span>
               </div>
               <div className="space-y-2">
                 {suggestions.slice(0, 2).map((suggestion, index) => (
