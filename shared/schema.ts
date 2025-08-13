@@ -124,6 +124,62 @@ export const assets = pgTable("assets", {
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
+// GitHub repository integration tables
+export const githubRepositories = pgTable("github_repositories", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  projectId: uuid("project_id")
+    .notNull()
+    .references(() => projects.id, { onDelete: "cascade" }),
+  repoUrl: text("repo_url").notNull(),
+  repoName: text("repo_name").notNull(),
+  repoOwner: text("repo_owner").notNull(),
+  branch: text("branch").default("main"),
+  accessToken: text("access_token"),
+  webhookId: text("webhook_id"),
+  lastSync: timestamp("last_sync", { withTimezone: true }),
+  syncEnabled: boolean("sync_enabled").default(true),
+  autoDeployEnabled: boolean("auto_deploy_enabled").default(false),
+  createdBy: text("created_by").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+});
+
+// GitHub sync history
+export const githubSyncHistory = pgTable("github_sync_history", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  repositoryId: uuid("repository_id")
+    .notNull()
+    .references(() => githubRepositories.id, { onDelete: "cascade" }),
+  syncType: pgEnum("sync_type", ["push", "pull", "import"])("sync_type").notNull(),
+  commitHash: text("commit_hash"),
+  commitMessage: text("commit_message"),
+  status: pgEnum("sync_status", ["pending", "success", "failed"])("status").default("pending"),
+  errorMessage: text("error_message"),
+  changedFiles: jsonb("changed_files").default([]),
+  triggeredBy: text("triggered_by").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});
+
+// GitHub pull requests
+export const githubPullRequests = pgTable("github_pull_requests", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  repositoryId: uuid("repository_id")
+    .notNull()
+    .references(() => githubRepositories.id, { onDelete: "cascade" }),
+  prNumber: integer("pr_number").notNull(),
+  title: text("title").notNull(),
+  description: text("description"),
+  sourceBranch: text("source_branch").notNull(),
+  targetBranch: text("target_branch").notNull(),
+  status: pgEnum("pr_status", ["open", "closed", "merged"])("status").default("open"),
+  prUrl: text("pr_url").notNull(),
+  createdBy: text("created_by").notNull(),
+  mergedBy: text("merged_by"),
+  mergedAt: timestamp("merged_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+});
+
 // Export types
 export type Project = typeof projects.$inferSelect;
 export type NewProject = typeof projects.$inferInsert;
@@ -137,3 +193,9 @@ export type Asset = typeof assets.$inferSelect;
 export type NewAsset = typeof assets.$inferInsert;
 export type ProjectMember = typeof projectMembers.$inferSelect;
 export type NewProjectMember = typeof projectMembers.$inferInsert;
+export type GithubRepository = typeof githubRepositories.$inferSelect;
+export type NewGithubRepository = typeof githubRepositories.$inferInsert;
+export type GithubSyncHistory = typeof githubSyncHistory.$inferSelect;
+export type NewGithubSyncHistory = typeof githubSyncHistory.$inferInsert;
+export type GithubPullRequest = typeof githubPullRequests.$inferSelect;
+export type NewGithubPullRequest = typeof githubPullRequests.$inferInsert;
