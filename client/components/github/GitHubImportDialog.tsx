@@ -175,6 +175,14 @@ export default function GitHubImportDialog({
       }
 
       console.log("Importing repository to project:", targetProjectId);
+      console.log("Import parameters:", {
+        owner: selectedRepo.owner.login,
+        repo: selectedRepo.name,
+        projectId: targetProjectId,
+        branch: selectedBranch,
+        hasAccessToken: !!accessToken
+      });
+
       const result = await apiClient.importGitHubRepository(
         accessToken,
         selectedRepo.owner.login,
@@ -182,6 +190,8 @@ export default function GitHubImportDialog({
         targetProjectId,
         selectedBranch,
       );
+
+      console.log("Import result:", result);
 
       onImportSuccess?.(selectedRepo);
       setIsOpen(false);
