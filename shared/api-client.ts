@@ -26,6 +26,8 @@ class ApiClient {
     options: RequestInit = {},
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
+    console.log("Making API request to:", url);
+
     const response = await fetch(url, {
       headers: {
         "Content-Type": "application/json",
@@ -34,8 +36,20 @@ class ApiClient {
       ...options,
     });
 
+    console.log("Response status:", response.status);
+    console.log("Response headers:", Object.fromEntries(response.headers.entries()));
+
     if (!response.ok) {
+      const responseText = await response.text();
+      console.log("Error response body:", responseText.substring(0, 200));
       throw new Error(`API Error: ${response.status} ${response.statusText}`);
+    }
+
+    const contentType = response.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      const responseText = await response.text();
+      console.log("Non-JSON response:", responseText.substring(0, 200));
+      throw new Error(`Expected JSON response but got ${contentType}: ${responseText.substring(0, 100)}`);
     }
 
     return response.json();
