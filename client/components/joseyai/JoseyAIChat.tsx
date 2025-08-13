@@ -137,6 +137,10 @@ export default function JoseyAIChat({
   }, [userId, currentView, currentFile, selectedElement]);
 
   const updateProactiveSuggestions = async () => {
+    // Prevent multiple simultaneous requests
+    if (isUpdatingSuggestions) return;
+
+    setIsUpdatingSuggestions(true);
     try {
       const response = await apiClient.getJoseySuggestions();
       setSuggestions(response.suggestions || []);
@@ -144,6 +148,8 @@ export default function JoseyAIChat({
       // Silently fail for now - JoseyAI API might not be available
       console.warn("JoseyAI suggestions unavailable:", error.message);
       setSuggestions([]);
+    } finally {
+      setIsUpdatingSuggestions(false);
     }
   };
 
