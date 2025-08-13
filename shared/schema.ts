@@ -37,6 +37,7 @@ export const projects = pgTable("projects", {
   customDomain: text("custom_domain"),
   status: projectStatusEnum("status").default("draft"),
   ownerId: text("owner_id").notNull(),
+  githubRepositoryId: uuid("github_repository_id").references(() => githubRepositories.id, { onDelete: "set null" }),
   settings: jsonb("settings").default({}),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
