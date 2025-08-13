@@ -396,14 +396,22 @@ class ApiClient {
     });
   }
 
-  async logJoseyAction(action: string, details: string, success: boolean = true) {
+  async logJoseyAction(
+    action: string,
+    details: string,
+    success: boolean = true,
+  ) {
     return this.request("/joseyai/log", {
       method: "POST",
       body: JSON.stringify({ action, details, success }),
     });
   }
 
-  async executeJoseyWorkflowStep(stepId: string, workflowId: string, action: any) {
+  async executeJoseyWorkflowStep(
+    stepId: string,
+    workflowId: string,
+    action: any,
+  ) {
     return this.request("/joseyai/execute", {
       method: "POST",
       body: JSON.stringify({ stepId, workflowId, action }),

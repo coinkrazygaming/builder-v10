@@ -151,10 +151,14 @@ export const githubSyncHistory = pgTable("github_sync_history", {
   repositoryId: uuid("repository_id")
     .notNull()
     .references(() => githubRepositories.id, { onDelete: "cascade" }),
-  syncType: pgEnum("sync_type", ["push", "pull", "import"])("sync_type").notNull(),
+  syncType: pgEnum("sync_type", ["push", "pull", "import"])(
+    "sync_type",
+  ).notNull(),
   commitHash: text("commit_hash"),
   commitMessage: text("commit_message"),
-  status: pgEnum("sync_status", ["pending", "success", "failed"])("status").default("pending"),
+  status: pgEnum("sync_status", ["pending", "success", "failed"])(
+    "status",
+  ).default("pending"),
   errorMessage: text("error_message"),
   changedFiles: jsonb("changed_files").default([]),
   triggeredBy: text("triggered_by").notNull(),
@@ -172,7 +176,9 @@ export const githubPullRequests = pgTable("github_pull_requests", {
   description: text("description"),
   sourceBranch: text("source_branch").notNull(),
   targetBranch: text("target_branch").notNull(),
-  status: pgEnum("pr_status", ["open", "closed", "merged"])("status").default("open"),
+  status: pgEnum("pr_status", ["open", "closed", "merged"])("status").default(
+    "open",
+  ),
   prUrl: text("pr_url").notNull(),
   createdBy: text("created_by").notNull(),
   mergedBy: text("merged_by"),
@@ -185,7 +191,9 @@ export const githubPullRequests = pgTable("github_pull_requests", {
 export const joseyConversations = pgTable("josey_conversations", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: text("user_id").notNull(),
-  projectId: uuid("project_id").references(() => projects.id, { onDelete: "cascade" }),
+  projectId: uuid("project_id").references(() => projects.id, {
+    onDelete: "cascade",
+  }),
   title: text("title").notNull(),
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
@@ -197,7 +205,9 @@ export const joseyMessages = pgTable("josey_messages", {
   conversationId: uuid("conversation_id")
     .notNull()
     .references(() => joseyConversations.id, { onDelete: "cascade" }),
-  role: pgEnum("message_role", ["user", "assistant", "system"])("role").notNull(),
+  role: pgEnum("message_role", ["user", "assistant", "system"])(
+    "role",
+  ).notNull(),
   content: text("content").notNull(),
   metadata: jsonb("metadata").default({}),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
@@ -211,7 +221,12 @@ export const joseyTasks = pgTable("josey_tasks", {
   parentTaskId: uuid("parent_task_id"),
   title: text("title").notNull(),
   description: text("description"),
-  status: pgEnum("task_status", ["pending", "in_progress", "completed", "failed"])("status").default("pending"),
+  status: pgEnum("task_status", [
+    "pending",
+    "in_progress",
+    "completed",
+    "failed",
+  ])("status").default("pending"),
   priority: integer("priority").default(0),
   estimatedMinutes: integer("estimated_minutes"),
   actualMinutes: integer("actual_minutes"),
@@ -228,7 +243,14 @@ export const joseyWorkflowPlans = pgTable("josey_workflow_plans", {
     .references(() => joseyConversations.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
   description: text("description"),
-  status: pgEnum("plan_status", ["analyzing", "planning", "approved", "executing", "completed", "failed"])("status").default("analyzing"),
+  status: pgEnum("plan_status", [
+    "analyzing",
+    "planning",
+    "approved",
+    "executing",
+    "completed",
+    "failed",
+  ])("status").default("analyzing"),
   stepsTotal: integer("steps_total").default(0),
   stepsCompleted: integer("steps_completed").default(0),
   approvedBy: text("approved_by"),
@@ -242,7 +264,9 @@ export const joseyCheckpoints = pgTable("josey_checkpoints", {
   conversationId: uuid("conversation_id")
     .notNull()
     .references(() => joseyConversations.id, { onDelete: "cascade" }),
-  taskId: uuid("task_id").references(() => joseyTasks.id, { onDelete: "cascade" }),
+  taskId: uuid("task_id").references(() => joseyTasks.id, {
+    onDelete: "cascade",
+  }),
   name: text("name").notNull(),
   description: text("description"),
   snapshotData: jsonb("snapshot_data").notNull(),
@@ -254,7 +278,9 @@ export const joseyLogs = pgTable("josey_logs", {
   conversationId: uuid("conversation_id")
     .notNull()
     .references(() => joseyConversations.id, { onDelete: "cascade" }),
-  taskId: uuid("task_id").references(() => joseyTasks.id, { onDelete: "cascade" }),
+  taskId: uuid("task_id").references(() => joseyTasks.id, {
+    onDelete: "cascade",
+  }),
   action: text("action").notNull(),
   details: text("details"),
   metadata: jsonb("metadata").default({}),

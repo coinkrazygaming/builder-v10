@@ -151,8 +151,10 @@ export default function GitHubImportDialog({
         console.log("No project ID provided, creating new project...");
         const newProject = {
           name: selectedRepo.name,
-          description: selectedRepo.description || `Imported from ${selectedRepo.fullName}`,
-          domain: `${selectedRepo.name.toLowerCase().replace(/[^a-z0-9-]/g, '-')}.builder.app`,
+          description:
+            selectedRepo.description ||
+            `Imported from ${selectedRepo.fullName}`,
+          domain: `${selectedRepo.name.toLowerCase().replace(/[^a-z0-9-]/g, "-")}.builder.app`,
           status: "draft" as const,
         };
 
@@ -168,7 +170,9 @@ export default function GitHubImportDialog({
         if (!response.ok) {
           const errorText = await response.text();
           console.error("Project creation failed:", response.status, errorText);
-          throw new Error(`Failed to create project: ${response.status} ${response.statusText}`);
+          throw new Error(
+            `Failed to create project: ${response.status} ${response.statusText}`,
+          );
         }
 
         const project = await response.json();
@@ -182,7 +186,7 @@ export default function GitHubImportDialog({
         repo: selectedRepo.name,
         projectId: targetProjectId,
         branch: selectedBranch,
-        hasAccessToken: !!accessToken
+        hasAccessToken: !!accessToken,
       });
 
       const result = await apiClient.importGitHubRepository(
@@ -203,19 +207,27 @@ export default function GitHubImportDialog({
 
       // Provide more specific error messages based on the error content
       if (err.message.includes("Failed to create project")) {
-        setError("Could not create project. Please try again or create a project first.");
+        setError(
+          "Could not create project. Please try again or create a project first.",
+        );
       } else if (err.message.includes("Project ID is required")) {
         setError("Project ID validation failed. Please try again.");
       } else if (err.message.includes("GitHub access token required")) {
-        setError("GitHub authentication failed. Please check your access token.");
+        setError(
+          "GitHub authentication failed. Please check your access token.",
+        );
       } else if (err.message.includes("User ID required")) {
         setError("Authentication error. Please try again.");
       } else if (err.message.includes("API Error: 400")) {
-        setError("Invalid request. Please check your repository selection and try again.");
+        setError(
+          "Invalid request. Please check your repository selection and try again.",
+        );
       } else if (err.message.includes("API Error: 401")) {
         setError("Authentication failed. Please check your GitHub token.");
       } else if (err.message.includes("API Error: 404")) {
-        setError("Repository not found. Please check the repository exists and is accessible.");
+        setError(
+          "Repository not found. Please check the repository exists and is accessible.",
+        );
       } else if (err.message.includes("Failed to fetch")) {
         setError("Network error. Please check your connection and try again.");
       } else {

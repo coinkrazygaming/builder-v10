@@ -25,7 +25,13 @@ export interface JoseyResponse {
 }
 
 export interface JoseyAction {
-  type: 'code_edit' | 'file_create' | 'file_delete' | 'server_command' | 'environment_setup' | 'checkpoint_create';
+  type:
+    | "code_edit"
+    | "file_create"
+    | "file_delete"
+    | "server_command"
+    | "environment_setup"
+    | "checkpoint_create";
   payload: any;
   description: string;
 }
@@ -46,7 +52,13 @@ export interface JoseyMasterPlan {
   steps: JoseyWorkflowStep[];
   totalSteps: number;
   completedSteps: number;
-  status: 'analyzing' | 'planning' | 'approved' | 'executing' | 'completed' | 'failed';
+  status:
+    | "analyzing"
+    | "planning"
+    | "approved"
+    | "executing"
+    | "completed"
+    | "failed";
 }
 
 export class JoseyAIService {
@@ -64,7 +76,7 @@ export class JoseyAIService {
 
   async processRequest(request: JoseyRequest): Promise<JoseyResponse> {
     console.log("🤖 JoseyAI processing request:", request.message);
-    
+
     // Update screen context
     if (request.context) {
       this.updateScreenContext(request.userId, request.context);
@@ -72,10 +84,10 @@ export class JoseyAIService {
 
     // Analyze the request
     const analysis = await this.analyzeRequest(request);
-    
+
     // Create workflow plan
     const workflowPlan = await this.createWorkflowPlan(request, analysis);
-    
+
     // Generate response
     const response: JoseyResponse = {
       message: this.generateResponseMessage(analysis, workflowPlan),
@@ -90,7 +102,7 @@ export class JoseyAIService {
   private async analyzeRequest(request: JoseyRequest): Promise<any> {
     // This is where we'd integrate with an actual AI model
     // For now, we'll use rule-based analysis
-    
+
     const analysis = {
       intent: this.detectIntent(request.message),
       complexity: this.assessComplexity(request.message),
@@ -105,59 +117,105 @@ export class JoseyAIService {
 
   private detectIntent(message: string): string {
     const lowerMessage = message.toLowerCase();
-    
-    if (lowerMessage.includes('create') || lowerMessage.includes('add') || lowerMessage.includes('build')) {
-      return 'create';
-    } else if (lowerMessage.includes('fix') || lowerMessage.includes('debug') || lowerMessage.includes('error')) {
-      return 'debug';
-    } else if (lowerMessage.includes('edit') || lowerMessage.includes('change') || lowerMessage.includes('modify')) {
-      return 'edit';
-    } else if (lowerMessage.includes('deploy') || lowerMessage.includes('server') || lowerMessage.includes('environment')) {
-      return 'deploy';
-    } else if (lowerMessage.includes('help') || lowerMessage.includes('how') || lowerMessage.includes('explain')) {
-      return 'help';
+
+    if (
+      lowerMessage.includes("create") ||
+      lowerMessage.includes("add") ||
+      lowerMessage.includes("build")
+    ) {
+      return "create";
+    } else if (
+      lowerMessage.includes("fix") ||
+      lowerMessage.includes("debug") ||
+      lowerMessage.includes("error")
+    ) {
+      return "debug";
+    } else if (
+      lowerMessage.includes("edit") ||
+      lowerMessage.includes("change") ||
+      lowerMessage.includes("modify")
+    ) {
+      return "edit";
+    } else if (
+      lowerMessage.includes("deploy") ||
+      lowerMessage.includes("server") ||
+      lowerMessage.includes("environment")
+    ) {
+      return "deploy";
+    } else if (
+      lowerMessage.includes("help") ||
+      lowerMessage.includes("how") ||
+      lowerMessage.includes("explain")
+    ) {
+      return "help";
     }
-    
-    return 'general';
+
+    return "general";
   }
 
-  private assessComplexity(message: string): 'low' | 'medium' | 'high' {
+  private assessComplexity(message: string): "low" | "medium" | "high" {
     const indicators = [
-      'component', 'database', 'api', 'server', 'deploy', 'test', 'integration'
+      "component",
+      "database",
+      "api",
+      "server",
+      "deploy",
+      "test",
+      "integration",
     ];
-    
-    const matches = indicators.filter(indicator => 
-      message.toLowerCase().includes(indicator)
+
+    const matches = indicators.filter((indicator) =>
+      message.toLowerCase().includes(indicator),
     ).length;
-    
-    if (matches >= 3) return 'high';
-    if (matches >= 1) return 'medium';
-    return 'low';
+
+    if (matches >= 3) return "high";
+    if (matches >= 1) return "medium";
+    return "low";
   }
 
   private requiresCodeChanges(message: string): boolean {
     const codeKeywords = [
-      'component', 'function', 'class', 'css', 'style', 'html', 'javascript', 'typescript'
+      "component",
+      "function",
+      "class",
+      "css",
+      "style",
+      "html",
+      "javascript",
+      "typescript",
     ];
-    return codeKeywords.some(keyword => message.toLowerCase().includes(keyword));
+    return codeKeywords.some((keyword) =>
+      message.toLowerCase().includes(keyword),
+    );
   }
 
   private requiresServerAccess(message: string): boolean {
     const serverKeywords = [
-      'server', 'deploy', 'environment', 'command', 'terminal', 'npm', 'run'
+      "server",
+      "deploy",
+      "environment",
+      "command",
+      "terminal",
+      "npm",
+      "run",
     ];
-    return serverKeywords.some(keyword => message.toLowerCase().includes(keyword));
+    return serverKeywords.some((keyword) =>
+      message.toLowerCase().includes(keyword),
+    );
   }
 
-  private async createWorkflowPlan(request: JoseyRequest, analysis: any): Promise<JoseyWorkflowPlan> {
+  private async createWorkflowPlan(
+    request: JoseyRequest,
+    analysis: any,
+  ): Promise<JoseyWorkflowPlan> {
     const steps = this.generateWorkflowSteps(request, analysis);
-    
+
     return {
       id: `plan_${Date.now()}`,
       conversationId: request.userId, // Temporary, should be actual conversation ID
       title: `Plan: ${request.message.substring(0, 50)}...`,
       description: `Executing ${analysis.intent} request with ${analysis.complexity} complexity`,
-      status: 'planning',
+      status: "planning",
       stepsTotal: steps.length,
       stepsCompleted: 0,
       approvedBy: null,
@@ -167,34 +225,41 @@ export class JoseyAIService {
     };
   }
 
-  private generateWorkflowSteps(request: JoseyRequest, analysis: any): JoseyWorkflowStep[] {
+  private generateWorkflowSteps(
+    request: JoseyRequest,
+    analysis: any,
+  ): JoseyWorkflowStep[] {
     const steps: JoseyWorkflowStep[] = [];
 
     // Step 1: Always analyze and plan
     steps.push({
-      id: 'analyze',
-      title: 'Analyze Requirements',
-      description: 'Understanding the request and current context',
-      actions: [{
-        type: 'checkpoint_create',
-        payload: { name: 'pre_analysis' },
-        description: 'Create checkpoint before starting'
-      }],
+      id: "analyze",
+      title: "Analyze Requirements",
+      description: "Understanding the request and current context",
+      actions: [
+        {
+          type: "checkpoint_create",
+          payload: { name: "pre_analysis" },
+          description: "Create checkpoint before starting",
+        },
+      ],
       estimatedMinutes: 1,
     });
 
     // Step 2: Code changes if needed
     if (analysis.requiresCode) {
       steps.push({
-        id: 'code_changes',
-        title: 'Implement Code Changes',
-        description: 'Creating or modifying code files',
-        actions: [{
-          type: 'code_edit',
-          payload: { intent: analysis.intent },
-          description: 'Implement required code changes'
-        }],
-        dependencies: ['analyze'],
+        id: "code_changes",
+        title: "Implement Code Changes",
+        description: "Creating or modifying code files",
+        actions: [
+          {
+            type: "code_edit",
+            payload: { intent: analysis.intent },
+            description: "Implement required code changes",
+          },
+        ],
+        dependencies: ["analyze"],
         estimatedMinutes: 5,
       });
     }
@@ -202,29 +267,33 @@ export class JoseyAIService {
     // Step 3: Server operations if needed
     if (analysis.requiresServer) {
       steps.push({
-        id: 'server_ops',
-        title: 'Server Operations',
-        description: 'Execute server commands and deployments',
-        actions: [{
-          type: 'server_command',
-          payload: { intent: analysis.intent },
-          description: 'Run server commands'
-        }],
-        dependencies: analysis.requiresCode ? ['code_changes'] : ['analyze'],
+        id: "server_ops",
+        title: "Server Operations",
+        description: "Execute server commands and deployments",
+        actions: [
+          {
+            type: "server_command",
+            payload: { intent: analysis.intent },
+            description: "Run server commands",
+          },
+        ],
+        dependencies: analysis.requiresCode ? ["code_changes"] : ["analyze"],
         estimatedMinutes: 3,
       });
     }
 
     // Step 4: Final checkpoint
     steps.push({
-      id: 'finalize',
-      title: 'Finalize and Checkpoint',
-      description: 'Create final checkpoint and summary',
-      actions: [{
-        type: 'checkpoint_create',
-        payload: { name: 'completion' },
-        description: 'Create completion checkpoint'
-      }],
+      id: "finalize",
+      title: "Finalize and Checkpoint",
+      description: "Create final checkpoint and summary",
+      actions: [
+        {
+          type: "checkpoint_create",
+          payload: { name: "completion" },
+          description: "Create completion checkpoint",
+        },
+      ],
       dependencies: [steps[steps.length - 1].id],
       estimatedMinutes: 1,
     });
@@ -232,19 +301,26 @@ export class JoseyAIService {
     return steps;
   }
 
-  private generateResponseMessage(analysis: any, plan: JoseyWorkflowPlan): string {
-    const contextAware = analysis.screenAware ? 
-      "I can see what you're currently working on. " : "";
-    
-    const complexity = analysis.complexity === 'high' ? 
-      "This is a complex request that will require multiple steps. " :
-      analysis.complexity === 'medium' ?
-      "This is a moderate request. " :
-      "This is a straightforward request. ";
+  private generateResponseMessage(
+    analysis: any,
+    plan: JoseyWorkflowPlan,
+  ): string {
+    const contextAware = analysis.screenAware
+      ? "I can see what you're currently working on. "
+      : "";
 
-    return `${contextAware}${complexity}I'll ${analysis.intent} what you need. ` +
-           `My plan involves ${plan.stepsTotal} steps. ` +
-           `Would you like me to proceed? I'll auto-execute in 5 seconds if you don't respond.`;
+    const complexity =
+      analysis.complexity === "high"
+        ? "This is a complex request that will require multiple steps. "
+        : analysis.complexity === "medium"
+          ? "This is a moderate request. "
+          : "This is a straightforward request. ";
+
+    return (
+      `${contextAware}${complexity}I'll ${analysis.intent} what you need. ` +
+      `My plan involves ${plan.stepsTotal} steps. ` +
+      `Would you like me to proceed? I'll auto-execute in 5 seconds if you don't respond.`
+    );
   }
 
   updateScreenContext(userId: string, context: JoseyScreenContext): void {
@@ -259,7 +335,7 @@ export class JoseyAIService {
   async createCheckpoint(name: string, data: any): Promise<JoseyCheckpoint> {
     const checkpoint: JoseyCheckpoint = {
       id: `checkpoint_${Date.now()}`,
-      conversationId: data.conversationId || 'default',
+      conversationId: data.conversationId || "default",
       taskId: data.taskId,
       name,
       description: `Checkpoint: ${name}`,
@@ -271,10 +347,14 @@ export class JoseyAIService {
     return checkpoint;
   }
 
-  async logAction(action: string, details: string, success: boolean = true): Promise<JoseyLog> {
+  async logAction(
+    action: string,
+    details: string,
+    success: boolean = true,
+  ): Promise<JoseyLog> {
     const log: JoseyLog = {
       id: `log_${Date.now()}`,
-      conversationId: 'default', // Should be actual conversation ID
+      conversationId: "default", // Should be actual conversation ID
       taskId: null,
       action,
       details,
@@ -283,26 +363,26 @@ export class JoseyAIService {
       createdAt: new Date(),
     };
 
-    console.log(`📝 ${success ? '✅' : '❌'} ${action}: ${details}`);
+    console.log(`📝 ${success ? "✅" : "❌"} ${action}: ${details}`);
     return log;
   }
 
   generateProactiveSuggestions(context: JoseyScreenContext): string[] {
     const suggestions: string[] = [];
 
-    if (context.currentView === 'editor') {
+    if (context.currentView === "editor") {
       suggestions.push(
         "💡 Consider adding error boundaries to your components",
         "🔒 I can help implement TypeScript for better type safety",
-        "⚡ Want me to optimize your component performance?"
+        "⚡ Want me to optimize your component performance?",
       );
     }
 
-    if (context.currentFile?.endsWith('.tsx')) {
+    if (context.currentFile?.endsWith(".tsx")) {
       suggestions.push(
         "🎨 I can help improve the component's styling",
         "🧪 Would you like me to create tests for this component?",
-        "📱 I can make this component mobile-responsive"
+        "📱 I can make this component mobile-responsive",
       );
     }
 

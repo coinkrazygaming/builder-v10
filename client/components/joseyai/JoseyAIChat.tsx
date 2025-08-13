@@ -25,11 +25,15 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { apiClient } from "@shared/api-client";
-import type { JoseyScreenContext, JoseyTask, JoseyWorkflowPlan } from "@shared/schema";
+import type {
+  JoseyScreenContext,
+  JoseyTask,
+  JoseyWorkflowPlan,
+} from "@shared/schema";
 
 interface ChatMessage {
   id: string;
-  role: 'user' | 'assistant' | 'system';
+  role: "user" | "assistant" | "system";
   content: string;
   timestamp: Date;
   workflowPlan?: JoseyWorkflowPlan;
@@ -58,10 +62,11 @@ export default function JoseyAIChat({
   const [input, setInput] = useState("");
   const [isMinimized, setIsMinimized] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [activeWorkflow, setActiveWorkflow] = useState<JoseyWorkflowPlan | null>(null);
+  const [activeWorkflow, setActiveWorkflow] =
+    useState<JoseyWorkflowPlan | null>(null);
   const [autoExecuteTimer, setAutoExecuteTimer] = useState<number | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const autoExecuteRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -75,7 +80,8 @@ export default function JoseyAIChat({
     const welcomeMessage: ChatMessage = {
       id: "welcome",
       role: "assistant",
-      content: "👋 Hi! I'm JoseyAI, your coding companion. I can help you create, edit, debug, and deploy code. I'm aware of what you're working on and can provide context-aware assistance. What would you like to build today?",
+      content:
+        "👋 Hi! I'm JoseyAI, your coding companion. I can help you create, edit, debug, and deploy code. I'm aware of what you're working on and can provide context-aware assistance. What would you like to build today?",
       timestamp: new Date(),
     };
     setMessages([welcomeMessage]);
@@ -123,7 +129,7 @@ export default function JoseyAIChat({
       timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
 
@@ -138,8 +144,12 @@ export default function JoseyAIChat({
         updatedAt: new Date(),
       };
 
-      const response = await apiClient.sendMessageToJosey(input, projectId, context);
-      
+      const response = await apiClient.sendMessageToJosey(
+        input,
+        projectId,
+        context,
+      );
+
       const assistantMessage: ChatMessage = {
         id: `assistant_${Date.now()}`,
         role: "assistant",
@@ -150,8 +160,8 @@ export default function JoseyAIChat({
         autoExecuteAfter: response.autoExecuteAfter,
       };
 
-      setMessages(prev => [...prev, assistantMessage]);
-      
+      setMessages((prev) => [...prev, assistantMessage]);
+
       if (response.workflowPlan) {
         setActiveWorkflow(response.workflowPlan);
       }
@@ -160,16 +170,16 @@ export default function JoseyAIChat({
       if (response.requiresApproval && response.autoExecuteAfter) {
         startAutoExecuteTimer(response.autoExecuteAfter);
       }
-
     } catch (error) {
       console.error("Error processing message:", error);
       const errorMessage: ChatMessage = {
         id: `error_${Date.now()}`,
         role: "system",
-        content: "Sorry, I encountered an error processing your request. Please try again.",
+        content:
+          "Sorry, I encountered an error processing your request. Please try again.",
         timestamp: new Date(),
       };
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
@@ -177,13 +187,13 @@ export default function JoseyAIChat({
 
   const startAutoExecuteTimer = (seconds: number) => {
     setAutoExecuteTimer(seconds);
-    
+
     if (autoExecuteRef.current) {
       clearInterval(autoExecuteRef.current);
     }
 
     autoExecuteRef.current = setInterval(() => {
-      setAutoExecuteTimer(prev => {
+      setAutoExecuteTimer((prev) => {
         if (prev === null || prev <= 1) {
           handleAutoExecute();
           return null;
@@ -210,8 +220,8 @@ export default function JoseyAIChat({
         content: `✅ Executing plan: ${activeWorkflow.title}. I'll work through each step and keep you updated.`,
         timestamp: new Date(),
       };
-      setMessages(prev => [...prev, approvalMessage]);
-      
+      setMessages((prev) => [...prev, approvalMessage]);
+
       // Start executing workflow
       executeWorkflow(activeWorkflow);
     }
@@ -228,10 +238,11 @@ export default function JoseyAIChat({
     const denialMessage: ChatMessage = {
       id: `denial_${Date.now()}`,
       role: "assistant",
-      content: "Understood. The plan has been cancelled. What would you like me to do instead?",
+      content:
+        "Understood. The plan has been cancelled. What would you like me to do instead?",
       timestamp: new Date(),
     };
-    setMessages(prev => [...prev, denialMessage]);
+    setMessages((prev) => [...prev, denialMessage]);
   };
 
   const executeWorkflow = async (workflow: JoseyWorkflowPlan) => {
@@ -243,7 +254,7 @@ export default function JoseyAIChat({
       content: `🚀 Starting execution of ${workflow.stepsTotal} steps. I'll create checkpoints after each step.`,
       timestamp: new Date(),
     };
-    setMessages(prev => [...prev, executionMessage]);
+    setMessages((prev) => [...prev, executionMessage]);
 
     // Simulate workflow execution
     setTimeout(() => {
@@ -253,30 +264,31 @@ export default function JoseyAIChat({
         content: `✅ Workflow completed successfully! All ${workflow.stepsTotal} steps have been executed. A checkpoint has been created.`,
         timestamp: new Date(),
       };
-      setMessages(prev => [...prev, completionMessage]);
+      setMessages((prev) => [...prev, completionMessage]);
       setActiveWorkflow(null);
     }, 2000);
   };
 
   const handleSuggestionClick = (suggestion: string) => {
-    setInput(suggestion.replace(/[💡🔒⚡🎨🧪📱]/g, '').trim());
+    setInput(suggestion.replace(/[💡🔒⚡🎨🧪📱]/g, "").trim());
   };
 
   const getWorkflowStatusIcon = (status: string) => {
     switch (status) {
-      case 'completed': return <CheckCircle className="w-4 h-4 text-green-500" />;
-      case 'in_progress': return <Clock className="w-4 h-4 text-blue-500 animate-spin" />;
-      case 'failed': return <AlertCircle className="w-4 h-4 text-red-500" />;
-      default: return <Circle className="w-4 h-4 text-gray-400" />;
+      case "completed":
+        return <CheckCircle className="w-4 h-4 text-green-500" />;
+      case "in_progress":
+        return <Clock className="w-4 h-4 text-blue-500 animate-spin" />;
+      case "failed":
+        return <AlertCircle className="w-4 h-4 text-red-500" />;
+      default:
+        return <Circle className="w-4 h-4 text-gray-400" />;
     }
   };
 
   if (isMinimized) {
     return (
-      <div className={cn(
-        "fixed bottom-4 right-4 z-50",
-        className
-      )}>
+      <div className={cn("fixed bottom-4 right-4 z-50", className)}>
         <Button
           onClick={() => setIsMinimized(false)}
           className="bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg hover:shadow-xl transition-all"
@@ -290,17 +302,22 @@ export default function JoseyAIChat({
   }
 
   return (
-    <div className={cn(
-      "fixed bottom-4 right-4 w-96 h-[600px] z-50 flex flex-col",
-      className
-    )}>
+    <div
+      className={cn(
+        "fixed bottom-4 right-4 w-96 h-[600px] z-50 flex flex-col",
+        className,
+      )}
+    >
       <Card className="flex-1 flex flex-col shadow-2xl border-purple-200">
         <CardHeader className="pb-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-t-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Bot className="w-5 h-5" />
               <CardTitle className="text-lg">JoseyAI</CardTitle>
-              <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+              <Badge
+                variant="secondary"
+                className="bg-purple-100 text-purple-700"
+              >
                 {currentView}
               </Badge>
             </div>
@@ -333,17 +350,20 @@ export default function JoseyAIChat({
                   key={message.id}
                   className={cn(
                     "flex items-start space-x-3",
-                    message.role === "user" && "flex-row-reverse space-x-reverse"
+                    message.role === "user" &&
+                      "flex-row-reverse space-x-reverse",
                   )}
                 >
-                  <div className={cn(
-                    "w-8 h-8 rounded-full flex items-center justify-center",
-                    message.role === "user" 
-                      ? "bg-blue-100 text-blue-600"
-                      : message.role === "system"
-                      ? "bg-red-100 text-red-600"
-                      : "bg-purple-100 text-purple-600"
-                  )}>
+                  <div
+                    className={cn(
+                      "w-8 h-8 rounded-full flex items-center justify-center",
+                      message.role === "user"
+                        ? "bg-blue-100 text-blue-600"
+                        : message.role === "system"
+                          ? "bg-red-100 text-red-600"
+                          : "bg-purple-100 text-purple-600",
+                    )}
+                  >
                     {message.role === "user" ? (
                       <User className="w-4 h-4" />
                     ) : message.role === "system" ? (
@@ -353,17 +373,23 @@ export default function JoseyAIChat({
                     )}
                   </div>
 
-                  <div className={cn(
-                    "flex-1 space-y-2",
-                    message.role === "user" && "text-right"
-                  )}>
-                    <div className={cn(
-                      "inline-block p-3 rounded-lg max-w-[85%]",
-                      message.role === "user"
-                        ? "bg-blue-500 text-white ml-auto"
-                        : "bg-gray-100 text-gray-900"
-                    )}>
-                      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  <div
+                    className={cn(
+                      "flex-1 space-y-2",
+                      message.role === "user" && "text-right",
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "inline-block p-3 rounded-lg max-w-[85%]",
+                        message.role === "user"
+                          ? "bg-blue-500 text-white ml-auto"
+                          : "bg-gray-100 text-gray-900",
+                      )}
+                    >
+                      <p className="text-sm whitespace-pre-wrap">
+                        {message.content}
+                      </p>
                     </div>
 
                     {/* Workflow Plan Display */}
@@ -377,29 +403,46 @@ export default function JoseyAIChat({
                           {message.workflowPlan.description}
                         </p>
                         <div className="space-y-1">
-                          {Array.from({ length: message.workflowPlan.stepsTotal }, (_, i) => (
-                            <div key={i} className="flex items-center space-x-2 text-xs">
-                              {getWorkflowStatusIcon('pending')}
-                              <span>Step {i + 1}: Processing...</span>
-                            </div>
-                          ))}
+                          {Array.from(
+                            { length: message.workflowPlan.stepsTotal },
+                            (_, i) => (
+                              <div
+                                key={i}
+                                className="flex items-center space-x-2 text-xs"
+                              >
+                                {getWorkflowStatusIcon("pending")}
+                                <span>Step {i + 1}: Processing...</span>
+                              </div>
+                            ),
+                          )}
                         </div>
-                        
+
                         {message.autoExecuteAfter && autoExecuteTimer && (
                           <div className="mt-3 space-y-2">
                             <div className="flex items-center justify-between text-xs">
                               <span>Auto-executing in {autoExecuteTimer}s</span>
                               <div className="flex space-x-2">
-                                <Button size="sm" variant="outline" onClick={handleDenyWorkflow}>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={handleDenyWorkflow}
+                                >
                                   Cancel
                                 </Button>
-                                <Button size="sm" onClick={handleApproveWorkflow}>
+                                <Button
+                                  size="sm"
+                                  onClick={handleApproveWorkflow}
+                                >
                                   Approve Now
                                 </Button>
                               </div>
                             </div>
-                            <Progress 
-                              value={((message.autoExecuteAfter - autoExecuteTimer) / message.autoExecuteAfter) * 100} 
+                            <Progress
+                              value={
+                                ((message.autoExecuteAfter - autoExecuteTimer) /
+                                  message.autoExecuteAfter) *
+                                100
+                              }
                               className="h-1"
                             />
                           </div>

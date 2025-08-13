@@ -583,7 +583,8 @@ export default function Editor() {
                     onClick={() => setShowJoseyTaskManager(false)}
                     className={cn(
                       "flex-1 text-sm py-2 px-3 rounded-md transition-colors",
-                      !showJoseyTaskManager && "bg-white dark:bg-gray-800 shadow-sm"
+                      !showJoseyTaskManager &&
+                        "bg-white dark:bg-gray-800 shadow-sm",
                     )}
                   >
                     Properties
@@ -592,7 +593,8 @@ export default function Editor() {
                     onClick={() => setShowJoseyTaskManager(true)}
                     className={cn(
                       "flex-1 text-sm py-2 px-3 rounded-md transition-colors",
-                      showJoseyTaskManager && "bg-white dark:bg-gray-800 shadow-sm"
+                      showJoseyTaskManager &&
+                        "bg-white dark:bg-gray-800 shadow-sm",
                     )}
                   >
                     Tasks

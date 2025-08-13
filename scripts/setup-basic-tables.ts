@@ -14,8 +14,15 @@ async function setupBasicTables() {
       { name: "page_status", values: "('draft', 'published', 'archived')" },
       { name: "member_role", values: "('owner', 'admin', 'editor', 'viewer')" },
       { name: "message_role", values: "('user', 'assistant', 'system')" },
-      { name: "task_status", values: "('pending', 'in_progress', 'completed', 'failed')" },
-      { name: "plan_status", values: "('analyzing', 'planning', 'approved', 'executing', 'completed', 'failed')" },
+      {
+        name: "task_status",
+        values: "('pending', 'in_progress', 'completed', 'failed')",
+      },
+      {
+        name: "plan_status",
+        values:
+          "('analyzing', 'planning', 'approved', 'executing', 'completed', 'failed')",
+      },
     ];
 
     for (const enumDef of enums) {

@@ -22,10 +22,13 @@ export const sendMessage: RequestHandler = async (req, res) => {
       context,
     };
 
-    console.log("🤖 Processing JoseyAI request:", { userId, message: message.substring(0, 50) });
+    console.log("🤖 Processing JoseyAI request:", {
+      userId,
+      message: message.substring(0, 50),
+    });
 
     const response = await joseyAI.processRequest(request);
-    
+
     res.json(response);
   } catch (error) {
     console.error("Error processing JoseyAI request:", error);
@@ -48,7 +51,7 @@ export const updateContext: RequestHandler = async (req, res) => {
     }
 
     joseyAI.updateScreenContext(userId, context);
-    
+
     res.json({ success: true });
   } catch (error) {
     console.error("Error updating context:", error);
@@ -66,13 +69,13 @@ export const getSuggestions: RequestHandler = async (req, res) => {
     }
 
     const context = joseyAI.getScreenContext(userId);
-    
+
     if (!context) {
       return res.json({ suggestions: [] });
     }
 
     const suggestions = joseyAI.generateProactiveSuggestions(context);
-    
+
     res.json({ suggestions });
   } catch (error) {
     console.error("Error getting suggestions:", error);
@@ -99,7 +102,7 @@ export const createCheckpoint: RequestHandler = async (req, res) => {
       userId,
       timestamp: Date.now(),
     });
-    
+
     res.json(checkpoint);
   } catch (error) {
     console.error("Error creating checkpoint:", error);
@@ -122,7 +125,7 @@ export const logAction: RequestHandler = async (req, res) => {
     }
 
     const log = await joseyAI.logAction(action, details, success);
-    
+
     res.json(log);
   } catch (error) {
     console.error("Error logging action:", error);
@@ -146,16 +149,16 @@ export const executeWorkflowStep: RequestHandler = async (req, res) => {
     const result = {
       stepId,
       workflowId,
-      status: 'completed',
-      output: `Successfully executed ${action?.type || 'unknown'} action`,
+      status: "completed",
+      output: `Successfully executed ${action?.type || "unknown"} action`,
       timestamp: new Date(),
     };
 
     // Log the execution
     await joseyAI.logAction(
       `execute_step_${stepId}`,
-      `Executed workflow step: ${action?.description || 'No description'}`,
-      true
+      `Executed workflow step: ${action?.description || "No description"}`,
+      true,
     );
 
     res.json(result);
@@ -182,7 +185,7 @@ export const getStatus: RequestHandler = async (req, res) => {
         "Task tracking",
         "Auto-execution",
         "Checkpoint creation",
-        "Proactive suggestions"
+        "Proactive suggestions",
       ],
       currentUser: userId,
       screenContext: userId ? joseyAI.getScreenContext(userId) : null,
