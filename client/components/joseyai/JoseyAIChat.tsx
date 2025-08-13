@@ -92,8 +92,10 @@ export default function JoseyAIChat({
     };
     setMessages([welcomeMessage]);
 
-    // Generate initial suggestions
-    updateProactiveSuggestions();
+    // Generate initial suggestions (with delay to avoid startup race conditions)
+    setTimeout(() => {
+      updateProactiveSuggestions();
+    }, 1000);
   }, []);
 
   // Update screen context when props change
@@ -111,9 +113,13 @@ export default function JoseyAIChat({
 
       try {
         await apiClient.updateJoseyContext(context);
-        updateProactiveSuggestions();
+        // Update suggestions after context update
+        setTimeout(() => {
+          updateProactiveSuggestions();
+        }, 500);
       } catch (error) {
-        console.error("Failed to update context:", error);
+        // Silently fail for now - JoseyAI API might not be available
+        console.warn("JoseyAI context update unavailable:", error.message);
       }
     };
 
@@ -125,7 +131,9 @@ export default function JoseyAIChat({
       const response = await apiClient.getJoseySuggestions();
       setSuggestions(response.suggestions || []);
     } catch (error) {
-      console.error("Failed to get suggestions:", error);
+      // Silently fail for now - JoseyAI API might not be available
+      console.warn("JoseyAI suggestions unavailable:", error.message);
+      setSuggestions([]);
     }
   };
 
