@@ -65,6 +65,7 @@ export default function Editor() {
 
   // Load project and page data
   useEffect(() => {
+    const abortController = new AbortController();
     setIsLoading(true);
 
     // Load project data
@@ -72,9 +73,14 @@ export default function Editor() {
       headers: {
         "x-user-id": user.id,
       },
+      signal: abortController.signal,
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+      })
       .then((project) => {
+        if (abortController.signal.aborted) return;
         setCurrentProject(project);
 
         // Load page data
@@ -82,9 +88,14 @@ export default function Editor() {
           headers: {
             "x-user-id": user.id,
           },
-        }).then((res) => res.json());
+          signal: abortController.signal,
+        }).then((res) => {
+          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+          return res.json();
+        });
       })
       .then((page) => {
+        if (abortController.signal.aborted) return;
         setCurrentPage(page);
 
         // Initialize with some sample elements
