@@ -319,23 +319,9 @@ export default function Editor() {
     return () => {
       isMountedRef.current = false;
 
-      // Use requestAnimationFrame to safely defer the abort operation
-      // This avoids React strict mode double-invoke issues
+      // Use the safer abort function with multiple layers of protection
       requestAnimationFrame(() => {
-        try {
-          // Only abort if we still have a valid controller and it's not already aborted
-          if (
-            abortController &&
-            typeof abortController.abort === 'function' &&
-            abortController.signal &&
-            !abortController.signal.aborted
-          ) {
-            abortController.abort();
-          }
-        } catch (error) {
-          // Silently ignore any abort-related errors
-          // This includes "signal is aborted without reason" errors
-        }
+        safeAbort();
       });
     };
   }, [projectId, pageId, user?.id]);
