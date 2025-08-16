@@ -37,6 +37,20 @@ import {
   executeWorkflowStep,
   getStatus,
 } from "./routes/joseyai";
+import {
+  getTemplates,
+  getTemplate,
+  useTemplate,
+  getTemplateCategories,
+  rateTemplate,
+} from "./routes/templates";
+import {
+  getComponents,
+  getComponent,
+  downloadComponent,
+  getComponentCategories,
+  rateComponent,
+} from "./routes/components";
 
 export function createServer() {
   const app = express();
