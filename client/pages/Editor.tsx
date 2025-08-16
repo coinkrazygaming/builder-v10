@@ -307,21 +307,24 @@ export default function Editor() {
     return () => {
       isMountedRef.current = false;
 
-      // Use a timeout to defer the abort to avoid React strict mode issues
-      setTimeout(() => {
+      // Use requestAnimationFrame to safely defer the abort operation
+      // This avoids React strict mode double-invoke issues
+      requestAnimationFrame(() => {
         try {
-          // Check if the controller and signal exist and are not already aborted
+          // Only abort if we still have a valid controller and it's not already aborted
           if (
             abortController &&
+            typeof abortController.abort === 'function' &&
             abortController.signal &&
             !abortController.signal.aborted
           ) {
             abortController.abort();
           }
         } catch (error) {
-          // Completely ignore all AbortController errors during cleanup
+          // Silently ignore any abort-related errors
+          // This includes "signal is aborted without reason" errors
         }
-      }, 0);
+      });
     };
   }, [projectId, pageId, user?.id]);
 
