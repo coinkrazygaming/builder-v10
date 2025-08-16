@@ -136,5 +136,23 @@ export function createServer() {
   app.get("/api/joseyai/status", getStatus);
   console.log("JoseyAI API routes registered successfully");
 
+  // Templates API routes
+  console.log("Registering Templates API routes...");
+  app.get("/api/templates", getTemplates);
+  app.get("/api/templates/categories", getTemplateCategories);
+  app.get("/api/templates/:id", getTemplate);
+  app.post("/api/templates/:id/use", useTemplate);
+  app.post("/api/templates/:id/rate", rateTemplate);
+  console.log("Templates API routes registered successfully");
+
+  // Components API routes
+  console.log("Registering Components API routes...");
+  app.get("/api/components", getComponents);
+  app.get("/api/components/categories", getComponentCategories);
+  app.get("/api/components/:id", getComponent);
+  app.post("/api/components/:id/download", downloadComponent);
+  app.post("/api/components/:id/rate", rateComponent);
+  console.log("Components API routes registered successfully");
+
   return app;
 }
