@@ -25,7 +25,8 @@ const mockTemplates: Template[] = [
     description: "A sleek, modern landing page perfect for SaaS companies",
     category: "Landing Pages",
     tags: ["modern", "saas", "clean", "responsive"],
-    thumbnail: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
+    thumbnail:
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
     previewUrl: "/preview/modern-landing",
     isPremium: false,
     rating: 4.8,
@@ -43,8 +44,9 @@ const mockTemplates: Template[] = [
             title: "Build Amazing Websites",
             subtitle: "Create stunning web experiences with our visual builder",
             ctaText: "Get Started",
-            backgroundImage: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&h=600&fit=crop"
-          }
+            backgroundImage:
+              "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&h=600&fit=crop",
+          },
         },
         {
           id: "features-1",
@@ -52,14 +54,26 @@ const mockTemplates: Template[] = [
           props: {
             title: "Why Choose Us",
             features: [
-              { title: "Easy to Use", description: "Drag and drop interface", icon: "code" },
-              { title: "High Quality", description: "Professional designs", icon: "star" },
-              { title: "Fast Performance", description: "Optimized for speed", icon: "zap" }
-            ]
-          }
-        }
-      ]
-    }
+              {
+                title: "Easy to Use",
+                description: "Drag and drop interface",
+                icon: "code",
+              },
+              {
+                title: "High Quality",
+                description: "Professional designs",
+                icon: "star",
+              },
+              {
+                title: "Fast Performance",
+                description: "Optimized for speed",
+                icon: "zap",
+              },
+            ],
+          },
+        },
+      ],
+    },
   },
   {
     id: "ecommerce-store",
@@ -67,7 +81,8 @@ const mockTemplates: Template[] = [
     description: "Complete e-commerce template with shopping cart and checkout",
     category: "E-commerce",
     tags: ["ecommerce", "shop", "cart", "product"],
-    thumbnail: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop",
+    thumbnail:
+      "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop",
     previewUrl: "/preview/ecommerce-store",
     isPremium: true,
     rating: 4.9,
@@ -84,8 +99,8 @@ const mockTemplates: Template[] = [
           props: {
             logo: "Store Logo",
             navigation: ["Home", "Products", "About", "Contact"],
-            cartIcon: true
-          }
+            cartIcon: true,
+          },
         },
         {
           id: "product-grid-1",
@@ -94,12 +109,17 @@ const mockTemplates: Template[] = [
             title: "Featured Products",
             products: [
               { id: 1, name: "Product 1", price: "$99", image: "product1.jpg" },
-              { id: 2, name: "Product 2", price: "$149", image: "product2.jpg" }
-            ]
-          }
-        }
-      ]
-    }
+              {
+                id: 2,
+                name: "Product 2",
+                price: "$149",
+                image: "product2.jpg",
+              },
+            ],
+          },
+        },
+      ],
+    },
   },
   {
     id: "portfolio-showcase",
@@ -107,7 +127,8 @@ const mockTemplates: Template[] = [
     description: "Creative portfolio template for designers and developers",
     category: "Portfolio",
     tags: ["portfolio", "creative", "showcase", "minimal"],
-    thumbnail: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop",
+    thumbnail:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop",
     previewUrl: "/preview/portfolio-showcase",
     isPremium: false,
     rating: 4.7,
@@ -125,8 +146,8 @@ const mockTemplates: Template[] = [
             name: "John Designer",
             title: "Creative Director",
             bio: "I create beautiful and functional designs that tell stories.",
-            avatar: "avatar.jpg"
-          }
+            avatar: "avatar.jpg",
+          },
         },
         {
           id: "portfolio-1",
@@ -134,59 +155,77 @@ const mockTemplates: Template[] = [
           props: {
             title: "My Work",
             projects: [
-              { id: 1, title: "Project 1", image: "project1.jpg", category: "Web Design" },
-              { id: 2, title: "Project 2", image: "project2.jpg", category: "Branding" }
-            ]
-          }
-        }
-      ]
-    }
-  }
+              {
+                id: 1,
+                title: "Project 1",
+                image: "project1.jpg",
+                category: "Web Design",
+              },
+              {
+                id: 2,
+                title: "Project 2",
+                image: "project2.jpg",
+                category: "Branding",
+              },
+            ],
+          },
+        },
+      ],
+    },
+  },
 ];
 
 // GET /api/templates - Get all templates
 export const getTemplates: RequestHandler = async (req, res) => {
   try {
     const { category, search, featured, premium, limit, offset } = req.query;
-    
+
     let filtered = [...mockTemplates];
-    
+
     // Filter by category
     if (category && category !== "all") {
-      filtered = filtered.filter(template => template.category === category);
+      filtered = filtered.filter((template) => template.category === category);
     }
-    
+
     // Filter by search
     if (search) {
       const searchTerm = (search as string).toLowerCase();
-      filtered = filtered.filter(template => 
-        template.name.toLowerCase().includes(searchTerm) ||
-        template.description.toLowerCase().includes(searchTerm) ||
-        template.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+      filtered = filtered.filter(
+        (template) =>
+          template.name.toLowerCase().includes(searchTerm) ||
+          template.description.toLowerCase().includes(searchTerm) ||
+          template.tags.some((tag) => tag.toLowerCase().includes(searchTerm)),
       );
     }
-    
+
     // Filter by featured
     if (featured === "true") {
-      filtered = filtered.filter(template => template.featured);
+      filtered = filtered.filter((template) => template.featured);
     }
-    
+
     // Filter by premium
     if (premium === "true") {
-      filtered = filtered.filter(template => template.isPremium);
+      filtered = filtered.filter((template) => template.isPremium);
     } else if (premium === "false") {
-      filtered = filtered.filter(template => !template.isPremium);
+      filtered = filtered.filter((template) => !template.isPremium);
     }
-    
+
     // Apply pagination
     const limitNum = parseInt(limit as string) || 20;
     const offsetNum = parseInt(offset as string) || 0;
     const paginated = filtered.slice(offsetNum, offsetNum + limitNum);
-    
+
     res.json({
       templates: paginated,
       total: filtered.length,
-      categories: ["Landing Pages", "E-commerce", "Portfolio", "Blog", "Restaurant", "Corporate"]
+      categories: [
+        "Landing Pages",
+        "E-commerce",
+        "Portfolio",
+        "Blog",
+        "Restaurant",
+        "Corporate",
+      ],
     });
   } catch (error) {
     console.error("Error fetching templates:", error);
@@ -198,15 +237,15 @@ export const getTemplates: RequestHandler = async (req, res) => {
 export const getTemplate: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;
-    const template = mockTemplates.find(t => t.id === id);
-    
+    const template = mockTemplates.find((t) => t.id === id);
+
     if (!template) {
       return res.status(404).json({ error: "Template not found" });
     }
-    
+
     // Increment views
     template.views += 1;
-    
+
     res.json(template);
   } catch (error) {
     console.error("Error fetching template:", error);
@@ -220,16 +259,16 @@ export const useTemplate: RequestHandler = async (req, res) => {
     const { id } = req.params;
     const { projectName, projectDescription } = req.body;
     const userId = req.headers["x-user-id"] as string;
-    
+
     if (!userId) {
       return res.status(401).json({ error: "User ID required" });
     }
-    
-    const template = mockTemplates.find(t => t.id === id);
+
+    const template = mockTemplates.find((t) => t.id === id);
     if (!template) {
       return res.status(404).json({ error: "Template not found" });
     }
-    
+
     // Create new project based on template
     const newProject = {
       id: `project-${Date.now()}`,
@@ -243,13 +282,13 @@ export const useTemplate: RequestHandler = async (req, res) => {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-    
+
     // Increment downloads
     template.downloads += 1;
-    
+
     res.status(201).json({
       project: newProject,
-      message: "Project created successfully from template"
+      message: "Project created successfully from template",
     });
   } catch (error) {
     console.error("Error using template:", error);
@@ -262,14 +301,39 @@ export const getTemplateCategories: RequestHandler = async (req, res) => {
   try {
     const categories = [
       { id: "all", name: "All", count: mockTemplates.length },
-      { id: "Landing Pages", name: "Landing Pages", count: mockTemplates.filter(t => t.category === "Landing Pages").length },
-      { id: "E-commerce", name: "E-commerce", count: mockTemplates.filter(t => t.category === "E-commerce").length },
-      { id: "Portfolio", name: "Portfolio", count: mockTemplates.filter(t => t.category === "Portfolio").length },
-      { id: "Blog", name: "Blog", count: mockTemplates.filter(t => t.category === "Blog").length },
-      { id: "Restaurant", name: "Restaurant", count: mockTemplates.filter(t => t.category === "Restaurant").length },
-      { id: "Corporate", name: "Corporate", count: mockTemplates.filter(t => t.category === "Corporate").length },
+      {
+        id: "Landing Pages",
+        name: "Landing Pages",
+        count: mockTemplates.filter((t) => t.category === "Landing Pages")
+          .length,
+      },
+      {
+        id: "E-commerce",
+        name: "E-commerce",
+        count: mockTemplates.filter((t) => t.category === "E-commerce").length,
+      },
+      {
+        id: "Portfolio",
+        name: "Portfolio",
+        count: mockTemplates.filter((t) => t.category === "Portfolio").length,
+      },
+      {
+        id: "Blog",
+        name: "Blog",
+        count: mockTemplates.filter((t) => t.category === "Blog").length,
+      },
+      {
+        id: "Restaurant",
+        name: "Restaurant",
+        count: mockTemplates.filter((t) => t.category === "Restaurant").length,
+      },
+      {
+        id: "Corporate",
+        name: "Corporate",
+        count: mockTemplates.filter((t) => t.category === "Corporate").length,
+      },
     ];
-    
+
     res.json({ categories });
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -283,25 +347,25 @@ export const rateTemplate: RequestHandler = async (req, res) => {
     const { id } = req.params;
     const { rating } = req.body;
     const userId = req.headers["x-user-id"] as string;
-    
+
     if (!userId) {
       return res.status(401).json({ error: "User ID required" });
     }
-    
+
     if (!rating || rating < 1 || rating > 5) {
       return res.status(400).json({ error: "Rating must be between 1 and 5" });
     }
-    
-    const template = mockTemplates.find(t => t.id === id);
+
+    const template = mockTemplates.find((t) => t.id === id);
     if (!template) {
       return res.status(404).json({ error: "Template not found" });
     }
-    
+
     // In a real implementation, you'd store individual ratings and calculate average
     // For now, we'll just acknowledge the rating
-    res.json({ 
+    res.json({
       message: "Template rated successfully",
-      currentRating: template.rating 
+      currentRating: template.rating,
     });
   } catch (error) {
     console.error("Error rating template:", error);

@@ -3,10 +3,33 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Star, Eye, Download, Play, Filter, Grid3X3, List, Heart } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Search,
+  Star,
+  Eye,
+  Download,
+  Play,
+  Filter,
+  Grid3X3,
+  List,
+  Heart,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Template {
@@ -33,7 +56,8 @@ const mockTemplates: Template[] = [
     description: "A sleek, modern landing page perfect for SaaS companies",
     category: "Landing Pages",
     tags: ["modern", "saas", "clean", "responsive"],
-    thumbnail: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
+    thumbnail:
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
     previewUrl: "/preview/modern-landing",
     isPremium: false,
     rating: 4.8,
@@ -49,7 +73,8 @@ const mockTemplates: Template[] = [
     description: "Complete e-commerce template with shopping cart and checkout",
     category: "E-commerce",
     tags: ["ecommerce", "shop", "cart", "product"],
-    thumbnail: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop",
+    thumbnail:
+      "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop",
     previewUrl: "/preview/ecommerce-store",
     isPremium: true,
     rating: 4.9,
@@ -65,7 +90,8 @@ const mockTemplates: Template[] = [
     description: "Creative portfolio template for designers and developers",
     category: "Portfolio",
     tags: ["portfolio", "creative", "showcase", "minimal"],
-    thumbnail: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop",
+    thumbnail:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop",
     previewUrl: "/preview/portfolio-showcase",
     isPremium: false,
     rating: 4.7,
@@ -81,7 +107,8 @@ const mockTemplates: Template[] = [
     description: "Professional blog template with article layouts",
     category: "Blog",
     tags: ["blog", "magazine", "articles", "content"],
-    thumbnail: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400&h=300&fit=crop",
+    thumbnail:
+      "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400&h=300&fit=crop",
     previewUrl: "/preview/blog-magazine",
     isPremium: false,
     rating: 4.6,
@@ -97,7 +124,8 @@ const mockTemplates: Template[] = [
     description: "Elegant restaurant template with menu and reservation system",
     category: "Restaurant",
     tags: ["restaurant", "menu", "food", "reservation"],
-    thumbnail: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop",
+    thumbnail:
+      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop",
     previewUrl: "/preview/restaurant-menu",
     isPremium: true,
     rating: 4.8,
@@ -113,7 +141,8 @@ const mockTemplates: Template[] = [
     description: "Professional corporate template for businesses",
     category: "Corporate",
     tags: ["corporate", "business", "professional", "company"],
-    thumbnail: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=300&fit=crop",
+    thumbnail:
+      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=300&fit=crop",
     previewUrl: "/preview/corporate-website",
     isPremium: false,
     rating: 4.5,
@@ -125,7 +154,15 @@ const mockTemplates: Template[] = [
   },
 ];
 
-const categories = ["All", "Landing Pages", "E-commerce", "Portfolio", "Blog", "Restaurant", "Corporate"];
+const categories = [
+  "All",
+  "Landing Pages",
+  "E-commerce",
+  "Portfolio",
+  "Blog",
+  "Restaurant",
+  "Corporate",
+];
 
 export default function Templates() {
   const navigate = useNavigate();
@@ -136,14 +173,20 @@ export default function Templates() {
   const [showPremiumOnly, setShowPremiumOnly] = useState(false);
 
   const filteredTemplates = useMemo(() => {
-    let filtered = mockTemplates.filter(template => {
-      const matchesSearch = template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          template.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          template.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-      
-      const matchesCategory = selectedCategory === "All" || template.category === selectedCategory;
+    let filtered = mockTemplates.filter((template) => {
+      const matchesSearch =
+        template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        template.description
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        template.tags.some((tag) =>
+          tag.toLowerCase().includes(searchQuery.toLowerCase()),
+        );
+
+      const matchesCategory =
+        selectedCategory === "All" || template.category === selectedCategory;
       const matchesPremium = !showPremiumOnly || template.isPremium;
-      
+
       return matchesSearch && matchesCategory && matchesPremium;
     });
 
@@ -153,7 +196,10 @@ export default function Templates() {
         filtered.sort((a, b) => b.downloads - a.downloads);
         break;
       case "newest":
-        filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        filtered.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        );
         break;
       case "rating":
         filtered.sort((a, b) => b.rating - a.rating);
@@ -204,7 +250,7 @@ export default function Templates() {
           </div>
         </div>
       </div>
-      
+
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between">
           <CardTitle className="text-lg">{template.name}</CardTitle>
@@ -214,7 +260,7 @@ export default function Templates() {
         </div>
         <CardDescription>{template.description}</CardDescription>
       </CardHeader>
-      
+
       <CardContent className="pt-0">
         <div className="flex flex-wrap gap-1 mb-3">
           {template.tags.slice(0, 3).map((tag) => (
@@ -223,7 +269,7 @@ export default function Templates() {
             </Badge>
           ))}
         </div>
-        
+
         <div className="flex items-center justify-between text-sm text-gray-600">
           <div className="flex items-center space-x-2">
             <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
@@ -241,7 +287,7 @@ export default function Templates() {
           </div>
         </div>
       </CardContent>
-      
+
       <CardFooter className="pt-0">
         <div className="flex items-center justify-between w-full text-xs text-gray-500">
           <span>by {template.author}</span>
@@ -273,7 +319,9 @@ export default function Templates() {
                   <Badge className="text-xs bg-amber-500">Featured</Badge>
                 )}
               </div>
-              <p className="text-sm text-gray-600 mb-2">{template.description}</p>
+              <p className="text-sm text-gray-600 mb-2">
+                {template.description}
+              </p>
               <div className="flex flex-wrap gap-1 mb-2">
                 {template.tags.slice(0, 4).map((tag) => (
                   <Badge key={tag} variant="secondary" className="text-xs">
@@ -297,7 +345,11 @@ export default function Templates() {
                   Preview
                 </Link>
               </Button>
-              <Button size="sm" variant="outline" onClick={() => handleUseTemplate(template)}>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => handleUseTemplate(template)}
+              >
                 <Play className="w-4 h-4 mr-1" />
                 Use Template
               </Button>
@@ -338,7 +390,10 @@ export default function Templates() {
             </div>
 
             <div className="flex items-center space-x-4">
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <Select
+                value={selectedCategory}
+                onValueChange={setSelectedCategory}
+              >
                 <SelectTrigger className="w-48">
                   <SelectValue placeholder="Category" />
                 </SelectTrigger>
@@ -402,7 +457,9 @@ export default function Templates() {
                 variant="outline"
                 size="sm"
                 onClick={() => setShowPremiumOnly(!showPremiumOnly)}
-                className={cn(showPremiumOnly && "bg-purple-50 border-purple-200")}
+                className={cn(
+                  showPremiumOnly && "bg-purple-50 border-purple-200",
+                )}
               >
                 <Filter className="w-4 h-4 mr-2" />
                 {showPremiumOnly ? "Show All" : "Premium Only"}
@@ -426,25 +483,31 @@ export default function Templates() {
 
           <TabsContent value="featured" className="mt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredTemplates.filter(t => t.featured).map((template) => (
-                <TemplateCard key={template.id} template={template} />
-              ))}
+              {filteredTemplates
+                .filter((t) => t.featured)
+                .map((template) => (
+                  <TemplateCard key={template.id} template={template} />
+                ))}
             </div>
           </TabsContent>
 
           <TabsContent value="free" className="mt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredTemplates.filter(t => !t.isPremium).map((template) => (
-                <TemplateCard key={template.id} template={template} />
-              ))}
+              {filteredTemplates
+                .filter((t) => !t.isPremium)
+                .map((template) => (
+                  <TemplateCard key={template.id} template={template} />
+                ))}
             </div>
           </TabsContent>
 
           <TabsContent value="premium" className="mt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredTemplates.filter(t => t.isPremium).map((template) => (
-                <TemplateCard key={template.id} template={template} />
-              ))}
+              {filteredTemplates
+                .filter((t) => t.isPremium)
+                .map((template) => (
+                  <TemplateCard key={template.id} template={template} />
+                ))}
             </div>
           </TabsContent>
         </Tabs>

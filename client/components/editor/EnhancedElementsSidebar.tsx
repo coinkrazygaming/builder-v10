@@ -51,7 +51,7 @@ import {
   Shield,
   Award,
   Briefcase,
-  GraduationCap
+  GraduationCap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -79,8 +79,12 @@ const elementTypes: ElementType[] = [
     description: "Text heading with different sizes",
     difficulty: "beginner",
     defaultProps: { children: "Your Heading Here", level: 2 },
-    defaultStyle: { fontSize: "24px", fontWeight: "bold", marginBottom: "16px" },
-    tags: ["text", "title", "h1", "h2", "h3"]
+    defaultStyle: {
+      fontSize: "24px",
+      fontWeight: "bold",
+      marginBottom: "16px",
+    },
+    tags: ["text", "title", "h1", "h2", "h3"],
   },
   {
     id: "text",
@@ -91,7 +95,7 @@ const elementTypes: ElementType[] = [
     difficulty: "beginner",
     defaultProps: { children: "Your text content here." },
     defaultStyle: { fontSize: "16px", lineHeight: "1.6", marginBottom: "16px" },
-    tags: ["paragraph", "content", "body"]
+    tags: ["paragraph", "content", "body"],
   },
   {
     id: "button",
@@ -101,16 +105,16 @@ const elementTypes: ElementType[] = [
     description: "Interactive button element",
     difficulty: "beginner",
     defaultProps: { children: "Click Me", variant: "primary" },
-    defaultStyle: { 
-      padding: "12px 24px", 
-      backgroundColor: "#3b82f6", 
-      color: "white", 
+    defaultStyle: {
+      padding: "12px 24px",
+      backgroundColor: "#3b82f6",
+      color: "white",
       borderRadius: "6px",
       border: "none",
       cursor: "pointer",
-      fontWeight: "500"
+      fontWeight: "500",
     },
-    tags: ["cta", "action", "click", "submit"]
+    tags: ["cta", "action", "click", "submit"],
   },
   {
     id: "image",
@@ -119,12 +123,12 @@ const elementTypes: ElementType[] = [
     category: "Basic",
     description: "Image with alt text",
     difficulty: "beginner",
-    defaultProps: { 
+    defaultProps: {
       src: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&h=300&fit=crop",
-      alt: "Placeholder image"
+      alt: "Placeholder image",
     },
     defaultStyle: { width: "100%", height: "auto", borderRadius: "8px" },
-    tags: ["media", "visual", "photo", "picture"]
+    tags: ["media", "visual", "photo", "picture"],
   },
   {
     id: "link",
@@ -135,7 +139,7 @@ const elementTypes: ElementType[] = [
     difficulty: "beginner",
     defaultProps: { children: "Click here", href: "#" },
     defaultStyle: { color: "#3b82f6", textDecoration: "underline" },
-    tags: ["navigation", "url", "anchor", "href"]
+    tags: ["navigation", "url", "anchor", "href"],
   },
 
   // Layout Elements
@@ -148,14 +152,14 @@ const elementTypes: ElementType[] = [
     difficulty: "beginner",
     canHaveChildren: true,
     defaultProps: {},
-    defaultStyle: { 
+    defaultStyle: {
       padding: "20px",
       backgroundColor: "#f8fafc",
       borderRadius: "8px",
       border: "2px dashed #cbd5e1",
-      minHeight: "100px"
+      minHeight: "100px",
     },
-    tags: ["wrapper", "box", "section", "div"]
+    tags: ["wrapper", "box", "section", "div"],
   },
   {
     id: "flexbox",
@@ -165,15 +169,19 @@ const elementTypes: ElementType[] = [
     description: "Flexbox layout container",
     difficulty: "intermediate",
     canHaveChildren: true,
-    defaultProps: { direction: "row", justify: "flex-start", align: "flex-start" },
-    defaultStyle: { 
+    defaultProps: {
+      direction: "row",
+      justify: "flex-start",
+      align: "flex-start",
+    },
+    defaultStyle: {
       display: "flex",
       gap: "16px",
       padding: "16px",
       border: "2px dashed #cbd5e1",
-      minHeight: "80px"
+      minHeight: "80px",
     },
-    tags: ["flex", "row", "column", "layout", "responsive"]
+    tags: ["flex", "row", "column", "layout", "responsive"],
   },
   {
     id: "grid",
@@ -184,15 +192,15 @@ const elementTypes: ElementType[] = [
     difficulty: "intermediate",
     canHaveChildren: true,
     defaultProps: { columns: 3, gap: 16 },
-    defaultStyle: { 
+    defaultStyle: {
       display: "grid",
       gridTemplateColumns: "repeat(3, 1fr)",
       gap: "16px",
       padding: "16px",
       border: "2px dashed #cbd5e1",
-      minHeight: "120px"
+      minHeight: "120px",
     },
-    tags: ["grid", "columns", "rows", "layout", "responsive"]
+    tags: ["grid", "columns", "rows", "layout", "responsive"],
   },
 
   // Navigation Elements
@@ -204,21 +212,21 @@ const elementTypes: ElementType[] = [
     description: "Responsive navigation bar",
     difficulty: "intermediate",
     isPremium: true,
-    defaultProps: { 
+    defaultProps: {
       brand: "Logo",
       links: ["Home", "About", "Services", "Contact"],
-      ctaText: "Get Started"
+      ctaText: "Get Started",
     },
-    defaultStyle: { 
+    defaultStyle: {
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
       padding: "16px 24px",
       backgroundColor: "white",
       borderBottom: "1px solid #e2e8f0",
-      boxShadow: "0 1px 3px rgba(0,0,0,0.1)"
+      boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
     },
-    tags: ["nav", "menu", "header", "links", "responsive"]
+    tags: ["nav", "menu", "header", "links", "responsive"],
   },
   {
     id: "breadcrumb",
@@ -227,22 +235,22 @@ const elementTypes: ElementType[] = [
     category: "Navigation",
     description: "Breadcrumb navigation trail",
     difficulty: "beginner",
-    defaultProps: { 
+    defaultProps: {
       items: [
         { label: "Home", href: "/" },
         { label: "Products", href: "/products" },
-        { label: "Current Page" }
-      ]
+        { label: "Current Page" },
+      ],
     },
-    defaultStyle: { 
+    defaultStyle: {
       display: "flex",
       alignItems: "center",
       gap: "8px",
       fontSize: "14px",
       color: "#64748b",
-      marginBottom: "16px"
+      marginBottom: "16px",
     },
-    tags: ["navigation", "trail", "path", "hierarchy"]
+    tags: ["navigation", "trail", "path", "hierarchy"],
   },
 
   // Form Elements
@@ -253,19 +261,19 @@ const elementTypes: ElementType[] = [
     category: "Forms",
     description: "Text input field",
     difficulty: "beginner",
-    defaultProps: { 
+    defaultProps: {
       type: "text",
       placeholder: "Enter text...",
-      label: "Input Label"
+      label: "Input Label",
     },
-    defaultStyle: { 
+    defaultStyle: {
       width: "100%",
       padding: "12px",
       border: "1px solid #d1d5db",
       borderRadius: "6px",
-      fontSize: "16px"
+      fontSize: "16px",
     },
-    tags: ["form", "field", "text", "input", "user-input"]
+    tags: ["form", "field", "text", "input", "user-input"],
   },
   {
     id: "textarea",
@@ -274,20 +282,20 @@ const elementTypes: ElementType[] = [
     category: "Forms",
     description: "Multi-line text input",
     difficulty: "beginner",
-    defaultProps: { 
+    defaultProps: {
       placeholder: "Enter your message...",
       rows: 4,
-      label: "Message"
+      label: "Message",
     },
-    defaultStyle: { 
+    defaultStyle: {
       width: "100%",
       padding: "12px",
       border: "1px solid #d1d5db",
       borderRadius: "6px",
       fontSize: "16px",
-      resize: "vertical"
+      resize: "vertical",
     },
-    tags: ["form", "textarea", "multiline", "message", "comments"]
+    tags: ["form", "textarea", "multiline", "message", "comments"],
   },
   {
     id: "checkbox",
@@ -296,17 +304,17 @@ const elementTypes: ElementType[] = [
     category: "Forms",
     description: "Checkbox input for selections",
     difficulty: "beginner",
-    defaultProps: { 
+    defaultProps: {
       label: "Check this option",
-      checked: false
+      checked: false,
     },
-    defaultStyle: { 
+    defaultStyle: {
       display: "flex",
       alignItems: "center",
       gap: "8px",
-      fontSize: "16px"
+      fontSize: "16px",
     },
-    tags: ["form", "checkbox", "selection", "boolean", "option"]
+    tags: ["form", "checkbox", "selection", "boolean", "option"],
   },
 
   // Media Elements
@@ -318,18 +326,18 @@ const elementTypes: ElementType[] = [
     description: "Video player component",
     difficulty: "intermediate",
     isPremium: true,
-    defaultProps: { 
+    defaultProps: {
       src: "https://www.w3schools.com/html/mov_bbb.mp4",
       controls: true,
-      autoplay: false
+      autoplay: false,
     },
-    defaultStyle: { 
+    defaultStyle: {
       width: "100%",
       height: "auto",
       borderRadius: "8px",
-      boxShadow: "0 4px 6px rgba(0,0,0,0.1)"
+      boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
     },
-    tags: ["media", "video", "player", "streaming", "embed"]
+    tags: ["media", "video", "player", "streaming", "embed"],
   },
   {
     id: "audio",
@@ -338,15 +346,15 @@ const elementTypes: ElementType[] = [
     category: "Media",
     description: "Audio player component",
     difficulty: "intermediate",
-    defaultProps: { 
+    defaultProps: {
       src: "audio.mp3",
-      controls: true
+      controls: true,
     },
-    defaultStyle: { 
+    defaultStyle: {
       width: "100%",
-      height: "40px"
+      height: "40px",
     },
-    tags: ["media", "audio", "music", "sound", "player"]
+    tags: ["media", "audio", "music", "sound", "player"],
   },
 
   // Data Display
@@ -358,21 +366,21 @@ const elementTypes: ElementType[] = [
     description: "Responsive data table",
     difficulty: "intermediate",
     isPremium: true,
-    defaultProps: { 
+    defaultProps: {
       headers: ["Name", "Email", "Role"],
       rows: [
         ["John Doe", "john@example.com", "Admin"],
-        ["Jane Smith", "jane@example.com", "User"]
-      ]
+        ["Jane Smith", "jane@example.com", "User"],
+      ],
     },
-    defaultStyle: { 
+    defaultStyle: {
       width: "100%",
       borderCollapse: "collapse",
       border: "1px solid #e2e8f0",
       borderRadius: "8px",
-      overflow: "hidden"
+      overflow: "hidden",
     },
-    tags: ["data", "table", "rows", "columns", "spreadsheet"]
+    tags: ["data", "table", "rows", "columns", "spreadsheet"],
   },
   {
     id: "chart",
@@ -382,23 +390,23 @@ const elementTypes: ElementType[] = [
     description: "Data visualization chart",
     difficulty: "advanced",
     isPremium: true,
-    defaultProps: { 
+    defaultProps: {
       type: "bar",
       data: [
         { label: "Jan", value: 100 },
         { label: "Feb", value: 150 },
-        { label: "Mar", value: 120 }
-      ]
+        { label: "Mar", value: 120 },
+      ],
     },
-    defaultStyle: { 
+    defaultStyle: {
       width: "100%",
       height: "300px",
       padding: "16px",
       backgroundColor: "white",
       borderRadius: "8px",
-      border: "1px solid #e2e8f0"
+      border: "1px solid #e2e8f0",
     },
-    tags: ["data", "chart", "graph", "analytics", "visualization"]
+    tags: ["data", "chart", "graph", "analytics", "visualization"],
   },
 
   // Interactive Elements
@@ -409,17 +417,17 @@ const elementTypes: ElementType[] = [
     category: "Interactive",
     description: "Range slider input",
     difficulty: "intermediate",
-    defaultProps: { 
+    defaultProps: {
       min: 0,
       max: 100,
       value: 50,
-      label: "Slider"
+      label: "Slider",
     },
-    defaultStyle: { 
+    defaultStyle: {
       width: "100%",
-      margin: "16px 0"
+      margin: "16px 0",
     },
-    tags: ["form", "slider", "range", "input", "interactive"]
+    tags: ["form", "slider", "range", "input", "interactive"],
   },
   {
     id: "toggle",
@@ -428,17 +436,17 @@ const elementTypes: ElementType[] = [
     category: "Interactive",
     description: "Toggle switch component",
     difficulty: "beginner",
-    defaultProps: { 
+    defaultProps: {
       label: "Enable feature",
-      checked: false
+      checked: false,
     },
-    defaultStyle: { 
+    defaultStyle: {
       display: "flex",
       alignItems: "center",
-      gap: "8px"
+      gap: "8px",
     },
-    tags: ["form", "toggle", "switch", "boolean", "on-off"]
-  }
+    tags: ["form", "toggle", "switch", "boolean", "on-off"],
+  },
 ];
 
 const categories = [
@@ -453,17 +461,20 @@ const categories = [
 ];
 
 function DraggableElement({ element }: { element: ElementType }) {
-  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
-    id: element.id,
-    data: {
-      type: "sidebar-element",
-      element: element,
-    },
-  });
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({
+      id: element.id,
+      data: {
+        type: "sidebar-element",
+        element: element,
+      },
+    });
 
-  const style = transform ? {
-    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-  } : undefined;
+  const style = transform
+    ? {
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+      }
+    : undefined;
 
   const Icon = element.icon;
 
@@ -475,14 +486,20 @@ function DraggableElement({ element }: { element: ElementType }) {
       {...listeners}
       className={cn(
         "group relative p-3 border rounded-lg cursor-grab hover:shadow-md transition-all duration-200",
-        isDragging ? "opacity-50 scale-105 shadow-lg" : "hover:border-blue-300 hover:bg-blue-50"
+        isDragging
+          ? "opacity-50 scale-105 shadow-lg"
+          : "hover:border-blue-300 hover:bg-blue-50",
       )}
     >
       <div className="flex items-center space-x-3">
-        <div className={cn(
-          "w-8 h-8 rounded-md flex items-center justify-center",
-          element.isPremium ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white" : "bg-gray-100 text-gray-600"
-        )}>
+        <div
+          className={cn(
+            "w-8 h-8 rounded-md flex items-center justify-center",
+            element.isPremium
+              ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white"
+              : "bg-gray-100 text-gray-600",
+          )}
+        >
           <Icon className="w-4 h-4" />
         </div>
         <div className="flex-1 min-w-0">
@@ -494,23 +511,28 @@ function DraggableElement({ element }: { element: ElementType }) {
               </Badge>
             )}
             {element.difficulty && (
-              <Badge 
-                variant="secondary" 
+              <Badge
+                variant="secondary"
                 className={cn(
                   "text-xs",
-                  element.difficulty === "beginner" && "bg-green-100 text-green-700",
-                  element.difficulty === "intermediate" && "bg-yellow-100 text-yellow-700",
-                  element.difficulty === "advanced" && "bg-red-100 text-red-700"
+                  element.difficulty === "beginner" &&
+                    "bg-green-100 text-green-700",
+                  element.difficulty === "intermediate" &&
+                    "bg-yellow-100 text-yellow-700",
+                  element.difficulty === "advanced" &&
+                    "bg-red-100 text-red-700",
                 )}
               >
                 {element.difficulty}
               </Badge>
             )}
           </div>
-          <p className="text-xs text-gray-500 truncate">{element.description}</p>
+          <p className="text-xs text-gray-500 truncate">
+            {element.description}
+          </p>
         </div>
       </div>
-      
+
       {/* Drag indicator */}
       <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
         <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
@@ -525,13 +547,17 @@ export default function EnhancedElementsSidebar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  const filteredElements = elementTypes.filter(element => {
-    const matchesSearch = element.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         element.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         element.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-    
-    const matchesCategory = selectedCategory === "all" || element.category === selectedCategory;
-    
+  const filteredElements = elementTypes.filter((element) => {
+    const matchesSearch =
+      element.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      element.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      element.tags.some((tag) =>
+        tag.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+
+    const matchesCategory =
+      selectedCategory === "all" || element.category === selectedCategory;
+
     return matchesSearch && matchesCategory;
   });
 
@@ -550,12 +576,24 @@ export default function EnhancedElementsSidebar() {
         </div>
       </div>
 
-      <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="flex-1 flex flex-col">
+      <Tabs
+        value={selectedCategory}
+        onValueChange={setSelectedCategory}
+        className="flex-1 flex flex-col"
+      >
         <TabsList className="grid w-full grid-cols-4 m-2">
-          <TabsTrigger value="all" className="text-xs">All</TabsTrigger>
-          <TabsTrigger value="Basic" className="text-xs">Basic</TabsTrigger>
-          <TabsTrigger value="Layout" className="text-xs">Layout</TabsTrigger>
-          <TabsTrigger value="Forms" className="text-xs">Forms</TabsTrigger>
+          <TabsTrigger value="all" className="text-xs">
+            All
+          </TabsTrigger>
+          <TabsTrigger value="Basic" className="text-xs">
+            Basic
+          </TabsTrigger>
+          <TabsTrigger value="Layout" className="text-xs">
+            Layout
+          </TabsTrigger>
+          <TabsTrigger value="Forms" className="text-xs">
+            Forms
+          </TabsTrigger>
         </TabsList>
 
         <ScrollArea className="flex-1 px-4">
@@ -567,7 +605,9 @@ export default function EnhancedElementsSidebar() {
                 return (
                   <Button
                     key={category.id}
-                    variant={selectedCategory === category.id ? "default" : "outline"}
+                    variant={
+                      selectedCategory === category.id ? "default" : "outline"
+                    }
                     size="sm"
                     onClick={() => setSelectedCategory(category.id)}
                     className="h-8 text-xs"
@@ -592,7 +632,9 @@ export default function EnhancedElementsSidebar() {
               <div className="text-center py-8">
                 <Search className="w-8 h-8 text-gray-400 mx-auto mb-2" />
                 <p className="text-sm text-gray-500">No elements found</p>
-                <p className="text-xs text-gray-400">Try adjusting your search</p>
+                <p className="text-xs text-gray-400">
+                  Try adjusting your search
+                </p>
               </div>
             )}
           </div>

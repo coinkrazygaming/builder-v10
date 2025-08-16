@@ -3,7 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff, Github, Mail, Loader2, ArrowLeft } from "lucide-react";
@@ -24,14 +30,17 @@ export default function SignIn() {
     try {
       // Mock authentication - replace with actual auth logic
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      
+
       if (email === "demo@example.com" && password === "password") {
         localStorage.setItem("isAuthenticated", "true");
-        localStorage.setItem("user", JSON.stringify({
-          id: "user-1",
-          email: email,
-          name: "Demo User"
-        }));
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            id: "user-1",
+            email: email,
+            name: "Demo User",
+          }),
+        );
         navigate("/dashboard");
       } else {
         setError("Invalid email or password");
@@ -76,15 +85,19 @@ export default function SignIn() {
                 Back
               </Link>
             </Button>
-            
+
             <div className="flex items-center justify-center space-x-2 mb-6">
               <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
                 <div className="w-4 h-4 bg-white rounded-sm"></div>
               </div>
-              <h1 className="text-2xl font-semibold tracking-tight">BuilderClone</h1>
+              <h1 className="text-2xl font-semibold tracking-tight">
+                BuilderClone
+              </h1>
             </div>
-            
-            <h2 className="text-2xl font-semibold tracking-tight">Welcome back</h2>
+
+            <h2 className="text-2xl font-semibold tracking-tight">
+              Welcome back
+            </h2>
             <p className="text-sm text-muted-foreground">
               Enter your email to sign in to your account
             </p>
@@ -116,7 +129,7 @@ export default function SignIn() {
                   Google
                 </Button>
               </div>
-              
+
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
                   <Separator className="w-full" />
@@ -184,13 +197,17 @@ export default function SignIn() {
                   </div>
                 </div>
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {isLoading && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
                   Sign In
                 </Button>
               </form>
-              
+
               <div className="text-center text-sm">
-                <span className="text-muted-foreground">Don't have an account? </span>
+                <span className="text-muted-foreground">
+                  Don't have an account?{" "}
+                </span>
                 <Link
                   to="/auth/signup"
                   className="text-primary hover:underline font-medium"
@@ -200,10 +217,11 @@ export default function SignIn() {
               </div>
             </CardContent>
           </Card>
-          
+
           <div className="text-center text-xs text-muted-foreground">
             <p>
-              For demo purposes, use <strong>demo@example.com</strong> / <strong>password</strong>
+              For demo purposes, use <strong>demo@example.com</strong> /{" "}
+              <strong>password</strong>
             </p>
           </div>
         </div>

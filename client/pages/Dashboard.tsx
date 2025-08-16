@@ -3,25 +3,31 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { 
-  Plus, 
-  Search, 
-  MoreVertical, 
-  Edit, 
-  Eye, 
-  Trash2, 
-  Download, 
-  Share, 
-  Globe, 
-  Clock, 
-  Users, 
-  BarChart3, 
-  TrendingUp, 
+import {
+  Plus,
+  Search,
+  MoreVertical,
+  Edit,
+  Eye,
+  Trash2,
+  Download,
+  Share,
+  Globe,
+  Clock,
+  Users,
+  BarChart3,
+  TrendingUp,
   Calendar,
   Folder,
   Star,
@@ -30,7 +36,7 @@ import {
   List,
   Settings,
   Bell,
-  HelpCircle
+  HelpCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -66,7 +72,8 @@ const mockProjects: Project[] = [
     status: "published",
     lastModified: "2024-01-15T10:30:00Z",
     createdAt: "2024-01-10T14:20:00Z",
-    thumbnail: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300&h=200&fit=crop",
+    thumbnail:
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300&h=200&fit=crop",
     domain: "company.com",
     views: 12450,
     collaborators: 3,
@@ -80,7 +87,8 @@ const mockProjects: Project[] = [
     status: "draft",
     lastModified: "2024-01-14T16:45:00Z",
     createdAt: "2024-01-12T09:15:00Z",
-    thumbnail: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=300&h=200&fit=crop",
+    thumbnail:
+      "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=300&h=200&fit=crop",
     views: 89,
     collaborators: 2,
     template: "E-commerce Store",
@@ -93,7 +101,8 @@ const mockProjects: Project[] = [
     status: "published",
     lastModified: "2024-01-13T12:20:00Z",
     createdAt: "2024-01-08T11:30:00Z",
-    thumbnail: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=200&fit=crop",
+    thumbnail:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=200&fit=crop",
     domain: "designer-portfolio.com",
     views: 3420,
     collaborators: 1,
@@ -107,7 +116,8 @@ const mockProjects: Project[] = [
     status: "published",
     lastModified: "2024-01-12T08:15:00Z",
     createdAt: "2024-01-05T16:45:00Z",
-    thumbnail: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=300&h=200&fit=crop",
+    thumbnail:
+      "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=300&h=200&fit=crop",
     domain: "techblog.com",
     views: 8760,
     collaborators: 1,
@@ -129,36 +139,55 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [projects, setProjects] = useState<Project[]>(mockProjects);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "draft" | "published" | "archived">("all");
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "draft" | "published" | "archived"
+  >("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [sortBy, setSortBy] = useState<"modified" | "created" | "name" | "views">("modified");
+  const [sortBy, setSortBy] = useState<
+    "modified" | "created" | "name" | "views"
+  >("modified");
 
-  const filteredProjects = projects.filter(project => {
-    const matchesSearch = project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         project.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         project.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-    
-    const matchesStatus = statusFilter === "all" || project.status === statusFilter;
-    
-    return matchesSearch && matchesStatus;
-  }).sort((a, b) => {
-    switch (sortBy) {
-      case "modified":
-        return new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime();
-      case "created":
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      case "name":
-        return a.name.localeCompare(b.name);
-      case "views":
-        return b.views - a.views;
-      default:
-        return 0;
-    }
-  });
+  const filteredProjects = projects
+    .filter((project) => {
+      const matchesSearch =
+        project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        project.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        project.tags.some((tag) =>
+          tag.toLowerCase().includes(searchQuery.toLowerCase()),
+        );
+
+      const matchesStatus =
+        statusFilter === "all" || project.status === statusFilter;
+
+      return matchesSearch && matchesStatus;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "modified":
+          return (
+            new Date(b.lastModified).getTime() -
+            new Date(a.lastModified).getTime()
+          );
+        case "created":
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        case "name":
+          return a.name.localeCompare(b.name);
+        case "views":
+          return b.views - a.views;
+        default:
+          return 0;
+      }
+    });
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString() + " at " + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return (
+      date.toLocaleDateString() +
+      " at " +
+      date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    );
   };
 
   const getStatusColor = (status: Project["status"]) => {
@@ -192,7 +221,12 @@ export default function Dashboard() {
             <Folder className="w-12 h-12 text-gray-400" />
           </div>
         )}
-        <Badge className={cn("absolute top-2 left-2", getStatusColor(project.status))}>
+        <Badge
+          className={cn(
+            "absolute top-2 left-2",
+            getStatusColor(project.status),
+          )}
+        >
           {project.status}
         </Badge>
         <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -201,12 +235,14 @@ export default function Dashboard() {
           </Button>
         </div>
       </div>
-      
+
       <CardHeader className="pb-2">
         <CardTitle className="text-lg line-clamp-1">{project.name}</CardTitle>
-        <CardDescription className="line-clamp-2">{project.description}</CardDescription>
+        <CardDescription className="line-clamp-2">
+          {project.description}
+        </CardDescription>
       </CardHeader>
-      
+
       <CardContent className="space-y-4">
         <div className="flex flex-wrap gap-1">
           {project.tags.slice(0, 3).map((tag) => (
@@ -215,7 +251,7 @@ export default function Dashboard() {
             </Badge>
           ))}
         </div>
-        
+
         <div className="flex items-center justify-between text-sm text-gray-600">
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-1">
@@ -234,14 +270,14 @@ export default function Dashboard() {
             </div>
           )}
         </div>
-        
+
         <div className="text-xs text-gray-500">
           Last modified: {formatDate(project.lastModified)}
         </div>
-        
+
         <div className="flex space-x-2 pt-2">
-          <Button 
-            size="sm" 
+          <Button
+            size="sm"
             className="flex-1"
             onClick={() => navigate(`/editor/${project.id}`)}
           >
@@ -275,7 +311,7 @@ export default function Dashboard() {
               <Folder className="w-6 h-6 text-gray-400" />
             </div>
           )}
-          
+
           <div className="flex-1 min-w-0">
             <div className="flex items-center space-x-2 mb-1">
               <h3 className="font-semibold truncate">{project.name}</h3>
@@ -283,7 +319,9 @@ export default function Dashboard() {
                 {project.status}
               </Badge>
             </div>
-            <p className="text-sm text-gray-600 truncate mb-2">{project.description}</p>
+            <p className="text-sm text-gray-600 truncate mb-2">
+              {project.description}
+            </p>
             <div className="flex items-center space-x-4 text-xs text-gray-500">
               <span>Modified: {formatDate(project.lastModified)}</span>
               <div className="flex items-center space-x-1">
@@ -302,12 +340,9 @@ export default function Dashboard() {
               )}
             </div>
           </div>
-          
+
           <div className="flex space-x-2">
-            <Button 
-              size="sm"
-              onClick={() => navigate(`/editor/${project.id}`)}
-            >
+            <Button size="sm" onClick={() => navigate(`/editor/${project.id}`)}>
               <Edit className="w-4 h-4 mr-1" />
               Edit
             </Button>
@@ -368,7 +403,9 @@ export default function Dashboard() {
               <Card>
                 <CardHeader className="pb-2">
                   <CardDescription>Total Projects</CardDescription>
-                  <CardTitle className="text-2xl">{mockStats.totalProjects}</CardTitle>
+                  <CardTitle className="text-2xl">
+                    {mockStats.totalProjects}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-xs text-gray-600">
@@ -376,24 +413,28 @@ export default function Dashboard() {
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card>
                 <CardHeader className="pb-2">
                   <CardDescription>Total Views</CardDescription>
-                  <CardTitle className="text-2xl">{mockStats.totalViews.toLocaleString()}</CardTitle>
+                  <CardTitle className="text-2xl">
+                    {mockStats.totalViews.toLocaleString()}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-xs text-green-600 flex items-center">
-                    <TrendingUp className="w-3 h-3 mr-1" />
-                    +{mockStats.monthlyGrowth}% this month
+                    <TrendingUp className="w-3 h-3 mr-1" />+
+                    {mockStats.monthlyGrowth}% this month
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card>
                 <CardHeader className="pb-2">
                   <CardDescription>Collaborators</CardDescription>
-                  <CardTitle className="text-2xl">{mockStats.totalCollaborators}</CardTitle>
+                  <CardTitle className="text-2xl">
+                    {mockStats.totalCollaborators}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-xs text-gray-600">
@@ -401,16 +442,16 @@ export default function Dashboard() {
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card>
                 <CardHeader className="pb-2">
                   <CardDescription>This Month</CardDescription>
-                  <CardTitle className="text-2xl">{mockStats.monthlyViews.toLocaleString()}</CardTitle>
+                  <CardTitle className="text-2xl">
+                    {mockStats.monthlyViews.toLocaleString()}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-xs text-gray-600">
-                    Page views
-                  </div>
+                  <div className="text-xs text-gray-600">Page views</div>
                 </CardContent>
               </Card>
             </div>
@@ -428,7 +469,7 @@ export default function Dashboard() {
                       className="pl-10 w-64"
                     />
                   </div>
-                  
+
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value as any)}
@@ -439,7 +480,7 @@ export default function Dashboard() {
                     <option value="published">Published</option>
                     <option value="archived">Archived</option>
                   </select>
-                  
+
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as any)}
@@ -469,7 +510,7 @@ export default function Dashboard() {
                       <List className="w-4 h-4" />
                     </Button>
                   </div>
-                  
+
                   <Button onClick={createNewProject}>
                     <Plus className="w-4 h-4 mr-2" />
                     New Project
@@ -486,7 +527,9 @@ export default function Dashboard() {
                   <div className="w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Folder className="w-8 h-8 text-gray-400" />
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">No projects found</h3>
+                  <h3 className="text-lg font-semibold mb-2">
+                    No projects found
+                  </h3>
                   <p className="text-gray-600 dark:text-gray-300 mb-6">
                     Get started by creating your first project
                   </p>
@@ -514,15 +557,19 @@ export default function Dashboard() {
           <TabsContent value="analytics" className="mt-8">
             <div className="space-y-6">
               <h2 className="text-2xl font-bold">Analytics Overview</h2>
-              
+
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <Card>
                   <CardHeader>
                     <CardTitle>Views This Month</CardTitle>
-                    <CardDescription>Total page views across all projects</CardDescription>
+                    <CardDescription>
+                      Total page views across all projects
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-2">{mockStats.monthlyViews.toLocaleString()}</div>
+                    <div className="text-3xl font-bold mb-2">
+                      {mockStats.monthlyViews.toLocaleString()}
+                    </div>
                     <div className="flex items-center text-green-600">
                       <TrendingUp className="w-4 h-4 mr-1" />
                       <span>+{mockStats.monthlyGrowth}% from last month</span>
@@ -530,25 +577,37 @@ export default function Dashboard() {
                     <Progress value={75} className="mt-4" />
                   </CardContent>
                 </Card>
-                
+
                 <Card>
                   <CardHeader>
                     <CardTitle>Top Performing Projects</CardTitle>
-                    <CardDescription>Projects with the most views this month</CardDescription>
+                    <CardDescription>
+                      Projects with the most views this month
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {projects.sort((a, b) => b.views - a.views).slice(0, 3).map((project, index) => (
-                        <div key={project.id} className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center text-sm font-semibold text-blue-600">
-                              {index + 1}
+                      {projects
+                        .sort((a, b) => b.views - a.views)
+                        .slice(0, 3)
+                        .map((project, index) => (
+                          <div
+                            key={project.id}
+                            className="flex items-center justify-between"
+                          >
+                            <div className="flex items-center space-x-3">
+                              <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center text-sm font-semibold text-blue-600">
+                                {index + 1}
+                              </div>
+                              <span className="font-medium">
+                                {project.name}
+                              </span>
                             </div>
-                            <span className="font-medium">{project.name}</span>
+                            <span className="text-gray-600">
+                              {project.views.toLocaleString()} views
+                            </span>
                           </div>
-                          <span className="text-gray-600">{project.views.toLocaleString()} views</span>
-                        </div>
-                      ))}
+                        ))}
                     </div>
                   </CardContent>
                 </Card>
@@ -565,18 +624,22 @@ export default function Dashboard() {
                   Invite Member
                 </Button>
               </div>
-              
+
               <Alert>
                 <Users className="h-4 w-4" />
                 <AlertDescription>
-                  Team collaboration features are coming soon! You'll be able to invite team members, assign roles, and collaborate in real-time.
+                  Team collaboration features are coming soon! You'll be able to
+                  invite team members, assign roles, and collaborate in
+                  real-time.
                 </AlertDescription>
               </Alert>
-              
+
               <Card>
                 <CardHeader>
                   <CardTitle>Current Collaborators</CardTitle>
-                  <CardDescription>People who have access to your projects</CardDescription>
+                  <CardDescription>
+                    People who have access to your projects
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="text-center py-8">

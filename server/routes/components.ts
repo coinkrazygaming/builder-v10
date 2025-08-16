@@ -23,7 +23,8 @@ const mockComponents: Component[] = [
   {
     id: "hero-section",
     name: "Hero Section",
-    description: "Modern hero section with gradient background and call-to-action",
+    description:
+      "Modern hero section with gradient background and call-to-action",
     category: "Layout",
     tags: ["hero", "landing", "gradient", "cta"],
     isPremium: false,
@@ -60,11 +61,14 @@ export default function HeroSection() {
     dependencies: ["@/components/ui/button"],
     props: {
       title: { type: "string", default: "Build Amazing Websites" },
-      subtitle: { type: "string", default: "Create stunning web experiences with our visual builder" },
+      subtitle: {
+        type: "string",
+        default: "Create stunning web experiences with our visual builder",
+      },
       ctaText: { type: "string", default: "Get Started" },
       gradientFrom: { type: "string", default: "purple-600" },
-      gradientTo: { type: "string", default: "blue-600" }
-    }
+      gradientTo: { type: "string", default: "blue-600" },
+    },
   },
   {
     id: "pricing-card",
@@ -143,12 +147,22 @@ export default function PricingCard({
     dependencies: ["@/components/ui/button", "@/components/ui/card"],
     props: {
       title: { type: "string", default: "Pro Plan" },
-      description: { type: "string", default: "Perfect for growing businesses" },
+      description: {
+        type: "string",
+        default: "Perfect for growing businesses",
+      },
       price: { type: "string", default: "$29/mo" },
-      features: { type: "array", default: ["Unlimited projects", "Advanced features", "Priority support"] },
+      features: {
+        type: "array",
+        default: [
+          "Unlimited projects",
+          "Advanced features",
+          "Priority support",
+        ],
+      },
       ctaText: { type: "string", default: "Choose Plan" },
-      highlighted: { type: "boolean", default: false }
-    }
+      highlighted: { type: "boolean", default: false },
+    },
   },
   {
     id: "feature-grid",
@@ -222,8 +236,8 @@ export default function FeatureGrid({
       features: { type: "array", default: [] },
       columns: { type: "number", default: 3, options: [1, 2, 3, 4] },
       iconColor: { type: "string", default: "blue-600" },
-      iconBgColor: { type: "string", default: "blue-100" }
-    }
+      iconBgColor: { type: "string", default: "blue-100" },
+    },
   },
   {
     id: "testimonial-card",
@@ -314,59 +328,67 @@ export default function TestimonialCard({
 }`,
     dependencies: ["@/components/ui/card", "lucide-react"],
     props: {
-      quote: { type: "string", default: "This product changed how we work. Amazing!" },
+      quote: {
+        type: "string",
+        default: "This product changed how we work. Amazing!",
+      },
       author: { type: "string", default: "John Smith" },
       role: { type: "string", default: "CEO" },
       company: { type: "string", default: "TechCorp" },
       avatar: { type: "string", default: "" },
-      rating: { type: "number", default: 5, min: 1, max: 5 }
-    }
-  }
+      rating: { type: "number", default: 5, min: 1, max: 5 },
+    },
+  },
 ];
 
 // GET /api/components - Get all components
 export const getComponents: RequestHandler = async (req, res) => {
   try {
     const { category, search, difficulty, premium, limit, offset } = req.query;
-    
+
     let filtered = [...mockComponents];
-    
+
     // Filter by category
     if (category && category !== "all") {
-      filtered = filtered.filter(component => component.category === category);
+      filtered = filtered.filter(
+        (component) => component.category === category,
+      );
     }
-    
+
     // Filter by search
     if (search) {
       const searchTerm = (search as string).toLowerCase();
-      filtered = filtered.filter(component => 
-        component.name.toLowerCase().includes(searchTerm) ||
-        component.description.toLowerCase().includes(searchTerm) ||
-        component.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+      filtered = filtered.filter(
+        (component) =>
+          component.name.toLowerCase().includes(searchTerm) ||
+          component.description.toLowerCase().includes(searchTerm) ||
+          component.tags.some((tag) => tag.toLowerCase().includes(searchTerm)),
       );
     }
-    
+
     // Filter by difficulty
     if (difficulty && difficulty !== "all") {
-      filtered = filtered.filter(component => component.difficulty === difficulty);
+      filtered = filtered.filter(
+        (component) => component.difficulty === difficulty,
+      );
     }
-    
+
     // Filter by premium
     if (premium === "true") {
-      filtered = filtered.filter(component => component.isPremium);
+      filtered = filtered.filter((component) => component.isPremium);
     } else if (premium === "false") {
-      filtered = filtered.filter(component => !component.isPremium);
+      filtered = filtered.filter((component) => !component.isPremium);
     }
-    
+
     // Apply pagination
     const limitNum = parseInt(limit as string) || 20;
     const offsetNum = parseInt(offset as string) || 0;
     const paginated = filtered.slice(offsetNum, offsetNum + limitNum);
-    
+
     res.json({
       components: paginated,
       total: filtered.length,
-      categories: ["Layout", "Cards", "Navigation", "Data", "Forms", "Media"]
+      categories: ["Layout", "Cards", "Navigation", "Data", "Forms", "Media"],
     });
   } catch (error) {
     console.error("Error fetching components:", error);
@@ -378,12 +400,12 @@ export const getComponents: RequestHandler = async (req, res) => {
 export const getComponent: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;
-    const component = mockComponents.find(c => c.id === id);
-    
+    const component = mockComponents.find((c) => c.id === id);
+
     if (!component) {
       return res.status(404).json({ error: "Component not found" });
     }
-    
+
     res.json(component);
   } catch (error) {
     console.error("Error fetching component:", error);
@@ -396,24 +418,24 @@ export const downloadComponent: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.headers["x-user-id"] as string;
-    
+
     if (!userId) {
       return res.status(401).json({ error: "User ID required" });
     }
-    
-    const component = mockComponents.find(c => c.id === id);
+
+    const component = mockComponents.find((c) => c.id === id);
     if (!component) {
       return res.status(404).json({ error: "Component not found" });
     }
-    
+
     // Increment downloads
     component.downloads += 1;
-    
+
     res.json({
       code: component.fullCode,
       dependencies: component.dependencies,
       props: component.props,
-      message: "Component code downloaded successfully"
+      message: "Component code downloaded successfully",
     });
   } catch (error) {
     console.error("Error downloading component:", error);
@@ -426,14 +448,38 @@ export const getComponentCategories: RequestHandler = async (req, res) => {
   try {
     const categories = [
       { id: "all", name: "All", count: mockComponents.length },
-      { id: "Layout", name: "Layout", count: mockComponents.filter(c => c.category === "Layout").length },
-      { id: "Cards", name: "Cards", count: mockComponents.filter(c => c.category === "Cards").length },
-      { id: "Navigation", name: "Navigation", count: mockComponents.filter(c => c.category === "Navigation").length },
-      { id: "Data", name: "Data", count: mockComponents.filter(c => c.category === "Data").length },
-      { id: "Forms", name: "Forms", count: mockComponents.filter(c => c.category === "Forms").length },
-      { id: "Media", name: "Media", count: mockComponents.filter(c => c.category === "Media").length },
+      {
+        id: "Layout",
+        name: "Layout",
+        count: mockComponents.filter((c) => c.category === "Layout").length,
+      },
+      {
+        id: "Cards",
+        name: "Cards",
+        count: mockComponents.filter((c) => c.category === "Cards").length,
+      },
+      {
+        id: "Navigation",
+        name: "Navigation",
+        count: mockComponents.filter((c) => c.category === "Navigation").length,
+      },
+      {
+        id: "Data",
+        name: "Data",
+        count: mockComponents.filter((c) => c.category === "Data").length,
+      },
+      {
+        id: "Forms",
+        name: "Forms",
+        count: mockComponents.filter((c) => c.category === "Forms").length,
+      },
+      {
+        id: "Media",
+        name: "Media",
+        count: mockComponents.filter((c) => c.category === "Media").length,
+      },
     ];
-    
+
     res.json({ categories });
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -447,24 +493,24 @@ export const rateComponent: RequestHandler = async (req, res) => {
     const { id } = req.params;
     const { rating } = req.body;
     const userId = req.headers["x-user-id"] as string;
-    
+
     if (!userId) {
       return res.status(401).json({ error: "User ID required" });
     }
-    
+
     if (!rating || rating < 1 || rating > 5) {
       return res.status(400).json({ error: "Rating must be between 1 and 5" });
     }
-    
-    const component = mockComponents.find(c => c.id === id);
+
+    const component = mockComponents.find((c) => c.id === id);
     if (!component) {
       return res.status(404).json({ error: "Component not found" });
     }
-    
+
     // In a real implementation, you'd store individual ratings and calculate average
-    res.json({ 
+    res.json({
       message: "Component rated successfully",
-      currentRating: component.rating 
+      currentRating: component.rating,
     });
   } catch (error) {
     console.error("Error rating component:", error);

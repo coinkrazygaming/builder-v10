@@ -88,7 +88,11 @@ export default function Editor() {
     // Create a safer abort function that won't throw errors
     const safeAbort = () => {
       try {
-        if (abortController && abortController.signal && !abortController.signal.aborted) {
+        if (
+          abortController &&
+          abortController.signal &&
+          !abortController.signal.aborted
+        ) {
           abortController.abort();
         }
       } catch (error) {

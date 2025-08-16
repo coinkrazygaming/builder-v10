@@ -3,19 +3,31 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { 
-  Search, 
-  Copy, 
-  Code, 
-  Play, 
-  Download, 
-  Star, 
+import {
+  Search,
+  Copy,
+  Code,
+  Play,
+  Download,
+  Star,
   Heart,
   Eye,
   MousePointer,
@@ -31,7 +43,7 @@ import {
   Navigation,
   Grid3X3,
   List,
-  Filter
+  Filter,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -54,7 +66,8 @@ const mockComponents: Component[] = [
   {
     id: "hero-section",
     name: "Hero Section",
-    description: "Modern hero section with gradient background and call-to-action",
+    description:
+      "Modern hero section with gradient background and call-to-action",
     category: "Layout",
     tags: ["hero", "landing", "gradient", "cta"],
     isPremium: false,
@@ -72,8 +85,12 @@ const mockComponents: Component[] = [
       <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-8 rounded-lg">
         <div className="text-center px-4">
           <h1 className="text-2xl font-bold mb-2">Build Amazing Websites</h1>
-          <p className="text-sm mb-4 opacity-90">Create stunning web experiences</p>
-          <Button size="sm" variant="secondary">Get Started</Button>
+          <p className="text-sm mb-4 opacity-90">
+            Create stunning web experiences
+          </p>
+          <Button size="sm" variant="secondary">
+            Get Started
+          </Button>
         </div>
       </div>
     ),
@@ -107,7 +124,9 @@ const mockComponents: Component[] = [
       <Card className="max-w-xs">
         <CardHeader className="pb-4">
           <CardTitle className="text-lg">Pro Plan</CardTitle>
-          <CardDescription className="text-sm">Perfect for growing businesses</CardDescription>
+          <CardDescription className="text-sm">
+            Perfect for growing businesses
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="text-2xl font-bold">$29/mo</div>
@@ -116,7 +135,9 @@ const mockComponents: Component[] = [
             <li>✓ Advanced features</li>
             <li>✓ Priority support</li>
           </ul>
-          <Button className="w-full" size="sm">Choose Plan</Button>
+          <Button className="w-full" size="sm">
+            Choose Plan
+          </Button>
         </CardContent>
       </Card>
     ),
@@ -192,10 +213,15 @@ const mockComponents: Component[] = [
         <CardContent className="pt-6">
           <div className="flex mb-3">
             {[...Array(5)].map((_, i) => (
-              <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+              <Star
+                key={i}
+                className="w-3 h-3 fill-yellow-400 text-yellow-400"
+              />
             ))}
           </div>
-          <p className="text-sm mb-3">"This product changed how we work. Amazing!"</p>
+          <p className="text-sm mb-3">
+            "This product changed how we work. Amazing!"
+          </p>
           <div className="flex items-center">
             <div className="w-8 h-8 bg-gray-200 rounded-full mr-2"></div>
             <div>
@@ -239,9 +265,15 @@ const mockComponents: Component[] = [
           <div className="flex justify-between items-center h-12">
             <div className="font-bold text-lg">Logo</div>
             <div className="hidden md:flex space-x-4 text-sm">
-              <a href="#" className="text-gray-700 hover:text-blue-600">Home</a>
-              <a href="#" className="text-gray-700 hover:text-blue-600">About</a>
-              <a href="#" className="text-gray-700 hover:text-blue-600">Services</a>
+              <a href="#" className="text-gray-700 hover:text-blue-600">
+                Home
+              </a>
+              <a href="#" className="text-gray-700 hover:text-blue-600">
+                About
+              </a>
+              <a href="#" className="text-gray-700 hover:text-blue-600">
+                Services
+              </a>
             </div>
             <Button size="sm">Get Started</Button>
           </div>
@@ -314,16 +346,25 @@ export default function Components() {
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   const filteredComponents = useMemo(() => {
-    return mockComponents.filter(component => {
-      const matchesSearch = component.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          component.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          component.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-      
-      const matchesCategory = selectedCategory === "all" || component.category === selectedCategory;
-      const matchesDifficulty = difficultyFilter === "all" || component.difficulty === difficultyFilter;
+    return mockComponents.filter((component) => {
+      const matchesSearch =
+        component.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        component.description
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        component.tags.some((tag) =>
+          tag.toLowerCase().includes(searchQuery.toLowerCase()),
+        );
+
+      const matchesCategory =
+        selectedCategory === "all" || component.category === selectedCategory;
+      const matchesDifficulty =
+        difficultyFilter === "all" || component.difficulty === difficultyFilter;
       const matchesPremium = !showPremiumOnly || component.isPremium;
-      
-      return matchesSearch && matchesCategory && matchesDifficulty && matchesPremium;
+
+      return (
+        matchesSearch && matchesCategory && matchesDifficulty && matchesPremium
+      );
     });
   }, [searchQuery, selectedCategory, difficultyFilter, showPremiumOnly]);
 
@@ -333,16 +374,20 @@ export default function Components() {
       setCopiedCode(componentId);
       setTimeout(() => setCopiedCode(null), 2000);
     } catch (err) {
-      console.error('Failed to copy code:', err);
+      console.error("Failed to copy code:", err);
     }
   };
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case "beginner": return "bg-green-100 text-green-700";
-      case "intermediate": return "bg-yellow-100 text-yellow-700";
-      case "advanced": return "bg-red-100 text-red-700";
-      default: return "bg-gray-100 text-gray-700";
+      case "beginner":
+        return "bg-green-100 text-green-700";
+      case "intermediate":
+        return "bg-yellow-100 text-yellow-700";
+      case "advanced":
+        return "bg-red-100 text-red-700";
+      default:
+        return "bg-gray-100 text-gray-700";
     }
   };
 
@@ -376,7 +421,10 @@ export default function Components() {
             </div>
 
             <div className="flex items-center space-x-4">
-              <Select value={difficultyFilter} onValueChange={setDifficultyFilter}>
+              <Select
+                value={difficultyFilter}
+                onValueChange={setDifficultyFilter}
+              >
                 <SelectTrigger className="w-40">
                   <SelectValue placeholder="Difficulty" />
                 </SelectTrigger>
@@ -409,7 +457,9 @@ export default function Components() {
                 variant="outline"
                 size="sm"
                 onClick={() => setShowPremiumOnly(!showPremiumOnly)}
-                className={cn(showPremiumOnly && "bg-purple-50 border-purple-200")}
+                className={cn(
+                  showPremiumOnly && "bg-purple-50 border-purple-200",
+                )}
               >
                 <Filter className="w-4 h-4 mr-2" />
                 {showPremiumOnly ? "Show All" : "Premium Only"}
@@ -432,7 +482,9 @@ export default function Components() {
                   return (
                     <Button
                       key={category.id}
-                      variant={selectedCategory === category.id ? "default" : "ghost"}
+                      variant={
+                        selectedCategory === category.id ? "default" : "ghost"
+                      }
                       className="w-full justify-start"
                       onClick={() => setSelectedCategory(category.id)}
                     >
@@ -455,11 +507,15 @@ export default function Components() {
                 </div>
                 <div className="flex justify-between">
                   <span>Free Components</span>
-                  <span className="font-medium">{mockComponents.filter(c => !c.isPremium).length}</span>
+                  <span className="font-medium">
+                    {mockComponents.filter((c) => !c.isPremium).length}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Premium Components</span>
-                  <span className="font-medium">{mockComponents.filter(c => c.isPremium).length}</span>
+                  <span className="font-medium">
+                    {mockComponents.filter((c) => c.isPremium).length}
+                  </span>
                 </div>
               </div>
             </div>
@@ -475,27 +531,38 @@ export default function Components() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {filteredComponents.map((component) => (
-                <Card key={component.id} className="group hover:shadow-lg transition-shadow duration-200">
+                <Card
+                  key={component.id}
+                  className="group hover:shadow-lg transition-shadow duration-200"
+                >
                   <CardHeader className="pb-4">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
-                          <CardTitle className="text-lg">{component.name}</CardTitle>
+                          <CardTitle className="text-lg">
+                            {component.name}
+                          </CardTitle>
                           {component.isPremium && (
                             <Badge className="bg-gradient-to-r from-purple-600 to-blue-600">
                               Premium
                             </Badge>
                           )}
-                          <Badge className={getDifficultyColor(component.difficulty)}>
+                          <Badge
+                            className={getDifficultyColor(component.difficulty)}
+                          >
                             {component.difficulty}
                           </Badge>
                         </div>
-                        <CardDescription>{component.description}</CardDescription>
+                        <CardDescription>
+                          {component.description}
+                        </CardDescription>
                       </div>
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => copyCode(component.codePreview, component.id)}
+                        onClick={() =>
+                          copyCode(component.codePreview, component.id)
+                        }
                         className="opacity-0 group-hover:opacity-100 transition-opacity"
                       >
                         {copiedCode === component.id ? (
@@ -510,7 +577,11 @@ export default function Components() {
 
                     <div className="flex flex-wrap gap-1">
                       {component.tags.map((tag) => (
-                        <Badge key={tag} variant="secondary" className="text-xs">
+                        <Badge
+                          key={tag}
+                          variant="secondary"
+                          className="text-xs"
+                        >
                           {tag}
                         </Badge>
                       ))}
@@ -531,7 +602,9 @@ export default function Components() {
                           variant="secondary"
                           size="sm"
                           className="absolute top-2 right-2"
-                          onClick={() => copyCode(component.codePreview, component.id)}
+                          onClick={() =>
+                            copyCode(component.codePreview, component.id)
+                          }
                         >
                           {copiedCode === component.id ? "Copied!" : "Copy"}
                         </Button>
@@ -570,9 +643,12 @@ export default function Components() {
                 <div className="w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Search className="w-8 h-8 text-gray-400" />
                 </div>
-                <h3 className="text-lg font-semibold mb-2">No components found</h3>
+                <h3 className="text-lg font-semibold mb-2">
+                  No components found
+                </h3>
                 <p className="text-gray-600 dark:text-gray-300">
-                  Try adjusting your search criteria or browse different categories
+                  Try adjusting your search criteria or browse different
+                  categories
                 </p>
               </div>
             )}
