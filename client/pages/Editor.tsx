@@ -84,6 +84,18 @@ export default function Editor() {
     }
 
     const abortController = new AbortController();
+
+    // Create a safer abort function that won't throw errors
+    const safeAbort = () => {
+      try {
+        if (abortController && abortController.signal && !abortController.signal.aborted) {
+          abortController.abort();
+        }
+      } catch (error) {
+        // Completely ignore abort errors
+      }
+    };
+
     setIsLoading(true);
 
     // Check if already aborted before starting
